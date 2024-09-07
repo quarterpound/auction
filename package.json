@@ -1,0 +1,27 @@
+{
+  "name": "auction-bun",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "dev:server": "bun --watch run apps/server/index.ts",
+    "dev:web-client": "cd apps/web-client && bun dev"
+  },
+  "devDependencies": {
+    "bun-types": "latest",
+    "prisma": "5.19.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@prisma/client": "5.19.1",
+    "@trpc/client": "next",
+    "@trpc/server": "next",
+    "hono": "^4.5.11",
+    "zod": "^3.23.8"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ]
+}
