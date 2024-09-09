@@ -31,16 +31,27 @@ model Account {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map(name: "email_verified")
+  email         String?    @unique
+  emailVerified DateTime?  @map(name: "email_verified")
   image         String?
   accounts      Account[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  passwords     Password[]
 
   @@map(name: "users")
+}
+
+model Password {
+  id        Int      @id @default(autoincrement())
+  hash      String
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?  @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("passwords")
 }
 
 model VerificationRequest {
