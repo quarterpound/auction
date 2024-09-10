@@ -8,7 +8,7 @@ import { logger } from 'hono/logger'
 
 const app = new Hono();
 
-app.use(cors({origin: '*'}))
+app.use(cors({origin: ['http://localhost:3000'], credentials: true,}))
 app.use(logger())
 
 app.use(
@@ -17,6 +17,8 @@ app.use(
     router: appRouter,
     createContext: (_opts, c) => {
       const authorization = getCookie(c, 'authorization') ?? null
+
+      console.log(getCookie(c))
 
       return ({
         authorization

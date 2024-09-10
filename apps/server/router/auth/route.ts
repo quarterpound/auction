@@ -9,6 +9,7 @@ import { env } from "../../env";
 import crypto from 'crypto'
 import { sendWelcomeEmail } from "../../mail";
 import _ from 'lodash';
+import { User } from "@prisma/client";
 
 export const authRoute = router({
   login: publicProcedure.input(loginValidation).mutation(async (data) => {
@@ -69,7 +70,7 @@ export const authRoute = router({
         }
       })
 
-      if (!existingUser) {
+      if (existingUser) {
         throw new TRPCError({ message: 'User already exists', code: 'CONFLICT' })
       }
 
@@ -111,7 +112,7 @@ export const authRoute = router({
 
       return {
         jwt,
-        user: _.omit(newUser, ['passwords']),
+        user: _.omit(newUser, ['passwords']) as User,
       };
     })
 
