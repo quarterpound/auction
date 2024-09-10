@@ -3,12 +3,19 @@
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
+    "@types/lodash": "^4.17.7",
+    "@types/passport": "^1.0.16",
+    "@types/passport-local": "^1.0.38",
     "bun-types": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@hono/trpc-server": "^0.3.2"
+    "@hono/trpc-server": "^0.3.2",
+    "lodash": "^4.17.21",
+    "loops": "^3.3.0",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
   }
 }
