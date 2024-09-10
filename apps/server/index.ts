@@ -18,8 +18,6 @@ app.use(
     createContext: (_opts, c) => {
       const authorization = getCookie(c, 'authorization') ?? null
 
-      console.log(getCookie(c))
-
       return ({
         authorization
       })

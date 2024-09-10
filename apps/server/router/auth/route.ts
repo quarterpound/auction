@@ -54,7 +54,7 @@ export const authRoute = router({
 
   }),
   register: publicProcedure.input(registerValidation).mutation(async ({ input }) => {
-    const { name, email, password, phone } = input
+    const { name, email, password, phone, addToAudiences } = input
 
     const { jwt, user } = await prisma.$transaction(async (tx) => {
       const existingUser = await tx.user.findFirst({
@@ -99,7 +99,7 @@ export const authRoute = router({
 
       if (email) {
         try {
-          await sendWelcomeEmail(email, `${env.CLIENT_URL}/auth/verify-email?token=${verificationToken}`);
+          await sendWelcomeEmail(email, `${env.CLIENT_URL}/auth/verify-email?token=${verificationToken}`, addToAudiences);
         } catch (e) {
           throw new TRPCError({ message: 'Failed to send email', code: 'INTERNAL_SERVER_ERROR' })
         }

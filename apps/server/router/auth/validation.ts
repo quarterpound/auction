@@ -1,5 +1,4 @@
 import { z } from "zod";
-import errorMap from "zod/locales/en.js";
 
 export const loginValidation = z.object({
   username: z.string().email(),
@@ -11,5 +10,7 @@ export const registerValidation = z.object({
   name: z.string().min(1),
   phone: z.string().min(1),
   email: z.string().email().optional(),
-  password: z.string().min(1)
+  password: z.string().min(1),
+  acceptTerms: z.boolean().default(false),
+  addToAudiences: z.boolean().default(false)
 })

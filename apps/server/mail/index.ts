@@ -7,13 +7,13 @@ export const getClient = () => {
 
 type SendTransactionalEmailReturnType = Awaited<ReturnType<LoopsClient['sendTransactionalEmail']>>
 
-export const sendWelcomeEmail = async (email: string, link: string): Promise<SendTransactionalEmailReturnType> => {
+export const sendWelcomeEmail = async (email: string, link: string, addToAudience = false): Promise<SendTransactionalEmailReturnType> => {
   const client = getClient();
 
   const data = await client.sendTransactionalEmail({
     transactionalId: 'cm0vm889l00ag3akzl5wi785d',
     email,
-    addToAudience: true,
+    addToAudience,
     dataVariables: {
       link
     }
