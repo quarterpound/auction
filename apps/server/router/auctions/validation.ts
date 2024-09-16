@@ -1,0 +1,20 @@
+import dayjs from "dayjs";
+import { z } from "zod";
+
+export const createAuctionValidation = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1).max(1200),
+  reservePrice: z.coerce.number().min(1),
+  endTime: z.coerce.date().min(dayjs().add(7, 'day').toDate()),
+  bidIncrement: z.coerce.number().min(1),
+  currency: z.enum(['usd', 'azn']),
+})
+
+export const createAuctionAndRegisterValidation = createAuctionValidation.extend({
+  name: z.string().min(1),
+  phone: z.string().min(1),
+  password: z.string().min(1)
+})
+
+export type CreateAuctionAndRegisterValidation =  z.infer<typeof createAuctionAndRegisterValidation>
+export type CreateAuctionValidation = z.infer<typeof createAuctionValidation>

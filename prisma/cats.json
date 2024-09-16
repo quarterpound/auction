@@ -1,0 +1,319 @@
+[
+  {
+    "name": "Electronics",
+    "slug": "electronics",
+    "children": [
+      {
+        "name": "Computers",
+        "slug": "computers",
+        "children": [
+          { "name": "Laptops", "slug": "laptops" },
+          { "name": "Desktops", "slug": "desktops" },
+          { "name": "Tablets", "slug": "tablets" }
+        ]
+      },
+      {
+        "name": "Mobile Phones",
+        "slug": "mobile-phones",
+        "children": [
+          { "name": "Smartphones", "slug": "smartphones" },
+          { "name": "Feature Phones", "slug": "feature-phones" }
+        ]
+      },
+      {
+        "name": "Cameras",
+        "slug": "cameras",
+        "children": [
+          { "name": "Digital Cameras", "slug": "digital-cameras" },
+          { "name": "DSLR Cameras", "slug": "dslr-cameras" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Home & Garden",
+    "slug": "home-garden",
+    "children": [
+      {
+        "name": "Furniture",
+        "slug": "furniture",
+        "children": [
+          { "name": "Living Room", "slug": "living-room" },
+          { "name": "Bedroom", "slug": "bedroom" },
+          { "name": "Office", "slug": "office" }
+        ]
+      },
+      {
+        "name": "Kitchen Appliances",
+        "slug": "kitchen-appliances",
+        "children": [
+          { "name": "Refrigerators", "slug": "refrigerators" },
+          { "name": "Ovens", "slug": "ovens" },
+          { "name": "Microwaves", "slug": "microwaves" }
+        ]
+      },
+      {
+        "name": "Garden Tools",
+        "slug": "garden-tools",
+        "children": [
+          { "name": "Lawn Mowers", "slug": "lawn-mowers" },
+          { "name": "Trimmers", "slug": "trimmers" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Fashion",
+    "slug": "fashion",
+    "children": [
+      {
+        "name": "Men's Clothing",
+        "slug": "mens-clothing",
+        "children": [
+          { "name": "Shirts", "slug": "shirts" },
+          { "name": "Pants", "slug": "pants" },
+          { "name": "Jackets", "slug": "jackets" }
+        ]
+      },
+      {
+        "name": "Women's Clothing",
+        "slug": "womens-clothing",
+        "children": [
+          { "name": "Dresses", "slug": "dresses" },
+          { "name": "Skirts", "slug": "skirts" },
+          { "name": "Tops", "slug": "tops" }
+        ]
+      },
+      {
+        "name": "Accessories",
+        "slug": "accessories",
+        "children": [
+          { "name": "Bags", "slug": "bags" },
+          { "name": "Jewelry", "slug": "jewelry" },
+          { "name": "Hats", "slug": "hats" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Sports & Outdoors",
+    "slug": "sports-outdoors",
+    "children": [
+      {
+        "name": "Fitness Equipment",
+        "slug": "fitness-equipment",
+        "children": [
+          { "name": "Treadmills", "slug": "treadmills" },
+          { "name": "Dumbbells", "slug": "dumbbells" }
+        ]
+      },
+      {
+        "name": "Outdoor Recreation",
+        "slug": "outdoor-recreation",
+        "children": [
+          { "name": "Camping Gear", "slug": "camping-gear" },
+          { "name": "Hiking Gear", "slug": "hiking-gear" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Books",
+    "slug": "books",
+    "children": [
+      {
+        "name": "Fiction",
+        "slug": "fiction",
+        "children": [
+          { "name": "Fantasy", "slug": "fantasy" },
+          { "name": "Science Fiction", "slug": "science-fiction" },
+          { "name": "Mystery", "slug": "mystery" }
+        ]
+      },
+      {
+        "name": "Non-Fiction",
+        "slug": "non-fiction",
+        "children": [
+          { "name": "Biography", "slug": "biography" },
+          { "name": "Self-Help", "slug": "self-help" },
+          { "name": "History", "slug": "history" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Health & Beauty",
+    "slug": "health-beauty",
+    "children": [
+      {
+        "name": "Skincare",
+        "slug": "skincare",
+        "children": [
+          { "name": "Moisturizers", "slug": "moisturizers" },
+          { "name": "Cleansers", "slug": "cleansers" }
+        ]
+      },
+      {
+        "name": "Hair Care",
+        "slug": "hair-care",
+        "children": [
+          { "name": "Shampoo", "slug": "shampoo" },
+          { "name": "Conditioner", "slug": "conditioner" }
+        ]
+      },
+      {
+        "name": "Makeup",
+        "slug": "makeup",
+        "children": [
+          { "name": "Lipstick", "slug": "lipstick" },
+          { "name": "Foundation", "slug": "foundation" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Automotive",
+    "slug": "automotive",
+    "children": [
+      {
+        "name": "Car Accessories",
+        "slug": "car-accessories",
+        "children": [
+          { "name": "Seat Covers", "slug": "seat-covers" },
+          { "name": "Car Mats", "slug": "car-mats" }
+        ]
+      },
+      {
+        "name": "Motorcycles",
+        "slug": "motorcycles",
+        "children": [
+          { "name": "Helmets", "slug": "helmets" },
+          { "name": "Gloves", "slug": "gloves" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Toys & Games",
+    "slug": "toys-games",
+    "children": [
+      { "name": "Action Figures", "slug": "action-figures" },
+      { "name": "Board Games", "slug": "board-games" },
+      { "name": "Puzzles", "slug": "puzzles" }
+    ]
+  },
+  {
+    "name": "Pet Supplies",
+    "slug": "pet-supplies",
+    "children": [
+      {
+        "name": "Dog Supplies",
+        "slug": "dog-supplies",
+        "children": [
+          { "name": "Dog Food", "slug": "dog-food" },
+          { "name": "Dog Toys", "slug": "dog-toys" }
+        ]
+      },
+      {
+        "name": "Cat Supplies",
+        "slug": "cat-supplies",
+        "children": [
+          { "name": "Cat Food", "slug": "cat-food" },
+          { "name": "Cat Toys", "slug": "cat-toys" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Music",
+    "slug": "music",
+    "children": [
+      {
+        "name": "Instruments",
+        "slug": "instruments",
+        "children": [
+          { "name": "Guitars", "slug": "guitars" },
+          { "name": "Pianos", "slug": "pianos" }
+        ]
+      },
+      {
+        "name": "Accessories",
+        "slug": "music-accessories",
+        "children": [
+          { "name": "Strings", "slug": "strings" },
+          { "name": "Picks", "slug": "picks" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Arts & Crafts",
+    "slug": "arts-crafts",
+    "children": [
+      {
+        "name": "Painting Supplies",
+        "slug": "painting-supplies",
+        "children": [
+          { "name": "Brushes", "slug": "brushes" },
+          { "name": "Canvases", "slug": "canvases" }
+        ]
+      },
+      {
+        "name": "Knitting & Crochet",
+        "slug": "knitting-crochet",
+        "children": [
+          { "name": "Yarn", "slug": "yarn" },
+          { "name": "Needles", "slug": "needles" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Travel",
+    "slug": "travel",
+    "children": [
+      { "name": "Luggage", "slug": "luggage" },
+      { "name": "Travel Accessories", "slug": "travel-accessories" }
+    ]
+  },
+  {
+    "name": "Baby Products",
+    "slug": "baby-products",
+    "children": [
+      { "name": "Baby Clothing", "slug": "baby-clothing" },
+      { "name": "Strollers", "slug": "strollers" },
+      { "name": "Car Seats", "slug": "car-seats" }
+    ]
+  },
+  {
+    "name": "Office Supplies",
+    "slug": "office-supplies",
+    "children": [
+      {
+        "name": "Writing Instruments",
+        "slug": "writing-instruments",
+        "children": [
+          { "name": "Pens", "slug": "pens" },
+          { "name": "Pencils", "slug": "pencils" }
+        ]
+      },
+      {
+        "name": "Paper Products",
+        "slug": "paper-products",
+        "children": [
+          { "name": "Notebooks", "slug": "notebooks" },
+          { "name": "Sticky Notes", "slug": "sticky-notes" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Food & Beverages",
+    "slug": "food-beverages",
+    "children": [
+      { "name": "Snacks", "slug": "snacks" },
+      { "name": "Beverages", "slug": "beverages" },
+      { "name": "Cooking Ingredients", "slug": "cooking-ingredients" }
+    ]
+  }
+]

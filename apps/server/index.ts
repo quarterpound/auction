@@ -19,7 +19,8 @@ app.use(
       const authorization = getCookie(c, 'authorization') ?? null
 
       return ({
-        authorization
+        authorization,
+        c,
       })
     }
 

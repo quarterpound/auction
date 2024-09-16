@@ -42,6 +42,8 @@ model User {
   updatedAt     DateTime   @updatedAt
   passwords     Password[]
   cases         Cases[]
+  Post          Post[]
+  Bids          Bids[]
 
   @@map(name: "users")
 }
@@ -69,18 +71,22 @@ model VerificationRequest {
 }
 
 model Post {
-  id              Int      @id @default(autoincrement())
-  slug            String   @unique
+  id              Int       @id @default(autoincrement())
+  slug            String    @unique
   name            String
   description     String
-  descriptionHtml String   @map("description_html")
-  priceMin        Float    @map("price_min")
-  category        Category @relation(fields: [categoryId], references: [id])
-  categoryId      Int      @map("category_id")
-  endTime         DateTime @map("end_time")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  descriptionHtml String    @map("description_html")
+  priceMin        Float     @map("price_min")
+  category        Category? @relation(fields: [categoryId], references: [id])
+  categoryId      Int?      @map("category_id")
+  endTime         DateTime  @map("end_time")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  currency        String
+  bidIncrement    Float     @map("bid_increment")
+  author          User      @relation(fields: [authorId], references: [id])
   Bids            Bids[]
+  authorId        String    @map("author_id")
 
   @@map("posts")
 }
@@ -90,7 +96,11 @@ model Bids {
   amount    Float
   post      Post     @relation(fields: [postId], references: [id])
   postId    Int      @map("post_id")
+  author    User     @relation(fields: [userId], references: [id])
   createdAt DateTime @map("created_at")
+  userId    String   @map("user_id")
+
+  @@map("bids")
 }
 
 model Category {

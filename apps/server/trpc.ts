@@ -4,13 +4,30 @@ import { env } from './env';
 import { CreateExpressContextOptions } from '@trpc/server/adapters/express';
 import { prisma } from './database';
 import superjson from 'superjson'
+import { Context } from 'hono';
+import { User } from '@prisma/client';
+import { ZodError } from 'zod';
 
-type Context = {
+type ParsedContext = {
   authorization: string | null
+  c: Context
 }
 
-const t = initTRPC.context<Context>().create({
+const t = initTRPC.context<ParsedContext>().create({
   transformer: superjson,
+  errorFormatter(opts) {
+      const { shape, error } = opts;
+      return {
+        ...shape,
+        data: {
+          ...shape.data,
+          zodError:
+            error.cause instanceof ZodError
+              ? error.cause.flatten()
+              : null,
+        },
+      };
+    },
 });
 
 /**
@@ -18,7 +35,44 @@ const t = initTRPC.context<Context>().create({
  * that can be used throughout the router
  */
 export const router = t.router;
-export const publicProcedure = t.procedure;
+export const publicProcedure = t.procedure.use(async (opts) => {
+
+  const token = opts.ctx.authorization
+  let user: User | null = null;
+
+  console.log({token})
+
+  if(token) {
+    const payload = await verify(token, env.JWT_SECRET)
+
+    if(!payload) {
+      throw new TRPCError({message: 'Token expired', code: 'UNAUTHORIZED'})
+    }
+
+    user = await prisma.user.findUnique({
+      where: {
+        id: payload.sub as string,
+      }
+    })
+
+
+    if(!user) {
+      throw new TRPCError({message: 'User could not be found', code: 'CONFLICT'})
+    }
+  }
+
+  return opts.next({
+    ctx: {
+      user,
+      c: opts.ctx.c,
+    }
+  })
+
+
+  return opts.next({ctx: {
+    c: opts.ctx.c
+  }})
+});
 export const protectedProcedure = t.procedure.use(async (opts) => {
   const token = opts.ctx.authorization
 
@@ -46,6 +100,7 @@ export const protectedProcedure = t.procedure.use(async (opts) => {
   return opts.next({
     ctx: {
       user,
+      c: opts.ctx.c,
     }
   })
 })
