@@ -36,7 +36,7 @@ const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
               </div>
               <div className="flex items-center space-x-2">
                 <Clock className="h-6 w-6 text-blue-600" />
-                <span className="text-xl font-semibold"><Timer data={auction.endTime} /> left</span>
+                <span className="text-xl font-semibold" suppressHydrationWarning={true}><Timer data={auction.endTime} /> left</span>
               </div>
             </div>
             <BidManager increment={auction.bidIncrement} id={auction.id} bids={auction.Bids} amount={amount} />
