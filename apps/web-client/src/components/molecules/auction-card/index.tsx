@@ -12,13 +12,13 @@ type AuctionCardProps = {item: AuctionFeedItem}
 
 const AuctionCard = ({item}: AuctionCardProps) => {
 
-
+  const imageUrl = item.assets[0].url ?? '/placeholder.svg'
 
   return (
     <Card className="flex flex-col">
       <CardHeader className="p-0">
         <img
-          src={'/placeholder.svg'}
+          src={imageUrl}
           alt={item.name}
           className="w-full h-48 object-cover rounded-t-lg"
         />

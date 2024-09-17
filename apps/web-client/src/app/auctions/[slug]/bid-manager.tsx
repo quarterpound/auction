@@ -8,14 +8,16 @@ import { Separator } from "@/components/ui/separator"
 import { useAppState } from "@/store"
 import { trpc } from "@/trpc"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Prisma } from "@prisma/client"
+import { Post, Prisma } from "@prisma/client"
 import dayjs from "dayjs"
-import { User } from "lucide-react"
+import { Clock, DollarSign, User } from "lucide-react"
 import { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { CreateBidValidation } from "server/router/bids/validation"
-import { formatNumber } from "utils"
+import { formatNumber, obfuscateName } from "utils"
 import { z } from "zod"
+import Price from "./price"
+import Timer from "@/components/ui/timer"
 
 export type BidWithUser = Prisma.BidGetPayload<{
   include: {
@@ -25,15 +27,13 @@ export type BidWithUser = Prisma.BidGetPayload<{
 
 interface BidManagerProps {
   bids: BidWithUser[]
-  currency: string
-  id: number
-  amount: number
-  increment: number
+  auction: Post
 }
 
-const BidManager = ({id, bids, amount, increment, currency}: BidManagerProps) => {
+const BidManager = ({ auction, bids }: BidManagerProps) => {
+  const {id, currency, bidIncrement} = auction
+
   const authUser = useAppState(state => state.authUser)
-  console.log(authUser)
   const ctx = trpc.useUtils();
 
   const bidsQuery = trpc.auctions.findBidsByAuctionId.useQuery({id}, {
@@ -47,7 +47,7 @@ const BidManager = ({id, bids, amount, increment, currency}: BidManagerProps) =>
       await ctx.auctions.findBidsByAuctionId.cancel();
       const previous = ctx.auctions.findBidsByAuctionId.getData({id})
       ctx.auctions.findBidsByAuctionId.setData({id}, (prev) => [
-        {id: -1, amount, author: authUser, userId: authUser.id, createdAt: new Date(), postId: id,},
+        {id: -1, amount, author: {...authUser, name: authUser.name ? obfuscateName(authUser.name) : null}, userId: authUser.id, createdAt: new Date(), postId: id,},
         ...(prev ?? []).slice(0, 4),
       ])
 
@@ -61,14 +61,14 @@ const BidManager = ({id, bids, amount, increment, currency}: BidManagerProps) =>
     },
   })
 
-  const lastAmount = bidsQuery.data?.[0]?.amount ?? amount
+  const lastAmount = bidsQuery.data?.[0]?.amount ?? auction.priceMin
 
-  const validator = useMemo(() => z.object({id: z.number(), amount: z.coerce.number().min(lastAmount + increment)}), [lastAmount, increment])
+  const validator = useMemo(() => z.object({id: z.number(), amount: z.coerce.number().min(lastAmount + bidIncrement)}), [lastAmount, bidIncrement])
 
   const form = useForm<CreateBidValidation>({
     values: {
-      amount: lastAmount + increment,
-      id
+      amount: lastAmount + auction.bidIncrement,
+      id: auction.id
     },
     resolver: zodResolver(validator)
   })
@@ -82,25 +82,41 @@ const BidManager = ({id, bids, amount, increment, currency}: BidManagerProps) =>
 
   return (
     <div className="space-y-6">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          <div className="flex space-x-2">
-            <div className="flex-grow">
-              <Label htmlFor="amount" className="text-lg">Your Bid</Label>
-              <Input
-                id="amount"
-                type="number"
-                placeholder="Enter bid amount"
-                min={amount + increment}
-                step="1"
-                className="text-lg"
-                {...form.register('amount')}
-              />
-            </div>
-            <Button type="submit" size="lg" className="self-end">Place Bid</Button>
-          </div>
-        </form>
-      </Form>
+      <div className="flex justify-between items-center">
+        <div className="flex items-center space-x-2">
+          <DollarSign className="h-6 w-6 text-green-600" />
+          <Price amount={lastAmount} currency={currency} />
+        </div>
+        <div className="flex items-center space-x-2">
+          <Clock className="h-6 w-6 text-blue-600" />
+          <span className="text-xl font-semibold" suppressHydrationWarning={true}><Timer data={auction.endTime} /> left</span>
+        </div>
+      </div>
+      {
+        authUser ? (
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+              <div className="flex space-x-2">
+                <div className="flex-grow">
+                  <Label htmlFor="amount" className="text-lg">Your Bid</Label>
+                  <Input
+                    id="amount"
+                    type="number"
+                    placeholder="Enter bid amount"
+                    min={lastAmount + bidIncrement}
+                    step="1"
+                    className="text-lg"
+                    {...form.register('amount')}
+                  />
+                </div>
+                <Button type="submit" size="lg" className="self-end">Place Bid</Button>
+              </div>
+            </form>
+          </Form>
+        ) : (
+          <Button>Login to Bid</Button>
+        )
+      }
       <Separator />
       <div>
         <h3 className="text-xl font-semibold mb-2">Recent Bids</h3>

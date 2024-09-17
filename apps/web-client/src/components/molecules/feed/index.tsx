@@ -3,10 +3,8 @@
 import { trpc } from "@/trpc"
 import { FeedResultValidation } from "server/router/feed/validation"
 import AuctionCard from "../auction-card"
-import _ from 'lodash'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
-import { Category } from "@prisma/client"
 
 type FeedProps = {
   initialData: FeedResultValidation
@@ -26,7 +24,7 @@ const Feed = ({initialData}: FeedProps) => {
 
 
   return (
-    <div className="items-start grid md:grid-cols-[1fr_4fr] container mx-auto gap-8 pt-10">
+    <div className="items-start grid md:grid-cols-[2fr_6fr] container mx-auto gap-8 pt-10">
       <Card>
         <CardHeader>
           <CardTitle>Live auctions</CardTitle>
@@ -52,7 +50,7 @@ const Feed = ({initialData}: FeedProps) => {
           </div>
         </CardContent>
       </Card>
-      <div className="grid grid-cols-4 gap-5 container mx-auto">
+      <div className="grid grid-cols-3 gap-5 container mx-auto">
         {feedQuery.data?.pages.flatMap(item => item.data).map(item => (
           <AuctionCard item={item} key={item.id}/>
         ))}

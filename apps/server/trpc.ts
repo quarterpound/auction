@@ -40,7 +40,6 @@ export const publicProcedure = t.procedure.use(async (opts) => {
   const token = opts.ctx.authorization
   let user: User | null = null;
 
-  console.log({token})
 
   if(token) {
     const payload = await verify(token, env.JWT_SECRET)
@@ -67,11 +66,6 @@ export const publicProcedure = t.procedure.use(async (opts) => {
       c: opts.ctx.c,
     }
   })
-
-
-  return opts.next({ctx: {
-    c: opts.ctx.c
-  }})
 });
 export const protectedProcedure = t.procedure.use(async (opts) => {
   const token = opts.ctx.authorization

@@ -1,10 +1,7 @@
 import { Separator } from "@/components/ui/separator"
-import Timer from "@/components/ui/timer"
 import { trpcVanillaClient } from "@/trpc"
-import { Clock, DollarSign } from "lucide-react"
 import ReactMarkdown from 'react-markdown'
 import BidManager from "./bid-manager"
-import Price from "./price"
 
 interface SingleAuctionProps {
   params: {
@@ -15,8 +12,6 @@ interface SingleAuctionProps {
 const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
 
     const auction = await trpcVanillaClient.auctions.findBySlug.query({slug})
-    const amount = auction.Bids[0]?.amount ?? auction.priceMin
-
     const image = auction.AssetOnPost?.[0]?.asset.url ?? '/placeholder.svg'
 
     return (
@@ -31,17 +26,10 @@ const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
             />
           </div>
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-2">
-                <DollarSign className="h-6 w-6 text-green-600" />
-                <Price amount={amount} currency={auction.currency} />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Clock className="h-6 w-6 text-blue-600" />
-                <span className="text-xl font-semibold" suppressHydrationWarning={true}><Timer data={auction.endTime} /> left</span>
-              </div>
-            </div>
-            <BidManager currency={auction.currency} increment={auction.bidIncrement} id={auction.id} bids={auction.Bids} amount={amount} />
+            <BidManager 
+            auction={auction}
+            bids={auction.Bids}
+          />
           </div>
         </div>
         <Separator className="my-8" />
