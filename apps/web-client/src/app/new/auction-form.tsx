@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
+import DragAndDrop from "@/components/ui/drag-and-drop"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Select, SelectItem, SelectTrigger, SelectContent, SelectValue } from "@/components/ui/select"
@@ -33,10 +34,11 @@ const AuctionForm = () => {
       phone: '',
       password: '',
       name: '',
+      assets: [],
       endTime: initialDate,
       currency: 'azn'
     },
-    resolver: zodResolver(authUser ? createAuctionValidation: createAuctionAndRegisterValidation)
+    resolver: zodResolver(authUser ? createAuctionValidation : createAuctionAndRegisterValidation)
   })
 
   const onSubmit = (data: CreateAuctionAndRegisterValidation) => {
@@ -55,6 +57,8 @@ const AuctionForm = () => {
       return router.push(`/auctions/${post.slug}`)
     })
   }
+
+  console.log(form.formState.errors)
 
   return (
     <Form {...form}>
@@ -81,6 +85,21 @@ const AuctionForm = () => {
             {form.formState.errors.description?.message}
           </FormMessage>
         </FormItem>
+        <FormField
+          name="assets"
+          control={form.control}
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>Assets</FormLabel>
+              <FormControl>
+                <DragAndDrop files={field.value} onChange={field.onChange} />
+              </FormControl>
+              <FormMessage>
+                {form.formState.errors.assets?.message}
+              </FormMessage>
+            </FormItem>
+          )}
+        />
         <FormItem>
           <FormLabel>End Date & Time</FormLabel>
           <FormControl>

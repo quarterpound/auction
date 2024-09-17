@@ -32,7 +32,7 @@ export const bidsRoute = router({
         })
       }
 
-      return tx.bids.create({
+      return tx.bid.create({
         data: {
           amount: input.amount,
           userId: user.id,

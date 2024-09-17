@@ -6,6 +6,11 @@ export const feedValidation = z.object({
 })
 
 export const auctionFeedItem = z.object({
+  assets: z.array(z.object({
+    id: z.number(),
+    name: z.string(),
+    url: z.string(),
+  })),
   amount: z.number(),
   bid_increment: z.number(),
   createdAt: z.date(),

@@ -29,7 +29,8 @@ export const feedRouter = router({
         SELECT
             p.*,
             CAST(COALESCE(lb.amount, p.price_min) AS INTEGER) AS amount,
-            CAST(COALESCE(bc.bid_count, 0) AS INTEGER) AS bid_count
+            CAST(COALESCE(bc.bid_count, 0) AS INTEGER) AS bid_count,
+            COALESCE(a.assets, '[]') AS assets  -- Aggregated assets as JSON array
         FROM
             posts p
         LEFT JOIN (
@@ -52,6 +53,23 @@ export const feedRouter = router({
             GROUP BY
                 b.post_id
         ) bc ON p.id = bc.post_id
+        LEFT JOIN (
+            SELECT
+                aop.post_id,
+                JSON_AGG(
+                    JSON_BUILD_OBJECT(
+                        'id', a.id,
+                        'url', a.url,
+                        'created_at', a."createdAt"
+                    )
+                ) AS assets
+            FROM
+                assets_on_posts aop
+            JOIN
+                assets a ON aop.asset_id = a.id
+            GROUP BY
+                aop.post_id
+        ) a ON p.id = a.post_id
         WHERE
             p.end_time > NOW()
         ORDER BY

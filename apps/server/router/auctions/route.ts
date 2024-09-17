@@ -1,6 +1,5 @@
 import { sign } from "hono/jwt";
 import { prisma } from "../../database";
-import { sendAuctionSubmitEmail } from "../../mail";
 import { protectedProcedure, publicProcedure, router } from "../../trpc";
 import { createAuctionAndRegisterValidation, createAuctionValidation } from "./validation";
 import bcrypt from 'bcrypt'
@@ -10,6 +9,7 @@ import { env } from "bun";
 import { setCookie } from "hono/cookie";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { obfuscateName } from "utils";
 
 export const auctionRoute = router({
   createAndRegister: publicProcedure.input(createAuctionAndRegisterValidation).mutation(async ({input, ctx: {c}}) => {
@@ -36,7 +36,14 @@ export const auctionRoute = router({
           priceMin: input.reservePrice,
           authorId: created.id,
           currency: input.currency,
-          bidIncrement: input.bidIncrement
+          bidIncrement: input.bidIncrement,
+          AssetOnPost: {
+            createMany: {
+              data: input.assets.map(item => ({
+                assetId: item.id
+              }))
+            }
+          }
         }
       })
 
@@ -68,7 +75,14 @@ export const auctionRoute = router({
         priceMin: input.reservePrice,
         authorId: user.id,
         currency: input.currency,
-        bidIncrement: input.bidIncrement
+        bidIncrement: input.bidIncrement,
+        AssetOnPost: {
+          createMany: {
+            data: input.assets.map(item => ({
+              assetId: item.id
+            }))
+          }
+        }
       }
     })
 
@@ -80,6 +94,11 @@ export const auctionRoute = router({
         slug
       },
       include: {
+        AssetOnPost: {
+          include: {
+            asset: true
+          }
+        },
         Bids: {
           include: {
             author: true,
@@ -96,10 +115,16 @@ export const auctionRoute = router({
       throw new TRPCError({code: 'NOT_FOUND'})
     }
 
-    return post;
+    return {...post, bids: post.Bids.map(item => ({
+      ...item,
+      author: {
+        ...item.author,
+        name: `${obfuscateName(item.author.name ?? '')}`,
+      }
+    }))};
   }),
   findBidsByAuctionId: publicProcedure.input(z.object({ id: z.number() })).query(async ({input: {id}}) => {
-    return prisma.bids.findMany({
+    const data = await prisma.bid.findMany({
       where: {
         postId: id,
       },
@@ -111,5 +136,13 @@ export const auctionRoute = router({
       },
       take: 5,
     })
+
+    return data.map(item => ({
+      ...item,
+      author: {
+        ...item.author,
+        name: item.author.name ? obfuscateName(item.author.name ?? '') : null,
+      }
+    }))
   })
 })

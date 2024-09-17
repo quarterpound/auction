@@ -11,6 +11,9 @@ import Link from "next/link"
 type AuctionCardProps = {item: AuctionFeedItem}
 
 const AuctionCard = ({item}: AuctionCardProps) => {
+
+
+
   return (
     <Card className="flex flex-col">
       <CardHeader className="p-0">

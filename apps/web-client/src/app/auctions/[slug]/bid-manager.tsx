@@ -14,9 +14,10 @@ import { User } from "lucide-react"
 import { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { CreateBidValidation } from "server/router/bids/validation"
+import { formatNumber } from "utils"
 import { z } from "zod"
 
-export type BidWithUser = Prisma.BidsGetPayload<{
+export type BidWithUser = Prisma.BidGetPayload<{
   include: {
     author: true,
   },
@@ -24,12 +25,13 @@ export type BidWithUser = Prisma.BidsGetPayload<{
 
 interface BidManagerProps {
   bids: BidWithUser[]
+  currency: string
   id: number
   amount: number
   increment: number
 }
 
-const BidManager = ({id, bids, amount, increment}: BidManagerProps) => {
+const BidManager = ({id, bids, amount, increment, currency}: BidManagerProps) => {
   const authUser = useAppState(state => state.authUser)
   console.log(authUser)
   const ctx = trpc.useUtils();
@@ -71,8 +73,6 @@ const BidManager = ({id, bids, amount, increment}: BidManagerProps) => {
     resolver: zodResolver(validator)
   })
 
-  console.log(form.formState.errors)
-
   const handleSubmit = (data: CreateBidValidation) => {
     bidMutation.mutateAsync({
       amount: data.amount,
@@ -111,9 +111,9 @@ const BidManager = ({id, bids, amount, increment}: BidManagerProps) => {
                 <User className="h-4 w-4" />
                 <span>{bid.author.name}</span>
               </div>
-              <span className="font-semibold">${bid.amount}</span>
+              <span className="font-semibold">{formatNumber(bid.amount, currency)}</span>
               <span className="text-sm text-gray-500">
-                {dayjs(bid.createdAt).format('MMM d, yyyy HH:mm')}
+                {dayjs(bid.createdAt).format('MMM d, YYYY HH:mm')}
               </span>
             </li>
           ))}
