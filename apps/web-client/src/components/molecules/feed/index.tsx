@@ -5,12 +5,34 @@ import { FeedResultValidation } from "server/router/feed/validation"
 import AuctionCard from "../auction-card"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
+import { Prisma } from "@prisma/client"
+
+export type Category = Prisma.CategoryGetPayload<{
+  include: {
+    _count: {
+      select: {
+        post: true,
+      }
+    },
+    children: {
+      include: {
+        _count: {
+          select: {
+            post: true,
+          }
+        }
+      },
+      take: 10
+    },
+  }
+}>
 
 type FeedProps = {
   initialData: FeedResultValidation
+  categories: Category[]
 }
 
-const Feed = ({initialData}: FeedProps) => {
+const Feed = ({initialData, categories}: FeedProps) => {
 
   const feedQuery = trpc.feed.all.useInfiniteQuery({orderBy: null},     {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -20,7 +42,9 @@ const Feed = ({initialData}: FeedProps) => {
     }
   })
 
-  const filtersQuery = trpc.category.all.useQuery()
+  const filtersQuery = trpc.category.all.useQuery(undefined, {
+    initialData: categories
+  })
 
 
   return (

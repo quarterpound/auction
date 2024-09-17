@@ -9,6 +9,8 @@ interface SingleAuctionProps {
   }
 }
 
+export const dynamic = 'force-dynamic'
+
 const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
 
     const auction = await trpcVanillaClient.auctions.findBySlug.query({slug})
