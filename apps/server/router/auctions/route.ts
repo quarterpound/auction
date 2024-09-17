@@ -144,5 +144,21 @@ export const auctionRoute = router({
         name: item.author.name ? obfuscateName(item.author.name ?? '') : null,
       }
     }))
+  }),
+  findMetadataBySlug: publicProcedure.input(z.object({ slug: z.string() })).query(async ({input: {slug}}) => {
+    const post = await prisma.post.findUnique({
+      where: {
+        slug
+      },
+      select: {
+        name: true,
+        description: true,
+        descriptionHtml: true,
+        endTime: true,
+        priceMin: true,
+        bidIncrement: true,
+        currency: true,
+      }
+    })
   })
 })
