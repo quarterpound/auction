@@ -3,8 +3,12 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
+    "prebuild": "bunx prisma migrate deploy",
     "dev:server": "bun --watch run apps/server/index.ts",
-    "dev:web-client": "cd apps/web-client && bun dev"
+    "dev:web-client": "cd apps/web-client && bun dev",
+    "build": "bun run build:web-client && bun run build:server",
+    "build:web-client": "cd apps/web-client && bun run build",
+    "build:server": "bun build apps/server/index.ts --compile --outfile ./out/server/server"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

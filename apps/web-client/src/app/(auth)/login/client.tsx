@@ -25,7 +25,8 @@ const LoginForm = () => {
     const user = await login(data)
 
     setInitialState({
-      authUser: user
+      authUser: user,
+      isAuthLoading: false
     })
 
     router.refresh()

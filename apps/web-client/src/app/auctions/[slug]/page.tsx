@@ -11,6 +11,14 @@ interface SingleAuctionProps {
 
 export const dynamic = 'force-dynamic'
 
+export const generateMetadata = async ({params: {slug}}: SingleAuctionProps) => {
+  const auction = await trpcVanillaClient.auctions.findMetadataBySlug.query({slug})
+  return {
+    title: auction.name,
+    description: auction.description,
+  }
+}
+
 const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
 
     const auction = await trpcVanillaClient.auctions.findBySlug.query({slug})
@@ -29,9 +37,9 @@ const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
           </div>
           <div className="space-y-6">
             <BidManager 
-            auction={auction}
-            bids={auction.Bids}
-          />
+              auction={auction}
+              bids={auction.Bids}
+            />
           </div>
         </div>
         <Separator className="my-8" />

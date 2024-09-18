@@ -5,7 +5,7 @@ import { createAuctionAndRegisterValidation, createAuctionValidation } from "./v
 import bcrypt from 'bcrypt'
 import {slugify} from 'transliteration'
 import dayjs from "dayjs";
-import { env } from "bun";
+import { env } from "../../env";
 import { setCookie } from "hono/cookie";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
@@ -160,5 +160,11 @@ export const auctionRoute = router({
         currency: true,
       }
     })
+
+    if(!post) {
+      throw new TRPCError({code: 'NOT_FOUND'})
+    }
+
+    return post
   })
 })

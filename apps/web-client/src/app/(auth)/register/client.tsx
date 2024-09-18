@@ -32,7 +32,8 @@ const RegisterForm = () => {
     const user = await register(data)
 
     setInitialState({
-      authUser: user
+      authUser: user,
+      isAuthLoading: false
     })
 
     router.refresh()

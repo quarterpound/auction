@@ -1,9 +1,8 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
-import { Form } from "@/components/ui/form"
+import { Form, FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { useAppState } from "@/store"
 import { trpc } from "@/trpc"
@@ -18,6 +17,8 @@ import { formatNumber, obfuscateName } from "utils"
 import { z } from "zod"
 import Price from "./price"
 import Timer from "@/components/ui/timer"
+import _ from "lodash"
+import { toast } from "sonner"
 
 export type BidWithUser = Prisma.BidGetPayload<{
   include: {
@@ -47,13 +48,15 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
       await ctx.auctions.findBidsByAuctionId.cancel();
       const previous = ctx.auctions.findBidsByAuctionId.getData({id})
       ctx.auctions.findBidsByAuctionId.setData({id}, (prev) => [
-        {id: -1, amount, author: {...authUser, name: authUser.name ? obfuscateName(authUser.name) : null}, userId: authUser.id, createdAt: new Date(), postId: id,},
-        ...(prev ?? []).slice(0, 4),
-      ])
+        {id: dayjs().unix(), amount, author: {...authUser, name: authUser.name ? obfuscateName(authUser.name) : null}, userId: authUser.id, createdAt: new Date(), postId: id,},
+        ...(prev ?? []),
+      ].slice(0, 5))
 
       return { previous };
     },
     onError: (err, n, t) => {
+      toast.error(`Failed to place bid ${err.message}`)
+
       ctx.auctions.findBidsByAuctionId.setData({id}, t?.previous)
     },
     onSettled: () => {
@@ -96,20 +99,23 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
         authUser ? (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-              <div className="flex space-x-2">
-                <div className="flex-grow">
-                  <Label htmlFor="amount" className="text-lg">Your Bid</Label>
-                  <Input
-                    id="amount"
-                    type="number"
-                    placeholder="Enter bid amount"
-                    min={lastAmount + bidIncrement}
-                    step="1"
-                    className="text-lg"
-                    {...form.register('amount')}
-                  />
-                </div>
-                <Button type="submit" size="lg" className="self-end">Place Bid</Button>
+              <div className="flex space-x-2 items-s">
+                <FormItem className="w-full">
+                  <FormLabel htmlFor="amount">Bid Amount</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="amount"
+                      type="number"
+                      placeholder="Enter bid amount"
+                      step="1"
+                      {...form.register('amount')}
+                    />
+                  </FormControl>
+                  <FormMessage>
+                    {form.formState.errors.amount?.message}
+                  </FormMessage>
+                </FormItem>
+                <Button disabled={bidMutation.isPending} type="submit" size="lg" className="self-end">Place Bid</Button>
               </div>
             </form>
           </Form>
@@ -121,9 +127,9 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
       <div>
         <h3 className="text-xl font-semibold mb-2">Recent Bids</h3>
         <ul className="space-y-2">
-          {bidsQuery.data.map((bid) => (
+          {_.reverse(_.sortBy(bidsQuery.data, 'createdAt')).map((bid) => (
             <li key={bid.id} className="flex justify-between items-center">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 min-w-[200px]">
                 <User className="h-4 w-4" />
                 <span>{bid.author.name}</span>
               </div>

@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  'distDir': '../../out/web-client'
+};
 
 export default nextConfig;
