@@ -1,22 +1,10 @@
 import { PropsWithChildren } from "react"
 import StateProvider from "./state-provider"
-import { trpcVanillaClient } from "@/trpc"
-import { cookies } from "next/headers"
-import { InitialState } from "@/store/types"
+import { auth } from "@/lib/auth"
 
 const AuthProvider = async ({children}: PropsWithChildren) => {
 
-  let user: InitialState['authUser'] | null = null;
-
-  try {
-    user = await trpcVanillaClient.auth.me.query(undefined, {
-      context: {
-        authorization: cookies().get('authorization')?.value
-      },
-
-    })
-  } catch (error) {
-  }
+  const user = await auth()
 
   return (
     <StateProvider initialState={{

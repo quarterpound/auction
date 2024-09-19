@@ -31,7 +31,9 @@ export default function RootLayout({
       >
         <Provider>
           <Header />
-          {children}
+          <main className="py-12 px-8">
+            {children}
+          </main>
           <Footer />
           <Toaster />
         </Provider>

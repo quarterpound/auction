@@ -1,0 +1,13 @@
+import { PropsWithChildren } from "react"
+
+export const metadata = {
+  title: 'My Bids'
+}
+
+const Layout = ({children}: PropsWithChildren) => {
+  return (
+    children
+  )
+}
+
+export default Layout

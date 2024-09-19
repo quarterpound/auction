@@ -50,9 +50,9 @@ const Timer = ({data}: TimerProps) => {
   }, [calculateTimeLeft, data]);
 
   return (
-    <>
+    <span suppressHydrationWarning={true}>
       {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
-    </>
+    </span>
   );
 }
 

@@ -2,7 +2,7 @@ import AuctionForm from "./auction-form"
 
 const New = () => {
   return (
-    <main className="space-y-8">
+    <main>
       <div className="bg-zinc-100">
         <h1 className="text-foreground container mx-auto text-lg font-bold py-4">ELAN YERLƏŞDİRMƏK</h1>
       </div>

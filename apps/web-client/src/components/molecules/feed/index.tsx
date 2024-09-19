@@ -51,7 +51,7 @@ const Feed = ({initialData, categories}: FeedProps) => {
 
 
   return (
-    <div className="items-start grid md:grid-cols-[2fr_6fr] container mx-auto gap-8 pt-10">
+    <div className="items-start grid md:grid-cols-[2fr_6fr] container mx-auto gap-8">
       <Card>
         <CardHeader>
           <CardTitle>Live auctions</CardTitle>
