@@ -22,7 +22,12 @@ import { toast } from "sonner"
 
 export type BidWithUser = Prisma.BidGetPayload<{
   include: {
-    author: true,
+    author: {
+      select: {
+        id: true,
+        name: true,
+      }
+    },
   },
 }>
 
@@ -32,6 +37,8 @@ interface BidManagerProps {
 }
 
 const BidManager = ({ auction, bids }: BidManagerProps) => {
+
+
   const {id, currency, bidIncrement} = auction
   const [watching, setWatching] = useState(0)
 

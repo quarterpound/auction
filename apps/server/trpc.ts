@@ -67,6 +67,7 @@ export const publicProcedure = t.procedure.use(async (opts) => {
     }
   })
 });
+
 export const protectedProcedure = t.procedure.use(async (opts) => {
   const token = opts.ctx.authorization
 

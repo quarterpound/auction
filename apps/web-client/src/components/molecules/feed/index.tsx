@@ -6,6 +6,7 @@ import AuctionCard from "../auction-card"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { Prisma } from "@prisma/client"
+import { keepPreviousData } from "@tanstack/react-query"
 
 export type Category = Prisma.CategoryGetPayload<{
   include: {
@@ -43,7 +44,9 @@ const Feed = ({initialData, categories}: FeedProps) => {
   })
 
   const filtersQuery = trpc.category.all.useQuery(undefined, {
-    initialData: categories
+    initialData: categories,
+    placeholderData: keepPreviousData
+
   })
 
 

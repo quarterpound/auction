@@ -78,7 +78,6 @@ export const feedRouter = router({
         OFFSET ${input.cursor * 25};
       `)
 
-        console.log(JSON.stringify(data))
       return {
         nextCursor: input.cursor + 1,
         data: data,

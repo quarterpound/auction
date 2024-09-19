@@ -105,7 +105,12 @@ export const auctionRoute = router({
         },
         Bids: {
           include: {
-            author: true,
+            author: {
+              select: {
+                id: true,
+                name: true,
+              }
+            },
           },
           orderBy: {
             createdAt: 'desc'
@@ -123,7 +128,7 @@ export const auctionRoute = router({
       ...item,
       author: {
         ...item.author,
-        name: `${obfuscateName(item.author.name ?? '')}`,
+        name: item.author.name ? `${obfuscateName(item.author.name ?? '')}`: null,
       }
     }))};
   }),

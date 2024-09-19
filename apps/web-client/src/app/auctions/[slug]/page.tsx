@@ -25,7 +25,7 @@ const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
     const image = auction.AssetOnPost?.[0]?.asset.url ?? '/placeholder.svg'
 
     return (
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="container mx-auto p-6">
         <h1 className="text-4xl font-bold mb-8">{auction.name}</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
@@ -36,9 +36,9 @@ const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
             />
           </div>
           <div className="space-y-6">
-            <BidManager 
+            <BidManager
               auction={auction}
-              bids={auction.Bids}
+              bids={auction.bids}
             />
           </div>
         </div>
