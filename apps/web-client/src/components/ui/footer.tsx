@@ -1,6 +1,7 @@
 import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from './input'
+import NewsletterSignup from '../molecules/newsletter-signup'
 
 export default function Footer() {
   return (
@@ -35,15 +36,12 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Newsletter</h3>
             <p className="text-sm text-gray-600">Stay updated with our latest auctions and news.</p>
-            <form className="flex md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
-              <Input className='bg-white' placeholder='Email' />
-              <Button type="submit" size="sm">Subscribe</Button>
-            </form>
+            <NewsletterSignup />
           </div>
         </div>
         <div className="mt-12 pt-8 border-t border-gray-200">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-gray-600">&copy; 2023 Auction Site. All rights reserved.</p>
+            <p className="text-sm text-gray-600">&copy; {`${new Date().getFullYear()} Auction Site. All rights reserved.`}</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-gray-400 hover:text-gray-500">
                 <span className="sr-only">Facebook</span>

@@ -141,7 +141,12 @@ export const auctionRoute = router({
         createdAt: 'desc'
       },
       include: {
-        author: true,
+        author: {
+          select: {
+            name: true,
+            id: true
+          }
+        },
       },
       take: 5,
     })

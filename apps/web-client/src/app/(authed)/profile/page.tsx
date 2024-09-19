@@ -7,9 +7,20 @@ import { ProfileUpdateValidation } from 'server/router/profile/validation'
 import { useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { trpc } from "@/trpc"
+import { toast } from "sonner"
 
 const Profile = () => {
-  const { authUser } = useAppState()
+  const { authUser, setInitialState } = useAppState()
+  const updateProfileMutation = trpc.profile.update.useMutation({
+    onSuccess: (data) => {
+      setInitialState({
+        authUser: data,
+        isAuthLoading: false,
+      })
+      toast.success('Profile saved successfully')
+    }
+  })
 
   const form = useForm<ProfileUpdateValidation>({
     values: authUser ? {
@@ -25,9 +36,13 @@ const Profile = () => {
     }
   })
 
+  const handleSubmit = (data: ProfileUpdateValidation) => {
+    updateProfileMutation.mutate(data)
+  }
+
   return (
     <Form {...form}>
-      <form>
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
         <Card>
           <CardHeader>
             <CardTitle>Edit Profile</CardTitle>
@@ -77,7 +92,7 @@ const Profile = () => {
             </FormItem>
           </CardContent>
           <CardFooter>
-            <Button className="ml-auto min-w-[120px]" disabled={!form.formState.isDirty}>Save</Button>
+            <Button className="ml-auto min-w-[120px]" disabled={!form.formState.isDirty || updateProfileMutation.isPending}>Save</Button>
           </CardFooter>
         </Card>
       </form>

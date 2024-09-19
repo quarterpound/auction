@@ -16,9 +16,9 @@ import { CreateBidValidation } from "server/router/bids/validation"
 import { formatNumber, obfuscateName } from "utils"
 import { z } from "zod"
 import Price from "./price"
-import Timer from "@/components/ui/timer"
 import _ from "lodash"
 import { toast } from "sonner"
+import { useTimer } from "@/hooks/useTimer.hook"
 
 export type BidWithUser = Prisma.BidGetPayload<{
   include: {
@@ -37,7 +37,7 @@ interface BidManagerProps {
 }
 
 const BidManager = ({ auction, bids }: BidManagerProps) => {
-
+  const time = useTimer(auction.endTime)
 
   const {id, currency, bidIncrement} = auction
   const [watching, setWatching] = useState(0)
@@ -117,7 +117,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
         </div>
         <div className="flex items-center space-x-2">
           <Clock className="h-6 w-6 text-blue-600" />
-          <span className="text-xl font-semibold" suppressHydrationWarning={true}><Timer data={auction.endTime} /> left</span>
+          <span className="text-xl font-semibold" suppressHydrationWarning={true}>{`${time} left`}</span>
         </div>
       </div>
       {

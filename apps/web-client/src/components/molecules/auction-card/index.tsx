@@ -3,16 +3,18 @@ import {AuctionFeedItem} from 'server/router/feed/validation'
 import { Clock, DollarSign } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import Timer from "@/components/ui/timer"
 import { formatNumber } from 'utils'
 import Link from "next/link"
 import { trpc } from "@/trpc"
 import { useState } from "react"
+import { useTimer } from "@/hooks/useTimer.hook"
 
 
 type AuctionCardProps = {item: AuctionFeedItem}
 
 const AuctionCard = ({item}: AuctionCardProps) => {
+  const time = useTimer(item.end_time)
+
   const [{amount, count}, setState] = useState({
     amount: item.amount,
     count: item.bid_count
@@ -49,7 +51,7 @@ const AuctionCard = ({item}: AuctionCardProps) => {
         </div>
         <div className="flex items-center text-sm text-gray-600">
           <Clock className="h-4 w-4 mr-1" />
-          <span><Timer data={item.end_time} /> left</span>
+          <span>{`${time} left`}</span>
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">

@@ -4,6 +4,7 @@ import { authRoute } from './auth/route';
 import { bidsRoute } from './bids/route';
 import { categoryRouter } from './categories/router';
 import { feedRouter } from './feed/router';
+import { generalRouter } from './general/route';
 import { profileRouter } from './profile/router';
 
 export const appRouter = router({
@@ -12,7 +13,8 @@ export const appRouter = router({
   category: categoryRouter,
   feed: feedRouter,
   bids: bidsRoute,
-  profile: profileRouter
+  profile: profileRouter,
+  general: generalRouter,
 });
 
 export type AppRouter = typeof appRouter;

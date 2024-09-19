@@ -28,6 +28,63 @@ export const profileRouter = router({
     return prisma.post.findMany({
       take: 10,
       skip: 10 * input.cursor,
+      where: {
+        authorId: user.id
+      },
+      include: {
+        _count: {
+          select: {
+            Bids: true,
+          },
+        },
+        AssetOnPost: {
+          include: {
+            asset: true,
+          }
+        },
+        Bids: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 1,
+          select: {
+            id: true,
+            amount: true,
+          }
+        }
+      }
     })
+  }),
+  bids: protectedProcedure.input(z.object({cursor: z.number().default(0)})).query(async ({input, ctx: {user}}) => {
+    return prisma.post.findMany({
+      where: {
+        Bids: {
+          some: {
+            userId: user.id
+          }
+        }
+      },
+      include: {
+        Bids: {
+          take: 1,
+          orderBy: {
+            createdAt: 'desc'
+          },
+          select: {
+            id: true,
+            userId: true,
+            amount: true,
+          }
+        },
+        AssetOnPost: {
+          include: {
+            asset: true,
+          }
+        },
+      },
+      take: 10,
+      skip: input.cursor * 10
+    })
+
   })
 })

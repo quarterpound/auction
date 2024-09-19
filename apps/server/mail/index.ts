@@ -7,6 +7,7 @@ export const getClient = () => {
 }
 
 type SendTransactionalEmailReturnType = Awaited<ReturnType<LoopsClient['sendTransactionalEmail']>>
+type AddEmailToAudienceReturnType = Awaited<ReturnType<LoopsClient['createContact']>>
 
 export const sendWelcomeEmail = async (email: string, link: string, addToAudience = false): Promise<SendTransactionalEmailReturnType> => {
   const client = getClient();
@@ -35,4 +36,8 @@ export const sendAuctionSubmitEmail = async (email: string, name: string, auctio
       endDate: dayjs(endDate).format('YYYY-MM-DD HH:mm'),
     }
   })
+}
+
+export const addEmailToAudience = (email: string): Promise<AddEmailToAudienceReturnType> => {
+  return getClient().createContact(email)
 }

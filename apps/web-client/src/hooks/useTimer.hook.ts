@@ -1,19 +1,13 @@
-'use client'
-
 import dayjs from "dayjs";
-import duration from 'dayjs/plugin/duration';
 import { useCallback, useEffect, useState } from "react";
+import duration from 'dayjs/plugin/duration';
+dayjs.extend(duration)
 
-dayjs.extend(duration);
 
-type TimerProps = {
-  data: Date
-}
-
-const Timer = ({data}: TimerProps) => {
+export const useTimer = (date: Date) => {
   const calculateTimeLeft = useCallback(() => {
     const now = dayjs();
-    const endDate = dayjs(data);
+    const endDate = dayjs(date);
     const diff = endDate.diff(now);
 
 
@@ -37,7 +31,7 @@ const Timer = ({data}: TimerProps) => {
       diff,
     }
 
-  }, [data]);
+  }, [date]);
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
@@ -47,13 +41,7 @@ const Timer = ({data}: TimerProps) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [calculateTimeLeft, data]);
+  }, [calculateTimeLeft, date]);
 
-  return (
-    <span suppressHydrationWarning={true}>
-      {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
-    </span>
-  );
+  return `${timeLeft.days}d ${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s`;
 }
-
-export default Timer
