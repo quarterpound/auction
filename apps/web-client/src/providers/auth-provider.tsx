@@ -1,18 +1,27 @@
-'use client'
-
 import { PropsWithChildren } from "react"
 import StateProvider from "./state-provider"
-import { trpc } from "@/trpc"
+import { trpcVanillaClient } from "@/trpc"
+import { cookies } from "next/headers"
+import { InitialState } from "@/store/types"
 
-const AuthProvider = (props: PropsWithChildren) => {
-  const { children } = props
+const AuthProvider = async ({children}: PropsWithChildren) => {
 
-  const {data: user, isFetched, isError } = trpc.auth.me.useQuery(undefined, {retry: false})
+  let user: InitialState['authUser'] | null = null;
+
+  try {
+    user = await trpcVanillaClient.auth.me.query(undefined, {
+      context: {
+        authorization: cookies().get('authorization')?.value
+      },
+
+    })
+  } catch (error) {
+  }
 
   return (
     <StateProvider initialState={{
-      authUser: isFetched && !isError ? user ?? null : null,
-      isAuthLoading: !isFetched,
+      authUser: user,
+      isAuthLoading: false,
     }}>
       {children}
     </StateProvider>

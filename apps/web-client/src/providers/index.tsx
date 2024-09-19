@@ -1,7 +1,7 @@
 import AuthProvider from "./auth-provider"
 import QueryProvider from "./query-provider"
 
-const Provider = ({children}: React.PropsWithChildren) => {
+const Provider = async ({children}: React.PropsWithChildren) => {
   return (
     <QueryProvider>
       <AuthProvider>

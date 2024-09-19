@@ -10,6 +10,8 @@ import { setCookie } from "hono/cookie";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { obfuscateName } from "utils";
+import { localEventEmitter, WATCHING } from "../../events";
+import { observable } from "@trpc/server/observable";
 
 export const auctionRoute = router({
   createAndRegister: publicProcedure.input(createAuctionAndRegisterValidation).mutation(async ({input, ctx: {c}}) => {
@@ -49,7 +51,7 @@ export const auctionRoute = router({
 
       const jwt = await sign({
         sub: created.id,
-        exp: dayjs().add(7, 'days').toDate().getTime(),
+        exp: Math.floor(dayjs().add(7, 'days').toDate().getTime() / 1000),
       }, env.JWT_SECRET)
 
       return {
@@ -169,7 +171,17 @@ export const auctionRoute = router({
 
     return post
   }),
-  // listen: publicProcedure.input(z.object({id: z.number()})).subscription(async ({input: {id}, ctx: {user}}) => observable<Bid>((emit) => {
-  //   localEventEmitter.on('bid-added', (bid) => bid)
-  // }))
+  listenForViewCount: publicProcedure.input(z.object({id: z.number()})).subscription(async ({input: {id}, ctx: {user}}) => observable<number>((emit) => {
+    const onNewView = (count: number) => {
+      emit.next(count);
+    }
+
+    emit.next(WATCHING[id] ?? 0)
+
+    localEventEmitter.on('auction-watching', onNewView)
+
+    return () => {
+      localEventEmitter.off('auction-watching', onNewView)
+    }
+  }))
 })

@@ -18,7 +18,7 @@ const AuctionCard = ({item}: AuctionCardProps) => {
     count: item.bid_count
   })
 
-  trpc.bids.listenToBidAdded.useSubscription({auctionIds: [item.id], ignoreMe: false}, {
+  trpc.bids.listenToBidAdded.useSubscription({auctionIds: item.id, ignoreMe: false}, {
     onData: (data) => {
       setState((prev) => ({
         amount:data.amount,

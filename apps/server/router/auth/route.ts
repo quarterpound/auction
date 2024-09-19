@@ -45,7 +45,7 @@ export const authRoute = router({
 
     const jwt = await sign({
       sub: user.id,
-      exp: dayjs().add(7, 'days').toDate().getTime(),
+      exp: Math.floor(dayjs().add(7, 'days').toDate().getTime() / 1000),
     }, env.JWT_SECRET)
 
     if(c) {
@@ -112,7 +112,7 @@ export const authRoute = router({
 
       const jwt = await sign({
         sub: newUser.id,
-        exp: dayjs().add(7, 'days').toDate().getTime(),
+        exp: Math.floor(dayjs().add(7, 'days').toDate().getTime() / 1000),
       }, env.JWT_SECRET)
 
       return {

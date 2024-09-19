@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Post, Prisma } from "@prisma/client"
 import dayjs from "dayjs"
 import { Clock, DollarSign, User } from "lucide-react"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { CreateBidValidation } from "server/router/bids/validation"
 import { formatNumber, obfuscateName } from "utils"
@@ -33,6 +33,7 @@ interface BidManagerProps {
 
 const BidManager = ({ auction, bids }: BidManagerProps) => {
   const {id, currency, bidIncrement} = auction
+  const [watching, setWatching] = useState(0)
 
   const authUser = useAppState(state => state.authUser)
   const ctx = trpc.useUtils();
@@ -41,7 +42,13 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
     initialData: bids,
   })
 
-  trpc.bids.listenToBidAdded.useSubscription({auctionIds: [id]}, {
+  trpc.auctions.listenForViewCount.useSubscription({id}, {
+    onData: (data) => {
+      setWatching(data)
+    }
+  })
+
+  trpc.bids.listenToBidAdded.useSubscription({auctionIds: id}, {
     onData: (data) => {
       console.log('bid-added', data)
 
@@ -136,7 +143,12 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
       }
       <Separator />
       <div>
-        <h3 className="text-xl font-semibold mb-2">Recent Bids</h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-xl font-semibold mb-2">Recent Bids</h3>
+          <span className="text-sm text-gray-500">
+            {`Online ${watching}`}
+          </span>
+        </div>
         <ul className="space-y-2">
           {_.reverse(_.sortBy(bidsQuery.data, 'createdAt')).map((bid) => (
             <li key={bid.id} className="flex justify-between items-center">
