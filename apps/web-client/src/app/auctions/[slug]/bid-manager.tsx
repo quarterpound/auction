@@ -41,6 +41,17 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
     initialData: bids,
   })
 
+  trpc.bids.listenToBidAdded.useSubscription({auctionIds: [id]}, {
+    onData: (data) => {
+      console.log('bid-added', data)
+
+      ctx.auctions.findBidsByAuctionId.setData({id}, (prev) => [
+        data,
+        ...(prev ?? []),
+      ].slice(0, 5))
+    }
+  })
+
   const bidMutation = trpc.bids.create.useMutation({
     onMutate: async ({amount, id}) => {
       if (!authUser) return;

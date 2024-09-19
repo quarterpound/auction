@@ -10,7 +10,7 @@ import { ZodError } from 'zod';
 
 type ParsedContext = {
   authorization: string | null
-  c: Context
+  c?: Context
 }
 
 const t = initTRPC.context<ParsedContext>().create({

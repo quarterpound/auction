@@ -74,7 +74,7 @@ const Feed = ({initialData, categories}: FeedProps) => {
           </div>
         </CardContent>
       </Card>
-      <div className="grid grid-cols-3 gap-5 container mx-auto">
+      <div className="grid md:grid-cols-3 gap-5 container mx-auto">
         {feedQuery.data?.pages.flatMap(item => item.data).map(item => (
           <AuctionCard item={item} key={item.id}/>
         ))}

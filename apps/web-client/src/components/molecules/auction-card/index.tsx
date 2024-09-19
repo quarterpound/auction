@@ -6,11 +6,26 @@ import { Button } from "@/components/ui/button"
 import Timer from "@/components/ui/timer"
 import { formatNumber } from 'utils'
 import Link from "next/link"
+import { trpc } from "@/trpc"
+import { useState } from "react"
 
 
 type AuctionCardProps = {item: AuctionFeedItem}
 
 const AuctionCard = ({item}: AuctionCardProps) => {
+  const [{amount, count}, setState] = useState({
+    amount: item.amount,
+    count: item.bid_count
+  })
+
+  trpc.bids.listenToBidAdded.useSubscription({auctionIds: [item.id], ignoreMe: false}, {
+    onData: (data) => {
+      setState((prev) => ({
+        amount:data.amount,
+        count: prev.count + 1
+      }))
+    }
+  })
 
   const imageUrl = item.assets[0].url ?? '/placeholder.svg'
 
@@ -28,9 +43,9 @@ const AuctionCard = ({item}: AuctionCardProps) => {
         <div className="flex justify-between items-center mb-2">
           <div className="flex items-center">
             <DollarSign className="h-4 w-4 mr-1 text-green-600" />
-            <span className="font-semibold">{formatNumber(item.amount, item.currency)}</span>
+            <span className="font-semibold">{formatNumber(amount, item.currency)}</span>
           </div>
-          <Badge variant="secondary">{`${item.bid_count} bids`}</Badge>
+          <Badge variant="secondary">{`${count} bids`}</Badge>
         </div>
         <div className="flex items-center text-sm text-gray-600">
           <Clock className="h-4 w-4 mr-1" />

@@ -10,10 +10,11 @@ import crypto from 'crypto'
 import { sendWelcomeEmail } from "../../mail";
 import _ from 'lodash';
 import { User } from "@prisma/client";
+import { setCookie } from "hono/cookie";
 
 export const authRoute = router({
-  login: publicProcedure.input(loginValidation).mutation(async (data) => {
-    const { username, password } = data.input
+  login: publicProcedure.input(loginValidation).mutation(async ({input, ctx: {c}}) => {
+    const { username, password } = input
 
     const user = await prisma.user.findFirst({
       where: {
@@ -47,13 +48,17 @@ export const authRoute = router({
       exp: dayjs().add(7, 'days').toDate().getTime(),
     }, env.JWT_SECRET)
 
+    if(c) {
+      setCookie(c, 'authorization', jwt)
+    }
+
     return {
       token: jwt,
       user: _.omit(user, ['passwords']),
     };
 
   }),
-  register: publicProcedure.input(registerValidation).mutation(async ({ input }) => {
+  register: publicProcedure.input(registerValidation).mutation(async ({ input, ctx: {c} }) => {
     const { name, email, password, phone, addToAudiences } = input
 
     const { jwt, user } = await prisma.$transaction(async (tx) => {
@@ -115,6 +120,10 @@ export const authRoute = router({
         user: _.omit(newUser, ['passwords']) as User,
       };
     })
+
+    if(c) {
+      setCookie(c, 'authorization', jwt)
+    }
 
     return {
       token: jwt,

@@ -59,7 +59,9 @@ export const auctionRoute = router({
       }
     })
 
-    setCookie(c, 'authorization', jwt)
+    if(c) {
+      setCookie(c, 'authorization', jwt)
+    }
     return {
       post, user, jwt,
     }
@@ -166,5 +168,8 @@ export const auctionRoute = router({
     }
 
     return post
-  })
+  }),
+  // listen: publicProcedure.input(z.object({id: z.number()})).subscription(async ({input: {id}, ctx: {user}}) => observable<Bid>((emit) => {
+  //   localEventEmitter.on('bid-added', (bid) => bid)
+  // }))
 })

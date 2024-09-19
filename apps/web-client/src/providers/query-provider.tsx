@@ -2,15 +2,13 @@
 
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { httpLink, trpc } from "@/trpc";
+import { links, trpc } from "@/trpc";
 
 const QueryProvider = ({children}: React.PropsWithChildren) => {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     trpc.createClient({
-      links: [
-        httpLink,
-      ],
+      links,
     }),
   );
 
