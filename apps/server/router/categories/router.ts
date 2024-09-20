@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { prisma } from "../../database";
 import { publicProcedure, router } from "../../trpc";
 
@@ -21,6 +22,27 @@ export const categoryRouter = router({
           },
           take: 10
         },
+      }
+    })
+  }),
+  getCategoryMetadata: publicProcedure.input(z.object({slug: z.string()})).query(async ({input}) => {
+    return prisma.category.findUnique({
+      where: {
+        slug: input.slug
+      },
+      select: {
+        slug: true,
+        name: true,
+      }
+    })
+  }),
+  getSubCategories: publicProcedure.input(z.object({slug: z.string()})).query(async({input}) => {
+    return prisma.category.findUnique({
+      where: {
+        slug: input.slug
+      },
+      include: {
+        children: true
       }
     })
   })

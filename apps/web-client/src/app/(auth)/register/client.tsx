@@ -44,7 +44,9 @@ const RegisterForm = () => {
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <Card className="min-w-[400px]">
           <CardHeader>
-            <CardTitle>Register</CardTitle>
+            <CardTitle>
+              <h1>Register</h1>
+            </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-2">
             <FormItem>

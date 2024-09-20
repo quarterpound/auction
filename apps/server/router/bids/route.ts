@@ -58,11 +58,11 @@ export const bidsRoute = router({
       })
     })
 
-    localEventEmitter.emit('bid-added', {...bid, author: {...user, name: user.name ? obfuscateName(user.name) : null}})
+    localEventEmitter.emit('bid-added', {...bid, author: {id: user.id, name: user.name ? obfuscateName(user.name) : null}})
   }),
-  listenToBidAdded: publicProcedure.input(z.object({auctionIds: z.number(), ignoreMe: z.boolean().default(false)})).subscription(async ({ctx: {user}, input: {auctionIds, ignoreMe}}) => observable<Prisma.BidGetPayload<{include: {author: true}}>>((emit) => {
+  listenToBidAdded: publicProcedure.input(z.object({auctionIds: z.number(), ignoreMe: z.boolean().default(false)})).subscription(async ({ctx: {user}, input: {auctionIds, ignoreMe}}) => observable<Prisma.BidGetPayload<{include: {author: {select: {id: true, name: true,}}}}>>((emit) => {
 
-    const onBidAdded = (bid: Prisma.BidGetPayload<{include: {author: true}}>) => {
+    const onBidAdded = (bid: Prisma.BidGetPayload<{ include: { author: { select: { id: true, name: true } } } }>) => {
       const shouldInformMe = (user?.id !== bid.userId || !ignoreMe)
       if(auctionIds === bid.postId && shouldInformMe) {
         emit.next(bid)

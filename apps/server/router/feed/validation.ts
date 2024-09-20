@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const feedValidation = z.object({
   cursor: z.number().min(0).default(0),
+  categoryId: z.number().nullish(),
   orderBy: z.enum(['lowest-price', 'highest-price', 'ending-soonest', 'ending-earliest']).nullish()
 })
 

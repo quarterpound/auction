@@ -27,7 +27,7 @@ export class TypedEventEmitter<TEvents extends Record<string, any>> {
 }
 
 type LocalEventTypes = {
-  'bid-added': [bid: Prisma.BidGetPayload<{include: {author: true}}>],
+  'bid-added': [bid: Prisma.BidGetPayload<{include: {author: {select: {name: true, id: true,}}}}>],
   'auction-watching': [count: number]
 }
 

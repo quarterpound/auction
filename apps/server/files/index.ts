@@ -11,7 +11,7 @@ export const uploadFile = (file: Buffer) => {
   return new Promise<UploadApiResponse>((resolve, reject) => {
     cloudinary.uploader.upload_stream({
       folder: 'auction-assets',
-      eager: [{ fetch_format: 'webp' }],
+      eager: [{ fetch_format: 'webp', crop: 'auto', aspect_ratio: 1, gravity: 'center' }],
     }, (err, result) => {
       if(err || !result) {
         return reject(err)

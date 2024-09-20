@@ -103,7 +103,7 @@ const AuctionForm = () => {
         <FormItem>
           <FormLabel>End Date & Time</FormLabel>
           <FormControl>
-            <Input {...form.register('endTime')} type="datetime-local" />
+            <Input min={dayjs().add(7, 'day').toDate().toLocaleString()} max={dayjs().add(14, 'day').toDate().toLocaleString()} {...form.register('endTime')} type="datetime-local" />
           </FormControl>
           <FormMessage>
             {form.formState.errors.endTime?.message}

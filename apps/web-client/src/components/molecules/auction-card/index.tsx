@@ -37,11 +37,13 @@ const AuctionCard = ({item}: AuctionCardProps) => {
         <img
           src={imageUrl}
           alt={item.name}
-          className="w-full h-48 object-cover rounded-t-lg"
+          className="w-full h-40 object-cover rounded-t-lg"
         />
       </CardHeader>
       <CardContent className="flex-grow p-4">
-        <CardTitle className="text-lg mb-2">{item.name}</CardTitle>
+        <CardTitle className="text-lg mb-2">
+          <Link href={`/auctions/${item.slug}`}>{item.name}</Link>
+        </CardTitle>
         <div className="flex justify-between items-center mb-2">
           <div className="flex items-center">
             <DollarSign className="h-4 w-4 mr-1 text-green-600" />

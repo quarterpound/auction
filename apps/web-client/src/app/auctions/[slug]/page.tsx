@@ -2,6 +2,7 @@ import { Separator } from "@/components/ui/separator"
 import { trpcVanillaClient } from "@/trpc"
 import ReactMarkdown from 'react-markdown'
 import BidManager from "./bid-manager"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface SingleAuctionProps {
   params: {
@@ -25,7 +26,7 @@ const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
     const image = auction.AssetOnPost?.[0]?.asset.url ?? '/placeholder.svg'
 
     return (
-      <div className="container mx-auto px-6">
+      <div className="max-w-5xl mx-auto px-6">
         <h1 className="text-4xl font-bold mb-8">{auction.name}</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
@@ -43,9 +44,16 @@ const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
           </div>
         </div>
         <Separator className="my-8" />
-        <div className="prose max-w-none">
-          <ReactMarkdown>{auction.description}</ReactMarkdown>
-        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Product description</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="prose max-w-none">
+              <ReactMarkdown>{auction.description}</ReactMarkdown>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     )
 

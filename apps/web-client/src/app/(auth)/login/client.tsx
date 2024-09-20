@@ -37,7 +37,9 @@ const LoginForm = () => {
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <Card className="min-w-[400px]">
           <CardHeader>
-            <CardTitle>Login</CardTitle>
+            <CardTitle>
+              <h1>Login</h1>
+            </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-2">
             <FormItem>

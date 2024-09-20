@@ -19,6 +19,8 @@ import Price from "./price"
 import _ from "lodash"
 import { toast } from "sonner"
 import { useTimer } from "@/hooks/useTimer.hook"
+import Link from "next/link"
+import TimeLeft from "./time-left"
 
 export type BidWithUser = Prisma.BidGetPayload<{
   include: {
@@ -37,7 +39,6 @@ interface BidManagerProps {
 }
 
 const BidManager = ({ auction, bids }: BidManagerProps) => {
-  const time = useTimer(auction.endTime)
 
   const {id, currency, bidIncrement} = auction
   const [watching, setWatching] = useState(0)
@@ -59,10 +60,23 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
     onData: (data) => {
       console.log('bid-added', data)
 
-      ctx.auctions.findBidsByAuctionId.setData({id}, (prev) => [
-        data,
-        ...(prev ?? []),
-      ].slice(0, 5))
+      const previous = ctx.auctions.findBidsByAuctionId.getData({id})
+
+      if(previous) {
+        const lastBid = previous[0];
+
+        if(lastBid && authUser && lastBid.userId === authUser?.id && data.userId !== authUser.id) {
+          console.log('here')
+          toast.error('You have been outbid')
+        }
+      }
+
+      if(data.author.id !== authUser?.id) {
+        ctx.auctions.findBidsByAuctionId.setData({id}, (prev) => [
+          data,
+          ...(prev ?? []),
+        ].slice(0, 5))
+      }
     }
   })
 
@@ -108,6 +122,8 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
     })
   }
 
+  console.log(bidsQuery.data)
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -117,7 +133,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
         </div>
         <div className="flex items-center space-x-2">
           <Clock className="h-6 w-6 text-blue-600" />
-          <span className="text-xl font-semibold" suppressHydrationWarning={true}>{`${time} left`}</span>
+          <TimeLeft date={auction.endTime} />
         </div>
       </div>
       {
@@ -145,7 +161,9 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
             </form>
           </Form>
         ) : (
-          <Button>Login to Bid</Button>
+          <Link href={'/login'} className="block">
+            <Button>Login to Bid</Button>
+          </Link>
         )
       }
       <Separator />
