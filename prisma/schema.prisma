@@ -151,6 +151,8 @@ model CaseMessage {
 model Asset {
   id          Int           @id @default(autoincrement())
   url         String
+  width       Int
+  height      Int
   createdAt   DateTime      @default(now())
   AssetOnPost AssetOnPost[]
 

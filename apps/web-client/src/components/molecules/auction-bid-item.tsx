@@ -49,6 +49,9 @@ const AuctionBidItem = ({item}: AuctionBidItem) => {
         <div className="grid gap-2 items-center grid-cols-[50px_auto]">
           <img
             src={item.AssetOnPost[0].asset.url}
+            width={item.AssetOnPost[0].asset.width}
+            height={item.AssetOnPost[0].asset.height}
+            alt={item.name}
             className="object-cover w-[50px] h-[50px] rounded"
           />
           <div className="h-[50px] flex items-center justify-between">

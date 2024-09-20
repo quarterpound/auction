@@ -1,3 +1,4 @@
+import { heapSize } from "bun:jsc";
 import { z } from "zod";
 
 export const feedValidation = z.object({
@@ -10,6 +11,8 @@ export const auctionFeedItem = z.object({
   assets: z.array(z.object({
     id: z.number(),
     created_at: z.coerce.date(),
+    width: z.number(),
+    height: z.number(),
     url: z.string(),
   })),
   amount: z.number(),

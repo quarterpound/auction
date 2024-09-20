@@ -1,12 +1,12 @@
 import { initTRPC, TRPCError } from '@trpc/server';
 import { verify } from 'hono/jwt';
 import { env } from './env';
-import { CreateExpressContextOptions } from '@trpc/server/adapters/express';
 import { prisma } from './database';
 import superjson from 'superjson'
 import { Context } from 'hono';
 import { User } from '@prisma/client';
 import { ZodError } from 'zod';
+import { deleteCookie } from 'hono/cookie';
 
 type ParsedContext = {
   authorization: string | null
@@ -45,6 +45,9 @@ export const publicProcedure = t.procedure.use(async (opts) => {
     const payload = await verify(token, env.JWT_SECRET)
 
     if(!payload) {
+      if(opts.ctx.c) {
+        deleteCookie(opts.ctx.c, 'authorization')
+      }
       throw new TRPCError({message: 'Token expired', code: 'UNAUTHORIZED'})
     }
 
@@ -56,6 +59,9 @@ export const publicProcedure = t.procedure.use(async (opts) => {
 
 
     if(!user) {
+      if(opts.ctx.c) {
+        deleteCookie(opts.ctx.c, 'authorization')
+      }
       throw new TRPCError({message: 'User could not be found', code: 'CONFLICT'})
     }
   }
@@ -78,6 +84,9 @@ export const protectedProcedure = t.procedure.use(async (opts) => {
   const payload = await verify(token, env.JWT_SECRET)
 
   if(!payload) {
+    if(opts.ctx.c) {
+      deleteCookie(opts.ctx.c, 'authorization')
+    }
     throw new TRPCError({message: 'Token expired', code: 'UNAUTHORIZED'})
   }
 
@@ -89,6 +98,9 @@ export const protectedProcedure = t.procedure.use(async (opts) => {
 
 
   if(!user) {
+    if(opts.ctx.c) {
+      deleteCookie(opts.ctx.c, 'authorization')
+    }
     throw new TRPCError({message: 'User could not be found', code: 'CONFLICT'})
   }
 

@@ -29,14 +29,16 @@ const AuctionCard = ({item}: AuctionCardProps) => {
     }
   })
 
-  const imageUrl = item.assets[0].url ?? '/placeholder.svg'
+  const imageUrl = item.assets[0]
 
   return (
     <Card className="flex flex-col">
       <CardHeader className="p-0">
         <img
-          src={imageUrl}
+          src={imageUrl.url}
           alt={item.name}
+          width={imageUrl.width}
+          height={imageUrl.height}
           className="w-full h-40 object-cover rounded-t-lg"
         />
       </CardHeader>
@@ -53,7 +55,7 @@ const AuctionCard = ({item}: AuctionCardProps) => {
         </div>
         <div className="flex items-center text-sm text-gray-600">
           <Clock className="h-4 w-4 mr-1" />
-          <span>{`${time} left`}</span>
+          <span suppressHydrationWarning={true}>{`${time} left`}</span>
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">

@@ -16,6 +16,8 @@ uploadRouter.post('/', async (c) => {
   const asset = await prisma.asset.create({
     data: {
       url: uploaded.secure_url,
+      width: uploaded.width,
+      height: uploaded.height
     }
   })
 

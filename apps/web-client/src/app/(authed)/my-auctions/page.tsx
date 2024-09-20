@@ -1,6 +1,7 @@
 'use client'
 
 import AuctionLineItem from "@/components/molecules/auction-line-item"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { trpc } from "@/trpc"
@@ -27,7 +28,9 @@ const Page = () => {
       {
         data?.length === 0 && (
           <div className="grid gap-3">
-            <Link href={'/new'}>Create an auction</Link>
+            <Link href={'/new'}>
+              <Button>Create an auction</Button>
+            </Link>
           </div>
         )
       }

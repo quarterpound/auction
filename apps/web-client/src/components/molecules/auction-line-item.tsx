@@ -36,7 +36,7 @@ interface AuctionLineItemProps {
 
 const AuctionLineItem = ({item}: AuctionLineItemProps) => {
   const [{amount, total}, setState] = useState({
-    amount: item.Bids[0].amount ?? item.priceMin,
+    amount: item.Bids[0]?.amount ?? item.priceMin,
     total: item._count.Bids
   })
 
@@ -56,6 +56,9 @@ const AuctionLineItem = ({item}: AuctionLineItemProps) => {
       <CardContent className="p-4">
         <div className="grid gap-2 items-center grid-cols-[50px_auto]">
           <img
+            width={item.AssetOnPost[0].asset.width}
+            height={item.AssetOnPost[0].asset.height}
+            alt={item.name}
             src={item.AssetOnPost[0].asset.url}
             className="object-cover w-[50px] h-[50px] rounded"
           />

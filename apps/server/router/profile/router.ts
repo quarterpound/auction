@@ -49,6 +49,7 @@ export const profileRouter = router({
           take: 1,
           select: {
             id: true,
+            userId: true,
             amount: true,
           }
         }

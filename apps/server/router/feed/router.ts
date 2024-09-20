@@ -60,6 +60,8 @@ export const feedRouter = router({
                     JSON_BUILD_OBJECT(
                         'id', a.id,
                         'url', a.url,
+                        'width', a.width,
+                        'height', a.height,
                         'created_at', a."createdAt"
                     )
                 ) AS assets
