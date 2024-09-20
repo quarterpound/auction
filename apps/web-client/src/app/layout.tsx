@@ -8,8 +8,11 @@ import Footer from "@/components/ui/footer";
 import { Toaster } from "@/components/ui/sonner"
 
 export const metadata: Metadata = {
-  title: "Auksiyon.az: Premier Online Auction Marketplace for Unique Finds & Great Deals",
+  title: "Auksiyon.az: Online Auction Marketplace for Unique Finds & Great Deals",
   description: "Discover BidSmart, the leading online auction website where you can bid on a vast selection of unique items and secure unbeatable deals. Join our vibrant community of buyers and sellers today to explore antiques, collectibles, electronics, and more. Start bidding now and win big at BidSmart!",
+  alternates: {
+    canonical: 'http://localhost:3000'
+  }
 };
 const fontSans = FontSans({
   subsets: ["latin"],
