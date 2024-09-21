@@ -5,6 +5,7 @@ FROM oven/bun:latest AS base
 WORKDIR /app
 
 # Copy the root package.json and bun.lockb into the container
+# This should copy the global package.json and the lock file
 COPY package.json bun.lockb ./
 
 # Copy the package.json files from the subdirectories, including utils
@@ -41,5 +42,5 @@ EXPOSE 3000
 EXPOSE 3001
 EXPOSE 4200
 
-# Custom script to run both server and web-client
+# Start the server and web-client using the custom script
 CMD ["bun", "run", "start:all"]
