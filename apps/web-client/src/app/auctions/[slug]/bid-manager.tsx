@@ -39,7 +39,7 @@ interface BidManagerProps {
 }
 
 const BidManager = ({ auction, bids }: BidManagerProps) => {
-  const { outbid, bidAccepted } = useNotifications()
+  const { outbid, bidAccepted, getPermission } = useNotifications()
 
   const {id, currency, bidIncrement} = auction
   const [watching, setWatching] = useState(0)
@@ -101,6 +101,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
     },
     onSuccess: () => {
       bidAccepted();
+      getPermission();
     },
     onSettled: () => {
       ctx.auctions.findBidsByAuctionId.invalidate({id});
