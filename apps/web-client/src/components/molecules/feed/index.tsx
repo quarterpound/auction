@@ -4,7 +4,6 @@ import { trpc } from "@/trpc"
 import { FeedResultValidation } from "server/router/feed/validation"
 import AuctionCard from "../auction-card"
 import { Prisma } from "@prisma/client"
-import { keepPreviousData } from "@tanstack/react-query"
 
 export type Category = Prisma.CategoryGetPayload<{
   include: {
@@ -28,17 +27,18 @@ export type Category = Prisma.CategoryGetPayload<{
 
 type FeedProps = {
   initialData: FeedResultValidation
-  categories: Category[]
+  categoryId?: number | null
 }
 
-const Feed = ({initialData, categories}: FeedProps) => {
+const Feed = ({initialData, categoryId}: FeedProps) => {
 
-  const feedQuery = trpc.feed.all.useInfiniteQuery({orderBy: null},     {
+  const feedQuery = trpc.feed.all.useInfiniteQuery({orderBy: null, categoryId},     {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     initialData: {
       pageParams: [0],
       pages: [initialData],
-    }
+    },
+    refetchOnMount: true,
   })
 
   return (

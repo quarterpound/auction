@@ -41,7 +41,7 @@ export default async function Home() {
           </div>
         </CardContent>
       </Card>
-      <Feed initialData={initialData} categories={categories} />
+      <Feed initialData={initialData} />
     </div>
   </div>
 }

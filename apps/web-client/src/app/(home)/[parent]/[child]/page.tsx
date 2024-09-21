@@ -1,12 +1,12 @@
 import { trpcVanillaClient } from "@/trpc"
 import { notFound } from "next/navigation"
 import { Metadata } from "next"
-import Link from "next/link"
+import Feed from "@/components/molecules/feed"
 
-type PageProps = {params: {parent: string}}
+type PageProps = {params: {parent: string, child: string}}
 
-export const generateMetadata = async ({params: {parent}}: PageProps): Promise<Metadata> => {
-  const data = await trpcVanillaClient.category.getCategoryMetadata.query({slug: parent})
+export const generateMetadata = async ({params: {child}}: PageProps): Promise<Metadata> => {
+  const data = await trpcVanillaClient.category.getCategoryMetadata.query({slug: child})
 
   if(!data) {
     notFound()
@@ -17,27 +17,19 @@ export const generateMetadata = async ({params: {parent}}: PageProps): Promise<M
   }
 }
 
-const Page = async ({params: {parent}}: PageProps) => {
-  const data = await trpcVanillaClient.category.getSubCategories.query({slug: parent})
+const Page = async ({params: { child}}: PageProps) => {
+  const category = await trpcVanillaClient.category.getCategoryMetadata.query({slug: child})
 
-  if(!data) {
+  if(!category) {
     notFound();
   }
 
+  const data = await trpcVanillaClient.feed.all.query({categoryId: category.id})
+
   return (
-    <div className="container mx-auto grid gap-4">
-      <h1 className="text-3xl font-bold">{data?.name}</h1>
-      <ul className="grid grid-cols-4">
-        {
-          data.children.map(item => (
-            <li key={item.id}>
-              <Link href={`/${parent}/${item.slug}`}>
-                {item.name}
-              </Link>
-            </li>
-          ))
-        }
-      </ul>
+    <div className="container mx-auto grid gap-8">
+      <h1 className="text-3xl font-bold">{category.name}</h1>
+      <Feed initialData={data} categoryId={category.id} />
     </div>
   )
 }

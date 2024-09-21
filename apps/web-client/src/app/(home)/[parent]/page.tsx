@@ -25,7 +25,7 @@ const Page = async ({params: {parent}}: PageProps) => {
   }
 
   return (
-    <div className="container mx-auto grid gap-4">
+    <div className="container mx-auto grid gap-8">
       <h1 className="text-3xl font-bold">{data?.name}</h1>
       <ul className="grid grid-cols-4">
         {

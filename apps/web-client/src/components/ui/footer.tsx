@@ -1,6 +1,4 @@
 import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Input } from './input'
 import NewsletterSignup from '../molecules/newsletter-signup'
 
 export default function Footer() {

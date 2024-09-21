@@ -1,4 +1,3 @@
-import { InitialState } from "@/store/types";
 import { trpcVanillaClient } from "@/trpc";
 import { cookies } from "next/headers";
 

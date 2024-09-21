@@ -18,9 +18,9 @@ import { z } from "zod"
 import Price from "./price"
 import _ from "lodash"
 import { toast } from "sonner"
-import { useTimer } from "@/hooks/useTimer.hook"
 import Link from "next/link"
 import TimeLeft from "./time-left"
+import { useNotifications } from "@/hooks/use-notifications.hook"
 
 export type BidWithUser = Prisma.BidGetPayload<{
   include: {
@@ -39,6 +39,7 @@ interface BidManagerProps {
 }
 
 const BidManager = ({ auction, bids }: BidManagerProps) => {
+  const { outbid, bidAccepted } = useNotifications()
 
   const {id, currency, bidIncrement} = auction
   const [watching, setWatching] = useState(0)
@@ -58,7 +59,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
 
   trpc.bids.listenToBidAdded.useSubscription({auctionIds: id}, {
     onData: (data) => {
-      console.log('bid-added', data)
+      ctx.profile.bids.refetch();
 
       const previous = ctx.auctions.findBidsByAuctionId.getData({id})
 
@@ -66,8 +67,8 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
         const lastBid = previous[0];
 
         if(lastBid && authUser && lastBid.userId === authUser?.id && data.userId !== authUser.id) {
-          console.log('here')
           toast.error('You have been outbid')
+          outbid();
         }
       }
 
@@ -98,8 +99,12 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
 
       ctx.auctions.findBidsByAuctionId.setData({id}, t?.previous)
     },
+    onSuccess: () => {
+      bidAccepted();
+    },
     onSettled: () => {
       ctx.auctions.findBidsByAuctionId.invalidate({id});
+      ctx.profile.auctions.refetch();
     },
   })
 
@@ -121,8 +126,6 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
       id: data.id
     })
   }
-
-  console.log(bidsQuery.data)
 
   return (
     <div className="space-y-6">

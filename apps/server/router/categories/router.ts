@@ -31,6 +31,7 @@ export const categoryRouter = router({
         slug: input.slug
       },
       select: {
+        id: true,
         slug: true,
         name: true,
       }

@@ -39,6 +39,7 @@ export const auctionRoute = router({
           authorId: created.id,
           currency: input.currency,
           bidIncrement: input.bidIncrement,
+          categoryId: input.categoryId,
           AssetOnPost: {
             createMany: {
               data: input.assets.map(item => ({
@@ -80,6 +81,7 @@ export const auctionRoute = router({
         authorId: user.id,
         currency: input.currency,
         bidIncrement: input.bidIncrement,
+        categoryId: input.categoryId,
         AssetOnPost: {
           createMany: {
             data: input.assets.map(item => ({

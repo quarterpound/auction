@@ -9,7 +9,9 @@ import Link from "next/link"
 
 const Page = () => {
 
-  const {data, isLoading} = trpc.profile.auctions.useQuery({})
+  const {data, isLoading} = trpc.profile.auctions.useQuery({}, {
+    refetchOnMount: 'always',
+  })
 
   return <Card>
     <CardHeader>
