@@ -1,68 +1,78 @@
 import { z } from "zod";
-import { protectedProcedure, publicProcedure, router } from "../../trpc";
+import { fastAuthProcedure, protectedProcedure, publicProcedure, router } from "../../trpc";
 import { prisma } from "../../database";
 import {createBidValidation} from './validation'
 import { TRPCError } from "@trpc/server";
-import { localEventEmitter, WATCHING } from "../../events";
+import { AddedBid, localEventEmitter, WATCHING } from "../../events";
 import { observable } from "@trpc/server/observable";
-import { Bid, Prisma } from "@prisma/client";
 import { obfuscateName } from "../../../utils/src/shared";
+import { InternalRedisConnection } from "../../database/redis";
 
 export const bidsRoute = router({
-  create: protectedProcedure.input(createBidValidation).mutation(async ({input, ctx: {user}}) => {
-    const bid = await prisma.$transaction(async (tx) => {
-      const data = await tx.post.findUnique({
-        where: {
-          id: input.id,
-        },
-        select: {
-          bidIncrement: true,
-          endTime: true,
-          priceMin: true,
-          Bids: {
-            select: {
-              amount: true,
-            },
-            orderBy: {
-              createdAt: 'desc'
-            }
-          },
+  create: fastAuthProcedure.input(createBidValidation).mutation(async ({input, ctx: {sub, name}}) => {
+    console.time()
+    const conn = await InternalRedisConnection.getRedisConnection();
+    console.timeEnd()
+
+
+    console.time()
+    const data = await conn.get(`post:${input.id}`)
+    console.timeEnd()
+
+    console.time()
+    if(!data) {
+      throw new TRPCError({code: 'NOT_FOUND'})
+    }
+
+    const state = JSON.parse(data);
+
+    if(state.endTime < new Date()) {
+      throw new TRPCError({
+        code: 'CONFLICT'
+      })
+    }
+
+    if((state.currentBid + state.bidIncrement) > input.amount) {
+      throw new TRPCError({
+        code: 'CONFLICT'
+      })
+    }
+
+    await conn.set(`post:${input.id}`, JSON.stringify({
+      ...state,
+      currentBid: input.amount,
+    }))
+
+    console.timeEnd()
+
+    localEventEmitter.emit('bid-added', {amount: input.amount, createdAt: new Date(), postId: input.id, userId: sub, author: { id: sub, name: name ? obfuscateName(name) : null}})
+
+
+    const saveBid = async () => {
+      const bid = await prisma.$transaction(async (tx) => {
+        const bid = await tx.bid.create({
+          data: {
+            amount: input.amount,
+            userId: sub,
+            postId: input.id,
+            createdAt: new Date()
+          }
+        })
+
+        return {
+          bid,
         }
       })
+    }
 
-      if(!data) {
-        throw new TRPCError({code: 'NOT_FOUND'})
-      }
+    saveBid();
 
-      const lastBidAmount = data.Bids[0]?.amount ?? data.priceMin
+    return true
 
-      if((lastBidAmount + data.bidIncrement) > input.amount) {
-        throw new TRPCError({
-          code: 'CONFLICT'
-        })
-      }
-
-      if(data.endTime < new Date()) {
-        throw new TRPCError({
-          code: 'CONFLICT'
-        })
-      }
-
-      return tx.bid.create({
-        data: {
-          amount: input.amount,
-          userId: user.id,
-          postId: input.id,
-          createdAt: new Date()
-        }
-      })
-    })
-
-    localEventEmitter.emit('bid-added', {...bid, author: {id: user.id, name: user.name ? obfuscateName(user.name) : null}})
   }),
-  listenToBidAdded: publicProcedure.input(z.object({auctionIds: z.number(), ignoreMe: z.boolean().default(false)})).subscription(async ({ctx: {user}, input: {auctionIds, ignoreMe}}) => observable<Prisma.BidGetPayload<{include: {author: {select: {id: true, name: true,}}}}>>((emit) => {
+  listenToBidAdded: publicProcedure.input(z.object({auctionIds: z.number(), ignoreMe: z.boolean().default(false)})).subscription(async ({ctx: {user}, input: {auctionIds, ignoreMe}}) => observable<AddedBid>((emit) => {
 
-    const onBidAdded = (bid: Prisma.BidGetPayload<{ include: { author: { select: { id: true, name: true } } } }>) => {
+    const onBidAdded = (bid: AddedBid) => {
       const shouldInformMe = (user?.id !== bid.userId || !ignoreMe)
       if(auctionIds === bid.postId && shouldInformMe) {
         emit.next(bid)

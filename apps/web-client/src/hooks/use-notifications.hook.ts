@@ -1,16 +1,21 @@
+import { Bid, Post } from "@prisma/client"
 import { useMemo } from "react"
+import { AddedBid } from "server/events"
+import { formatNumber } from "utils"
 
 const useNotifications = () => {
   const positive = useMemo(() => new Audio('/notifications/positive.wav'), [])
   const negative = useMemo(() => new Audio('/notifications/negative.wav'), [])
 
-  const outbid = (onclick?: () => void) => {
+  const outbid = (bid: AddedBid, auction: Post, onclick?: () => void,) => {
     try {
       negative.play()
 
       if(!document.hasFocus()) {
         if(window.Notification.permission === 'granted') {
-          const notif = new Notification("You have been outbid");
+          const notif = new Notification("You have been outbid", {
+            body: `New price set at ${formatNumber(bid.amount, auction.currency)}`
+          });
           notif.onclick = () => {
             onclick?.()
           }
@@ -33,7 +38,9 @@ const useNotifications = () => {
     if('Notification' in window) {
       if(window.Notification.permission !== 'granted') {
         window.Notification.requestPermission().then(() => {
-          new Notification("We will only notify you when you have been outbid")
+          new Notification("Thanks!", {
+            body: 'You will be notified when you are outbid'
+          })
         })
       }
     }

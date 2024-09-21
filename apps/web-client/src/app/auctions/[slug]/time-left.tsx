@@ -1,4 +1,4 @@
-import { useTimer } from "@/hooks/useTimer.hook"
+import { useTimer } from "@/hooks/use-timer.hook"
 
 interface TimeLeftProps {
   date: Date

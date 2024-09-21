@@ -3,7 +3,6 @@ import { prisma } from "../../database";
 import { protectedProcedure, publicProcedure, router } from "../../trpc";
 import { loginValidation, registerValidation } from "./validation";
 import bcrypt from 'bcrypt'
-import {sign} from 'hono/jwt'
 import dayjs from "dayjs";
 import { env } from "../../env";
 import crypto from 'crypto'
@@ -11,6 +10,7 @@ import { sendWelcomeEmail } from "../../mail";
 import _ from 'lodash';
 import { User } from "@prisma/client";
 import { setCookie } from "hono/cookie";
+import { signInternal } from "../../jwt";
 
 export const authRoute = router({
   login: publicProcedure.input(loginValidation).mutation(async ({input, ctx: {c}}) => {
@@ -43,10 +43,10 @@ export const authRoute = router({
       throw new TRPCError({ message: 'Invalid password', code: 'UNAUTHORIZED' })
     }
 
-    const jwt = await sign({
+    const jwt = await signInternal({
       sub: user.id,
-      exp: Math.floor(dayjs().add(7, 'days').toDate().getTime() / 1000),
-    }, env.JWT_SECRET)
+      name: user.name ?? ''
+    })
 
     if(c) {
       setCookie(c, 'authorization', jwt)
@@ -110,16 +110,18 @@ export const authRoute = router({
         }
       }
 
-      const jwt = await sign({
-        sub: newUser.id,
-        exp: Math.floor(dayjs().add(7, 'days').toDate().getTime() / 1000),
-      }, env.JWT_SECRET)
+      const jwt = await signInternal({
+        sub: user.id,
+        name: user.name ?? ''
+      })
 
       return {
         jwt,
         user: _.omit(newUser, ['passwords']) as User,
       };
     })
+
+
 
     if(c) {
       setCookie(c, 'authorization', jwt)

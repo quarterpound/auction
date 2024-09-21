@@ -12,6 +12,8 @@ import { TRPCError } from "@trpc/server";
 import { obfuscateName } from "utils";
 import { localEventEmitter, WATCHING } from "../../events";
 import { observable } from "@trpc/server/observable";
+import { InternalRedisConnection } from "../../database/redis";
+import { signInternal } from "../../jwt";
 
 export const auctionRoute = router({
   createAndRegister: publicProcedure.input(createAuctionAndRegisterValidation).mutation(async ({input, ctx: {c}}) => {
@@ -50,10 +52,13 @@ export const auctionRoute = router({
         }
       })
 
-      const jwt = await sign({
-        sub: created.id,
-        exp: Math.floor(dayjs().add(7, 'days').toDate().getTime() / 1000),
-      }, env.JWT_SECRET)
+      const jwt = await signInternal({
+        sub: user.id,
+        name: user.name ?? ''
+      })
+
+      const conn = await InternalRedisConnection.getRedisConnection();
+      await conn.set(`post:${post.id}`, post.priceMin)
 
       return {
         jwt,
@@ -91,6 +96,13 @@ export const auctionRoute = router({
         }
       }
     })
+
+    const conn = await InternalRedisConnection.getRedisConnection();
+    await conn.set(`post:${post.id}`, JSON.stringify({
+      currentBid: input.reservePrice,
+      endTime: input.endTime,
+      bidIncrement: input.bidIncrement
+    }))
 
     return post
   }),

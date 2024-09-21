@@ -10,6 +10,11 @@ import { etag } from 'hono/etag';
 import { applyWSSHandler } from '@trpc/server/adapters/ws';
 import { createBunWebSocket } from 'hono/bun';
 import ws from 'ws';
+import { InternalRedisConnection } from './database/redis';
+
+InternalRedisConnection.init().then(() => {
+  console.log('ok')
+})
 
 const app = new Hono();
 
@@ -46,14 +51,6 @@ const handler = applyWSSHandler({
     return {
       authorization: authorization ?? null,
     }
-  },
-  // Enable heartbeat messages to keep connection open (disabled by default)
-  keepAlive: {
-    enabled: true,
-    // server ping message interval in milliseconds
-    pingMs: 30000,
-    // connection is terminated if pong message is not received in this many milliseconds
-    pongWaitMs: 5000,
   },
 });
 

@@ -68,13 +68,13 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
 
         if(lastBid && authUser && lastBid.userId === authUser?.id && data.userId !== authUser.id) {
           toast.error('You have been outbid')
-          outbid();
+          outbid(data, auction);
         }
       }
 
       if(data.author.id !== authUser?.id) {
         ctx.auctions.findBidsByAuctionId.setData({id}, (prev) => [
-          data,
+          {...data, id: Math.random() * 10 + new Date().getTime()},
           ...(prev ?? []),
         ].slice(0, 5))
       }
@@ -104,7 +104,6 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
       getPermission();
     },
     onSettled: () => {
-      ctx.auctions.findBidsByAuctionId.invalidate({id});
       ctx.profile.auctions.refetch();
     },
   })
@@ -179,15 +178,15 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
           </span>
         </div>
         <ul className="space-y-2">
-          {_.reverse(_.sortBy(bidsQuery.data, 'createdAt')).map((bid) => (
-            <li key={bid.id} className="flex justify-between items-center">
+          {_.reverse(_.sortBy(bidsQuery.data, 'amount')).slice(0,5).map((bid) => (
+            <li key={`${bid.id}-${bid.amount}`} className="flex justify-between items-center">
               <div className="flex items-center space-x-2 min-w-[200px]">
                 <User className="h-4 w-4" />
                 <span>{bid.author.name}</span>
               </div>
               <span className="font-semibold">{formatNumber(bid.amount, currency)}</span>
               <span className="text-sm text-gray-500">
-                {dayjs(bid.createdAt).format('MMM d, YYYY HH:mm')}
+                {dayjs(bid.createdAt).format('MMM DD, YYYY HH:mm')}
               </span>
             </li>
           ))}

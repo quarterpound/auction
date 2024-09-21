@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from "react";
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration)
 
-
 export const useTimer = (date: Date) => {
   const calculateTimeLeft = useCallback(() => {
     const now = dayjs();
@@ -19,7 +18,6 @@ export const useTimer = (date: Date) => {
         hours: dur.hours(),
         minutes: dur.minutes(),
         seconds: dur.seconds(),
-        diff,
       };
     }
 
@@ -43,5 +41,5 @@ export const useTimer = (date: Date) => {
     return () => clearInterval(timer);
   }, [calculateTimeLeft, date]);
 
-  return `${timeLeft.days}d ${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s`;
+  return `${timeLeft.days}d ${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s`
 }

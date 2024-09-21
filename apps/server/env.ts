@@ -5,6 +5,7 @@ const parser = z.object({
   JWT_SECRET: z.string(),
   LOOPS_API_KEY: z.string(),
   CLIENT_URL: z.string(),
+  REDIS_URL: z.string(),
   CLOUDINARY_API_CLOUD_NAME: z.string(),
   CLOUDINARY_API_KEY: z.string(),
   CLOUDINARY_API_SECRET: z.string(),

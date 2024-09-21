@@ -7,6 +7,7 @@ import { Context } from 'hono';
 import { User } from '@prisma/client';
 import { ZodError } from 'zod';
 import { deleteCookie } from 'hono/cookie';
+import { verifyInternal } from './jwt';
 
 type ParsedContext = {
   authorization: string | null
@@ -110,4 +111,32 @@ export const protectedProcedure = t.procedure.use(async (opts) => {
       c: opts.ctx.c,
     }
   })
+})
+
+export const fastAuthProcedure = t.procedure.use(async (opts) => {
+  const token = opts.ctx.authorization
+
+  if(!token) {
+    if(opts.ctx.c) {
+      deleteCookie(opts.ctx.c, 'authorization')
+    }
+    throw new TRPCError({code: 'UNAUTHORIZED', message: 'Token expired'})
+  }
+
+
+  try {
+    const payload = await verifyInternal(token)
+
+    return opts.next({
+      ctx: {
+        ...payload,
+        c: opts.ctx.c,
+      }
+    })
+  } catch(e) {
+    if(opts.ctx.c) {
+      deleteCookie(opts.ctx.c, 'authorization')
+    }
+    throw new TRPCError({code: 'UNAUTHORIZED', message: 'Token expired'})
+  }
 })

@@ -7,7 +7,7 @@ import { formatNumber } from 'utils'
 import Link from "next/link"
 import { trpc } from "@/trpc"
 import { useState } from "react"
-import { useTimer } from "@/hooks/useTimer.hook"
+import { useTimer } from "@/hooks/use-timer.hook"
 
 
 type AuctionCardProps = {item: AuctionFeedItem}
