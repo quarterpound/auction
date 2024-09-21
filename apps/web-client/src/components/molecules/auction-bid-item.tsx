@@ -35,7 +35,10 @@ interface AuctionBidItem {
 const AuctionBidItem = ({item}: AuctionBidItem) => {
   const { authUser } = useAppState()
 
-  const [bid, setState] = useState(item.Bids[0])
+  const [bid, setState] = useState({
+    amount: item.Bids[0].amount,
+    userId: item.Bids[0].userId,
+  })
 
   trpc.bids.listenToBidAdded.useSubscription({auctionIds: item.id}, {
     onData: (bid) => {

@@ -8,11 +8,13 @@
     "dev:web-client": "cd apps/web-client && bun dev",
     "build": "bun run build:web-client && bun run build:server",
     "build:web-client": "cd apps/web-client && bun run build",
-    "build:server": "bun build apps/server/index.ts --compile --outfile ./out/server/server"
+    "build:server": "bun build apps/server/index.ts --compile --outfile ./out/server/server",
+    "start:all": "concurrently \"./out/server/server\" \"bunx next start ./out/web-client\""
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "bun-types": "latest",
+    "concurrently": "^9.0.1",
     "prisma": "5.19.1"
   },
   "peerDependencies": {

@@ -1,4 +1,4 @@
-import { Bid, Post } from "@prisma/client"
+import { Post } from "@prisma/client"
 import { useMemo } from "react"
 import { AddedBid } from "server/events"
 import { formatNumber } from "utils"
