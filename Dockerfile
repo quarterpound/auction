@@ -5,7 +5,6 @@ FROM oven/bun:latest AS base
 WORKDIR /app
 
 # Copy the root package.json and bun.lockb into the container
-# This should copy the global package.json and the lock file
 COPY package.json bun.lockb ./
 
 # Copy the package.json files from the subdirectories, including utils
@@ -36,6 +35,9 @@ WORKDIR /app
 
 # Copy the built outputs from the build stage
 COPY --from=build /app/out /app/out
+
+# Copy the root package.json and bun.lockb from the base stage
+COPY --from=base /app/package.json /app/bun.lockb ./
 
 # Expose ports for the server and web-client
 EXPOSE 3000

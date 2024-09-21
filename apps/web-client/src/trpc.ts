@@ -3,6 +3,7 @@ import type {AppRouter} from "server/router"
 import { createTRPCClient, createTRPCReact } from '@trpc/react-query';
 import { createWSClient, httpBatchLink, httpLink, splitLink, wsLink } from '@trpc/client';
 import superjson from 'superjson'
+import { env } from "./env";
 
 export const links = [
   splitLink({
@@ -11,12 +12,12 @@ export const links = [
     },
     true: wsLink({
       client: createWSClient({
-        url: `ws://localhost:3001`,
+        url: env.WS_URL,
       }),
       transformer: superjson
     }),
     false: httpBatchLink({
-      url: 'http://localhost:4200/trpc',
+      url: env.WS_URL,
       fetch(url, options) {
         return fetch(url, {
           ...options,
@@ -34,7 +35,7 @@ export const trpc = createTRPCReact<AppRouter>();
 export const trpcVanillaClient = createTRPCClient<AppRouter>({
   links: [
     httpLink({
-      url: 'http://localhost:4200/trpc',
+      url: env.TRPC_URL,
       fetch(url, options) {
         return fetch(url, {
           ...options,

@@ -3,13 +3,14 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "prebuild": "bunx prisma migrate deploy",
+    "prebuild": "bunx prisma generate",
+    "postbuild": "bunx prisma migrate deploy",
     "dev:server": "bun --watch run apps/server/index.ts",
     "dev:web-client": "cd apps/web-client && bun dev",
     "build": "bun run build:web-client && bun run build:server",
     "build:web-client": "cd apps/web-client && bun run build",
     "build:server": "bun build apps/server/index.ts --compile --outfile ./out/server/server",
-    "start:all": "concurrently \"./out/server/server\" \"bunx next start ./out/web-client\""
+    "start:all": "bunx concurrently \"./out/server/server\" \"bunx next start ./out/web-client\""
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -26,6 +27,7 @@
     "@trpc/server": "next",
     "bcrypt": "^5.1.1",
     "dayjs": "^1.11.13",
+    "dotenv": "^16.4.5",
     "fastest-validator": "^1.19.0",
     "format-money-js": "^1.6.3",
     "hono": "^4.5.11",
