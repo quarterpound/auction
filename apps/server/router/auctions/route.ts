@@ -112,6 +112,11 @@ export const auctionRoute = router({
         slug
       },
       include: {
+        _count: {
+          select: {
+            UserFavorites: true,
+          }
+        },
         AssetOnPost: {
           include: {
             asset: true
@@ -129,7 +134,7 @@ export const auctionRoute = router({
           orderBy: {
             createdAt: 'desc'
           },
-          take: 5,
+          take: 12,
         },
       }
     })
@@ -162,7 +167,7 @@ export const auctionRoute = router({
           }
         },
       },
-      take: 5,
+      take: 12,
     })
 
     return data.map(item => ({

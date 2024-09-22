@@ -41,7 +41,6 @@ export const publicProcedure = t.procedure.use(async (opts) => {
   const token = opts.ctx.authorization
   let user: User | null = null;
 
-
   if(token) {
     const payload = await verify(token, env.JWT_SECRET)
 

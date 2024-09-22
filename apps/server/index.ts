@@ -23,7 +23,7 @@ const socket = new ws.Server({
 })
 
 app.use(cors({origin: ['http://localhost:3000'], credentials: true,}))
-app.use(etag(),logger())
+app.use(etag() ,logger())
 
 app.use(
   '/trpc/*',
@@ -37,8 +37,7 @@ app.use(
         c,
       })
     }
-
-  })
+  }),
 )
 
 
@@ -56,12 +55,6 @@ const handler = applyWSSHandler({
 
 app.route('/', uploadRouter)
 
-socket.on('connection', (ws) => {
-  console.log(`➕➕ Connection (${socket.clients.size})`);
-  ws.once('close', () => {
-    console.log(`➖➖ Connection (${socket.clients.size})`);
-  });
-});
 console.log('✅ WebSocket Server listening on ws://localhost:3001');
 process.on('SIGTERM', () => {
   console.log('SIGTERM');

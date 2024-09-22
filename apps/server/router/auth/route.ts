@@ -133,6 +133,11 @@ export const authRoute = router({
     }
   }),
   me: protectedProcedure.query(async({ctx}) => {
-    return ctx.user;
+    const favorites = await prisma.userFavorite.findMany({
+      where: {
+        userId: ctx.user.id,
+      }
+    })
+    return {...ctx.user, favorites};
   })
 })

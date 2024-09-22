@@ -86,6 +86,73 @@ export const profileRouter = router({
       take: 10,
       skip: input.cursor * 10
     })
+  }),
+  addAuctionToFavorites: protectedProcedure.input(z.object({id: z.number()})).mutation(async ({input, ctx: {user}}) => {
+    return prisma.$transaction(async (tx) => {
+      const existing = await tx.userFavorite.findUnique({
+        where: {
+          userId_postId: {
+            userId: user.id,
+            postId: input.id
+          }
+        }
+      })
 
+      if(existing) {
+        await tx.userFavorite.delete({
+          where: {
+            userId_postId: {
+              userId: user.id,
+              postId: input.id
+            }
+          }
+        })
+
+        return 'deleted' as const
+      }
+
+      return tx.userFavorite.create({
+        data: {
+          userId: user.id,
+          postId: input.id
+        }
+      })
+    })
+  }),
+  favorites: protectedProcedure.input(z.object({cursor: z.number().default(0)})).query(async ({ctx: {user}, input}) => {
+    return prisma.userFavorite.findMany({
+      take: 10,
+      skip: 10 * input.cursor,
+      where: {
+        userId: user.id
+      },
+      include: {
+        post: {
+          include: {
+            _count: {
+              select: {
+                Bids: true,
+              },
+            },
+            AssetOnPost: {
+              include: {
+                asset: true,
+              }
+            },
+            Bids: {
+              orderBy: {
+                createdAt: 'desc',
+              },
+              take: 1,
+              select: {
+                id: true,
+                userId: true,
+                amount: true,
+              }
+            }
+          }
+        }
+      }
+    })
   })
 })

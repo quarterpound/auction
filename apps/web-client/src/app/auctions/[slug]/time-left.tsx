@@ -8,7 +8,7 @@ const TimeLeft = ({date}: TimeLeftProps) => {
   const time = useTimer(date)
 
   return (
-    <span className="text-xl font-semibold" suppressHydrationWarning={true}>{`${time} left`}</span>
+    <span className="md:text-xl md:font-semibold" suppressHydrationWarning={true}>{`${time} left`}</span>
   )
 }
 

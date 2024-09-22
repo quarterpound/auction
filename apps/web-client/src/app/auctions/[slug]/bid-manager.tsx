@@ -76,7 +76,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
         ctx.auctions.findBidsByAuctionId.setData({id}, (prev) => [
           {...data, id: Math.random() * 10 + new Date().getTime()},
           ...(prev ?? []),
-        ].slice(0, 5))
+        ])
       }
     }
   })
@@ -90,7 +90,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
       ctx.auctions.findBidsByAuctionId.setData({id}, (prev) => [
         {id: dayjs().unix(), amount, author: {...authUser, name: authUser.name ? obfuscateName(authUser.name) : null}, userId: authUser.id, createdAt: new Date(), postId: id,},
         ...(prev ?? []),
-      ].slice(0, 5))
+      ])
 
       return { previous };
     },
@@ -129,13 +129,12 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="grid md:flex justify-between items-center">
         <div className="flex items-center space-x-2">
-          <DollarSign className="h-6 w-6 text-green-600" />
           <Price amount={lastAmount} currency={currency} />
         </div>
         <div className="flex items-center space-x-2">
-          <Clock className="h-6 w-6 text-blue-600" />
+          <Clock className="h-4 w-4 md:h-5 md:w-5 text-blue-600" />
           <TimeLeft date={auction.endTime} />
         </div>
       </div>
@@ -177,20 +176,22 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
             {`Online ${watching}`}
           </span>
         </div>
-        <ul className="space-y-2">
-          {_.reverse(_.sortBy(bidsQuery.data, 'amount')).slice(0,5).map((bid) => (
-            <li key={`${bid.id}-${bid.amount}`} className="flex justify-between items-center">
-              <div className="flex items-center space-x-2 min-w-[200px]">
-                <User className="h-4 w-4" />
-                <span>{bid.author.name}</span>
-              </div>
-              <span className="font-semibold">{formatNumber(bid.amount, currency)}</span>
-              <span className="text-sm text-gray-500">
-                {dayjs(bid.createdAt).format('MMM DD, YYYY HH:mm')}
-              </span>
-            </li>
-          ))}
-        </ul>
+        <div className="grid gap-2">
+          <ul className="space-y-2">
+            {_.reverse(_.sortBy(bidsQuery.data, 'amount')).slice(0, 10).map((bid) => (
+              <li key={`${bid.id}-${bid.amount}`} className="flex justify-between items-center">
+                <div className="flex items-center space-x-2 md:min-w-[200px]">
+                  <User className="h-4 w-4" />
+                  <span>{bid.author.name}</span>
+                </div>
+                <span className="font-semibold">{formatNumber(bid.amount, currency)}</span>
+                <span className="hidden md:block text-sm text-gray-500">
+                  {dayjs(bid.createdAt).format('MMM DD, YYYY HH:mm')}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   )

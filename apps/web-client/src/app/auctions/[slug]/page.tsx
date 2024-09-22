@@ -3,6 +3,7 @@ import { trpcVanillaClient } from "@/trpc"
 import ReactMarkdown from 'react-markdown'
 import BidManager from "./bid-manager"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import AuctionHeart from "@/components/molecules/auction-heart"
 
 interface SingleAuctionProps {
   params: {
@@ -27,7 +28,10 @@ const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
 
     return (
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">{auction.name}</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-4xl font-bold mb-8">{auction.name}</h1>
+          <AuctionHeart id={auction.id} count={auction._count.UserFavorites} />
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
             <img

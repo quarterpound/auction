@@ -8,6 +8,7 @@ const AuthProvider = async ({children}: PropsWithChildren) => {
 
   return (
     <StateProvider initialState={{
+      favorites: user?.favorites ?? [],
       authUser: user,
       isAuthLoading: false,
     }}>

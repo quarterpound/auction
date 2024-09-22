@@ -19,7 +19,6 @@ export const bidsRoute = router({
     const data = await conn.get(`post:${input.id}`)
     console.timeEnd()
 
-    console.time()
     if(!data) {
       throw new TRPCError({code: 'NOT_FOUND'})
     }

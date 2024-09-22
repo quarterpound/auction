@@ -31,19 +31,20 @@ model Account {
 }
 
 model User {
-  id            String     @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String?
-  email         String?    @unique
-  phone         String?    @unique
-  emailVerified DateTime?  @map(name: "email_verified")
+  email         String?        @unique
+  phone         String?        @unique
+  emailVerified DateTime?      @map(name: "email_verified")
   image         String?
   accounts      Account[]
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   passwords     Password[]
   cases         Case[]
   Post          Post[]
   Bids          Bid[]
+  UserFavorites UserFavorite[]
 
   @@map(name: "users")
 }
@@ -71,23 +72,24 @@ model VerificationRequest {
 }
 
 model Post {
-  id              Int           @id @default(autoincrement())
-  slug            String        @unique
+  id              Int            @id @default(autoincrement())
+  slug            String         @unique
   name            String
   description     String
-  descriptionHtml String        @map("description_html")
-  priceMin        Float         @map("price_min")
-  category        Category?     @relation(fields: [categoryId], references: [id])
-  categoryId      Int?          @map("category_id")
-  endTime         DateTime      @map("end_time")
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  descriptionHtml String         @map("description_html")
+  priceMin        Float          @map("price_min")
+  category        Category?      @relation(fields: [categoryId], references: [id])
+  categoryId      Int?           @map("category_id")
+  endTime         DateTime       @map("end_time")
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
   currency        String
-  bidIncrement    Float         @map("bid_increment")
-  author          User          @relation(fields: [authorId], references: [id])
+  bidIncrement    Float          @map("bid_increment")
+  author          User           @relation(fields: [authorId], references: [id])
   Bids            Bid[]
-  authorId        String        @map("author_id")
+  authorId        String         @map("author_id")
   AssetOnPost     AssetOnPost[]
+  UserFavorites   UserFavorite[]
 
   @@map("posts")
 }
@@ -99,6 +101,7 @@ model AssetOnPost {
   assetId Int   @map("asset_id")
 
   @@id([postId, assetId])
+  @@unique([postId, assetId])
   @@map("assets_on_posts")
 }
 
@@ -157,4 +160,15 @@ model Asset {
   AssetOnPost AssetOnPost[]
 
   @@map("assets")
+}
+
+model UserFavorite {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String   @map("user_id")
+  post       Post     @relation(fields: [postId], references: [id])
+  postId     Int      @map("post_id")
+  created_at DateTime @default(now())
+
+  @@id([userId, postId])
+  @@map("user_favorites")
 }
