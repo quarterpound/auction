@@ -3,9 +3,9 @@ import { prisma } from "../../database";
 import { publicProcedure, router } from "../../trpc";
 
 export const categoryRouter = router({
-  all: publicProcedure.query(async () => {
+  all: publicProcedure.input(z.object({take: z.number().default(10).optional()})).query(async ({input}) => {
     return prisma.category.findMany({
-      take: 10,
+      take: input.take,
       include: {
         _count: {
           select: {

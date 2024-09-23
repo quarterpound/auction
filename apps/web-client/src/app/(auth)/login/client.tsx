@@ -26,7 +26,8 @@ const LoginForm = () => {
 
     setInitialState({
       authUser: user,
-      isAuthLoading: false
+      isAuthLoading: false,
+      favorites: user.UserFavorites
     })
 
     router.refresh()

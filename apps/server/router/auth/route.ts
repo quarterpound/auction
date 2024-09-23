@@ -24,6 +24,12 @@ export const authRoute = router({
         ]
       },
       include: {
+        _count: {
+          select: {
+            Bids: true,
+          }
+        },
+        UserFavorites: true,
         passwords: {
           orderBy: {
             createdAt: 'desc'
@@ -136,8 +142,10 @@ export const authRoute = router({
     const favorites = await prisma.userFavorite.findMany({
       where: {
         userId: ctx.user.id,
-      }
+      },
     })
-    return {...ctx.user, favorites};
+
+    const bids = await prisma.bid.count({where: {userId: ctx.user.id}})
+    return {...ctx.user, favorites, hasMadeBids: bids !== 0};
   })
 })

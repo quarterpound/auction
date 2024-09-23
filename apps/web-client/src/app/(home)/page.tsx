@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function Home() {
   const initialData = await trpcVanillaClient.feed.all.query({cursor: 0})
-  const categories = await trpcVanillaClient.category.all.query()
+  const categories = await trpcVanillaClient.category.all.query({take: 10})
 
   return <div className="grid gap-8 container mx-auto">
     <h1 className="text-3xl font-bold">Live auctions</h1>

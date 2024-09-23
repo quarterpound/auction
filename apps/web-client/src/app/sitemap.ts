@@ -1,4 +1,3 @@
-import { env } from "@/env";
 import { trpcVanillaClient } from "@/trpc";
 import { MetadataRoute } from "next";
 
@@ -8,7 +7,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const data = await trpcVanillaClient.general.sitemap.query()
 
   return data.map(item => ({
-    url: `${env.CLIENT_URL}${item.url}`,
+    url: `${process.env.NEXT_PUBLIC_CLIENT_URL}${item.url}`,
     lastModified: item.lastModified ?? undefined
   }))
 }
