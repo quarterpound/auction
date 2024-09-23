@@ -16,7 +16,7 @@ const GuestGuard = (props: PropsWithChildren) => {
 
   if (authUser && !isAuthLoading) {
     router.push('/')
-    return <>Redirecting...</>
+    return <div className="container mx-auto">Redirecting...</div>
   }
 
   return <>{children}</>

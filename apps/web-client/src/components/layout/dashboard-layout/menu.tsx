@@ -1,11 +1,13 @@
 'use client'
-import { Gavel, Package, User } from "lucide-react"
+import { Gavel, Heart, Package, User } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import Link from "next/link"
+import { useAppState } from "@/store"
 
 const Menu = () => {
+  const { length } = useAppState(state => state.favorites)
   let pathname = usePathname()
   pathname = pathname.slice(1)
 
@@ -40,6 +42,19 @@ const Menu = () => {
               Your Bids
             </Button>
           </Link>
+          {
+            length !== 0 && (
+              <Link href={'/favorites'}>
+                <Button
+                  variant={pathname === 'favorites' ? 'default' : 'ghost'}
+                  className="w-full justify-start"
+                >
+                  <Heart className="mr-2 h-4 w-4" />
+                  Favorites
+                </Button>
+              </Link>
+            )
+          }
         </nav>
       </CardContent>
     </Card>

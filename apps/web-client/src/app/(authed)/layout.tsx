@@ -12,7 +12,6 @@ const Layout = async ({children}: PropsWithChildren) => {
 
   return (
     <DashboardLayout title="Your profile">{children}</DashboardLayout>
-
   )
 }
 
