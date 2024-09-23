@@ -30,10 +30,12 @@ const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between">
           <h1 className="text-4xl font-bold mb-8">{auction.name}</h1>
-          <AuctionHeart id={auction.id} count={auction._count.UserFavorites} />
+          <div className="hidden md:block">
+            <AuctionHeart id={auction.id} count={auction._count.UserFavorites} />
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div>
+          <div className="space-y-2">
             <img
               src={image.url}
               width={image.width}

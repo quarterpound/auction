@@ -8,6 +8,7 @@ import Link from "next/link"
 import { trpc } from "@/trpc"
 import { useState } from "react"
 import { useTimer } from "@/hooks/use-timer.hook"
+import AuctionHeart from "../auction-heart"
 
 
 type AuctionCardProps = {item: AuctionFeedItem}
@@ -58,10 +59,11 @@ const AuctionCard = ({item}: AuctionCardProps) => {
           <span suppressHydrationWarning={true}>{`${time} left`}</span>
         </div>
       </CardContent>
-      <CardFooter className="p-4 pt-0">
+      <CardFooter className="p-4 pt-0 flex items-center justify-between">
         <Link href={`/auctions/${item.slug}`}>
           <Button className="w-full">Place Bid</Button>
         </Link>
+        <AuctionHeart id={item.id} />
       </CardFooter>
     </Card>
   )

@@ -47,6 +47,7 @@ const AuctionForm = () => {
         setInitialState({
           authUser: user,
           isAuthLoading: false,
+          favorites: []
         })
 
         return router.push(`/auctions/${post.slug}`)

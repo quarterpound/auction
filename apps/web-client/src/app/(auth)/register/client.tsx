@@ -33,7 +33,8 @@ const RegisterForm = () => {
 
     setInitialState({
       authUser: user,
-      isAuthLoading: false
+      isAuthLoading: false,
+      favorites: [],
     })
 
     router.refresh()
