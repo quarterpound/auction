@@ -15,9 +15,10 @@ class InternalRedisConnection {
     // Create a new client and connect it, ensuring correct type assignment
     const client: RedisClientType = createClient(
       {
+        password: env.REDIS_PASSWORD,
         socket: {
-          host: '127.0.0.1',
-          port: 6379
+          host: env.REDIS_HOST,
+          port: env.REDIS_PORT
         }
       }
     );

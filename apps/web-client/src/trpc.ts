@@ -16,7 +16,7 @@ export const links = [
       transformer: superjson
     }),
     false: httpBatchLink({
-      url: 'http://localhost:4200/trpc',
+      url: process.env.NEXT_PUBLIC_TRPC_URL ?? '',
       fetch(url, options) {
         return fetch(url, {
           ...options,
@@ -36,7 +36,7 @@ export const trpc = createTRPCReact<AppRouter>();
 export const trpcVanillaClient = createTRPCClient<AppRouter>({
   links: [
     httpLink({
-      url: 'http://localhost:4200/trpc',
+      url: process.env.TRPC_URL ?? '',
       fetch(url, options) {
         return fetch(url, {
           ...options,
