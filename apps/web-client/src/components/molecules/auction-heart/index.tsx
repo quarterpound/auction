@@ -17,7 +17,6 @@ const AuctionHeart = ({id, count}: AuctionHeartProps) => {
   const {favorites, setFavorites, authUser} = useAppState()
   const isFavorited = !!favorites.find(f => f.postId === id)
   const [actualCount, setActualCount] = useState(count)
-  console.log(actualCount)
 
   const mutation = trpc.profile.addAuctionToFavorites.useMutation({
     onSuccess: (data) => {
