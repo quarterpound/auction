@@ -27,6 +27,7 @@ const LoginForm = () => {
     setInitialState({
       authUser: user,
       isAuthLoading: false,
+      hasMadeBids: user._count.Bids !== 0,
       favorites: user.UserFavorites
     })
 

@@ -21,6 +21,7 @@ import { toast } from "sonner"
 import Link from "next/link"
 import TimeLeft from "./time-left"
 import { useNotifications } from "@/hooks/use-notifications.hook"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 
 export type BidWithUser = Prisma.BidGetPayload<{
   include: {
@@ -40,11 +41,15 @@ interface BidManagerProps {
 
 const BidManager = ({ auction, bids }: BidManagerProps) => {
   const { outbid, bidAccepted, getPermission } = useNotifications()
+  const [isAlertOpen, setIsAlertOpen] = useState(false)
 
   const {id, currency, bidIncrement} = auction
   const [watching, setWatching] = useState(0)
 
   const authUser = useAppState(state => state.authUser)
+  const hasMadeBids = useAppState(state => state.hasMadeBids)
+  const setHasMadeBids = useAppState(state => state.setHasMadeBids)
+
   const ctx = trpc.useUtils();
 
   const bidsQuery = trpc.auctions.findBidsByAuctionId.useQuery({id}, {
@@ -121,6 +126,8 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
   })
 
   const handleSubmit = (data: CreateBidValidation) => {
+    if (!hasMadeBids) return setIsAlertOpen(true);
+
     bidMutation.mutateAsync({
       amount: data.amount,
       id: data.id
@@ -128,72 +135,97 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid md:flex justify-between items-center">
-        <div className="flex items-center space-x-2">
-          <Price amount={lastAmount} currency={currency} />
+    <>
+      <div className="space-y-6">
+        <div className="grid md:flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <Price amount={lastAmount} currency={currency} />
+          </div>
+          <div className="flex items-center space-x-2">
+            <Clock className="h-4 w-4 md:h-5 md:w-5 text-blue-600" />
+            <TimeLeft date={auction.endTime} />
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <Clock className="h-4 w-4 md:h-5 md:w-5 text-blue-600" />
-          <TimeLeft date={auction.endTime} />
-        </div>
-      </div>
-      {
-        authUser ? (
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-              <div className="flex space-x-2 items-s">
-                <FormItem className="w-full">
-                  <FormLabel htmlFor="amount">Bid Amount</FormLabel>
-                  <FormControl>
-                    <Input
-                      id="amount"
-                      type="number"
-                      placeholder="Enter bid amount"
-                      step="1"
-                      {...form.register('amount')}
-                    />
-                  </FormControl>
-                  <FormMessage>
-                    {form.formState.errors.amount?.message}
-                  </FormMessage>
-                </FormItem>
-                <Button disabled={bidMutation.isPending} type="submit" size="lg" className="self-end">Place Bid</Button>
-              </div>
-            </form>
-          </Form>
-        ) : (
-          <Link href={'/login'} className="block">
-            <Button>Login to Bid</Button>
-          </Link>
-        )
-      }
-      <Separator />
-      <div>
-        <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold mb-2">Recent Bids</h3>
-          <span className="text-sm text-gray-500">
-            {`Online ${watching}`}
-          </span>
-        </div>
-        <div className="grid gap-2">
-          <ul className="space-y-2">
-            {_.reverse(_.sortBy(bidsQuery.data, 'amount')).slice(0, 10).map((bid) => (
-              <li key={`${bid.id}-${bid.amount}`} className="flex justify-between items-center">
-                <div className="flex items-center space-x-2 md:min-w-[200px]">
-                  <User className="h-4 w-4" />
-                  <span>{bid.author.name}</span>
+        {
+          authUser ? (
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                <div className="flex space-x-2 items-s">
+                  <FormItem className="w-full">
+                    <FormLabel htmlFor="amount">Bid Amount</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="amount"
+                        type="number"
+                        placeholder="Enter bid amount"
+                        step="1"
+                        {...form.register('amount')}
+                      />
+                    </FormControl>
+                    <FormMessage>
+                      {form.formState.errors.amount?.message}
+                    </FormMessage>
+                  </FormItem>
+                  <Button disabled={bidMutation.isPending} type="submit" size="lg" className="self-end">Place Bid</Button>
                 </div>
-                <span className="font-semibold">{formatNumber(bid.amount, currency)}</span>
-                <span className="hidden md:block text-sm text-gray-500">
-                  {dayjs(bid.createdAt).format('MMM DD, YYYY HH:mm')}
-                </span>
-              </li>
-            ))}
-          </ul>
+              </form>
+            </Form>
+          ) : (
+            <Link href={'/login'} className="block">
+              <Button>Login to Bid</Button>
+            </Link>
+          )
+        }
+        <Separator />
+        <div>
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-semibold mb-2">Recent Bids</h3>
+            <span className="text-sm text-gray-500">
+              {`Online ${watching}`}
+            </span>
+          </div>
+          <div className="grid gap-2">
+            <ul className="space-y-2">
+              {_.reverse(_.sortBy(bidsQuery.data, 'amount')).slice(0, 10).map((bid) => (
+                <li key={`${bid.id}-${bid.amount}`} className="flex justify-between items-center">
+                  <div className="flex items-center space-x-2 md:min-w-[200px]">
+                    <User className="h-4 w-4" />
+                    <span>{bid.author.name}</span>
+                  </div>
+                  <span className="font-semibold">{formatNumber(bid.amount, currency)}</span>
+                  <span className="hidden md:block text-sm text-gray-500">
+                    {dayjs(bid.createdAt).format('MMM DD, YYYY HH:mm')}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
+      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              The winner of this auction will be announced when the auction ends. If you are the top bidder, you will be held responsible to buy the product shown in the image and described in the description
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setHasMadeBids(true)
+                bidMutation.mutateAsync({
+                  amount: form.getValues().amount,
+                  id: form.getValues().id
+                })
+              }}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }
 

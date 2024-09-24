@@ -34,6 +34,7 @@ const RegisterForm = () => {
     setInitialState({
       authUser: user,
       isAuthLoading: false,
+      hasMadeBids: false,
       favorites: [],
     })
 

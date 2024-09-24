@@ -10,6 +10,7 @@ const AuthProvider = async ({children}: PropsWithChildren) => {
     <StateProvider initialState={{
       favorites: user?.favorites ?? [],
       authUser: user,
+      hasMadeBids: !!user?.hasMadeBids,
       isAuthLoading: false,
     }}>
       {children}
