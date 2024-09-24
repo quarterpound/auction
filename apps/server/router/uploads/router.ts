@@ -11,13 +11,17 @@ uploadRouter.post('/', async (c) => {
 
   const uploadedFile = fileParser.parse(fileField)
 
-  const uploaded = await uploadFile(Buffer.from(await uploadedFile.arrayBuffer()))
+  const [hq, thumb] = await uploadFile(Buffer.from(await uploadedFile.arrayBuffer()))
 
   const asset = await prisma.asset.create({
     data: {
-      url: uploaded.secure_url,
-      width: uploaded.width,
-      height: uploaded.height
+      name: uploadFile.name,
+      url: hq.secure_url,
+      width: hq.width,
+      height: hq.height,
+      smallUrl: thumb.secure_url,
+      smallWidth: thumb.width,
+      smallHeight: thumb.height
     }
   })
 

@@ -4,12 +4,12 @@ import { AddedBid } from "server/events"
 import { formatNumber } from "utils"
 
 const useNotifications = () => {
-  const positive = useMemo(() => new Audio('/notifications/positive.wav'), [])
-  const negative = useMemo(() => new Audio('/notifications/negative.wav'), [])
+  const positive = useMemo(() => typeof Audio !== "undefined" ? new Audio('/notifications/positive.wav') : null, [])
+  const negative = useMemo(() => typeof Audio !== "undefined" ? new Audio('/notifications/negative.wav') : null, [])
 
   const outbid = (bid: AddedBid, auction: Post, onclick?: () => void,) => {
     try {
-      negative.play()
+      negative?.play()
 
       if(!document.hasFocus()) {
         if(window.Notification.permission === 'granted') {
@@ -28,7 +28,7 @@ const useNotifications = () => {
 
   const bidAccepted = () => {
     try {
-      positive.play()
+      positive?.play()
     } catch(e) {
       console.error(e)
     }

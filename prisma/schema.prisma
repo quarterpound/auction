@@ -154,8 +154,12 @@ model CaseMessage {
 model Asset {
   id          Int           @id @default(autoincrement())
   url         String
+  name        String
+  smallUrl    String        @map("small_url")
   width       Int
   height      Int
+  smallWidth  Int           @map("small_width")
+  smallHeight Int           @map("small_height")
   createdAt   DateTime      @default(now())
   AssetOnPost AssetOnPost[]
 

@@ -117,8 +117,8 @@ export const authRoute = router({
       }
 
       const jwt = await signInternal({
-        sub: user.id,
-        name: user.name ?? ''
+        sub: newUser.id,
+        name: newUser.name ?? ''
       })
 
       return {

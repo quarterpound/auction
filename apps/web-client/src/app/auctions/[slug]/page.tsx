@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import BidManager from "./bid-manager"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import AuctionHeart from "@/components/molecules/auction-heart"
+import Gallery from "@/components/ui/gallery"
 
 interface SingleAuctionProps {
   params: {
@@ -24,7 +25,6 @@ export const generateMetadata = async ({params: {slug}}: SingleAuctionProps) => 
 const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
 
     const auction = await trpcVanillaClient.auctions.findBySlug.query({slug})
-    const image = auction.AssetOnPost?.[0]?.asset
 
     return (
       <div className="max-w-5xl mx-auto">
@@ -36,13 +36,7 @@ const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-2">
-            <img
-              src={image.url}
-              width={image.width}
-              height={image.height}
-              alt={auction.name}
-              className="w-full h-auto object-cover rounded-lg shadow-lg"
-            />
+            <Gallery images={auction.AssetOnPost.map(item => item.asset)} />
           </div>
           <div className="space-y-6">
             <BidManager

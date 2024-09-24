@@ -123,9 +123,21 @@ CREATE TABLE "case_messages" (
 CREATE TABLE "assets" (
     "id" SERIAL NOT NULL,
     "url" TEXT NOT NULL,
+    "small_url" TEXT NOT NULL,
+    "width" INTEGER NOT NULL,
+    "height" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "assets_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "user_favorites" (
+    "user_id" TEXT NOT NULL,
+    "post_id" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "user_favorites_pkey" PRIMARY KEY ("user_id","post_id")
 );
 
 -- CreateIndex
@@ -145,6 +157,9 @@ CREATE UNIQUE INDEX "verificiation_requests_identifier_token_key" ON "verificiat
 
 -- CreateIndex
 CREATE UNIQUE INDEX "posts_slug_key" ON "posts"("slug");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "assets_on_posts_post_id_asset_id_key" ON "assets_on_posts"("post_id", "asset_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "categories_slug_key" ON "categories"("slug");
@@ -181,3 +196,9 @@ ALTER TABLE "cases" ADD CONSTRAINT "cases_user_id_fkey" FOREIGN KEY ("user_id") 
 
 -- AddForeignKey
 ALTER TABLE "case_messages" ADD CONSTRAINT "case_messages_case_id_fkey" FOREIGN KEY ("case_id") REFERENCES "cases"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "user_favorites" ADD CONSTRAINT "user_favorites_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "user_favorites" ADD CONSTRAINT "user_favorites_post_id_fkey" FOREIGN KEY ("post_id") REFERENCES "posts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

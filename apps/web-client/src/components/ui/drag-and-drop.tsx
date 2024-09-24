@@ -36,7 +36,7 @@ const DragAndDrop = ({ files, onChange }: DragAndDropProps) => {
       console.log(rejectedFiles)
     },
   })
-  
+
 
   return (
     <div className="mx-auto p-6 bg-white rounded-lg shadow-md">
@@ -65,10 +65,12 @@ const DragAndDrop = ({ files, onChange }: DragAndDropProps) => {
               <div className="flex items-center space-x-2">
                 <img
                   src={file.url}
+                  width={file.width}
+                  height={file.height}
                   alt={file.id.toString()}
                   className="h-10 w-10 object-cover rounded"
                 />
-                <span className="text-sm truncate">{file.url}</span>
+                <span className="text-sm truncate">{file.name}</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Button
