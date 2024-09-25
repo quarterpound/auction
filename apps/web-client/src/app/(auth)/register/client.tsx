@@ -11,6 +11,8 @@ import { useAppState } from "@/store"
 import { Checkbox } from "@/components/ui/checkbox"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { trpc } from "@/trpc"
+import { setCookie } from 'cookies-next';
+
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -30,7 +32,11 @@ const RegisterForm = () => {
   })
 
   const handleSubmit = async (data: RegisterValidation) => {
-    const { user }  = await registerMutation.mutateAsync(data)
+    const { user, token }  = await registerMutation.mutateAsync(data)
+
+    setCookie('authorization', token, {
+      maxAge: 60 * 7 * 24
+    });
 
     setInitialState({
       authUser: user,

@@ -26,6 +26,10 @@ const LoginForm = () => {
   const handleSubmit = async (data: LoginValidation) => {
     const { user } = await loginMutation.mutateAsync(data)
 
+    setCookie('authorization', token, {
+      maxAge: 60 * 7 * 24
+    });
+
     setInitialState({
       authUser: user,
       isAuthLoading: false,

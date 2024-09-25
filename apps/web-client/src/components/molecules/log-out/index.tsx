@@ -17,7 +17,9 @@ const Logout = () => {
         </AlertDialogDescription>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => deleteCookie()}>Confirm</AlertDialogAction>
+            <AlertDialogAction onClick={() => {
+              deleteCookie()
+            }}>Confirm</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
