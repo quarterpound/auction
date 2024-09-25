@@ -11,12 +11,12 @@ export const links = [
     },
     true: wsLink({
       client: createWSClient({
-        url: process.env.NEXT_PUBLIC_WS_URL ?? '',
+        url: process.env.NEXT_PUBLIC_WS_URL ?? 'wss://ws.auksiyon.az',
       }),
       transformer: superjson
     }),
     false: httpBatchLink({
-      url: `${process.env.NEXT_PUBLIC_TRPC_URL}/trpc` ?? '',
+      url: `${process.env.NEXT_PUBLIC_TRPC_URL ?? 'https://auksiyon.az'}/trpc` ?? '',
       fetch(url, options) {
         return fetch(url, {
           ...options,
