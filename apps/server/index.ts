@@ -22,7 +22,7 @@ const socket = new ws.Server({
   port: 3001,
 })
 
-app.use(cors({origin: ['http://localhost:3000', 'https://auksiyon.az'], credentials: true,}))
+app.use(cors({origin: ['http://localhost:3000', env.CLIENT_URL], credentials: true,}))
 app.use(etag() ,logger())
 
 app.use(
