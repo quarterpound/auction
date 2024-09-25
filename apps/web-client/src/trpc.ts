@@ -16,7 +16,7 @@ export const links = [
       transformer: superjson
     }),
     false: httpBatchLink({
-      url: `${process.env.NEXT_PUBLIC_TRPC_URL ?? 'https://auksiyon.az'}/trpc` ?? '',
+      url: `${process.env.NEXT_PUBLIC_TRPC_URL ?? 'https://api.auksiyon.az'}/trpc` ?? '',
       fetch(url, options) {
         return fetch(url, {
           ...options,
