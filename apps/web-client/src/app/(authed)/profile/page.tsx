@@ -11,13 +11,14 @@ import { trpc } from "@/trpc"
 import { toast } from "sonner"
 
 const Profile = () => {
-  const { authUser, setInitialState, favorites } = useAppState()
+  const { authUser, setInitialState, favorites, hasMadeBids } = useAppState()
   const updateProfileMutation = trpc.profile.update.useMutation({
     onSuccess: (data) => {
       setInitialState({
         authUser: data,
         isAuthLoading: false,
         favorites,
+        hasMadeBids,
       })
       toast.success('Profile saved successfully')
     }
