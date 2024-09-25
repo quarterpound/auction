@@ -4,7 +4,7 @@ export const uploadFile = async (file: File) => {
   const formData = new FormData()
   formData.append('file', file)
 
-  const res =  await fetch(`${process.env.NEXT_PUBLIC_TRPC_URL}/uploads`, {
+  const res =  await fetch(`${process.env.NEXT_PUBLIC_TRPC_URL ?? 'https://api.auksiyon.az'}/uploads`, {
     method: 'post',
     body: formData
   })

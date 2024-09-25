@@ -8,11 +8,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { useAppState } from "@/store"
-import { login } from "./actions"
+import { trpc } from "@/trpc"
 
 const LoginForm = () => {
   const router = useRouter();
   const setInitialState = useAppState(state => state.setInitialState)
+
+  const loginMutation = trpc.auth.login.useMutation()
 
   const form = useForm<LoginValidation>({
     values: {
@@ -22,7 +24,7 @@ const LoginForm = () => {
   })
 
   const handleSubmit = async (data: LoginValidation) => {
-    const user = await login(data)
+    const { user } = await loginMutation.mutateAsync(data)
 
     setInitialState({
       authUser: user,

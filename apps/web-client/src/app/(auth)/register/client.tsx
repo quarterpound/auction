@@ -8,13 +8,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { useAppState } from "@/store"
-import { register } from "./actions"
 import { Checkbox } from "@/components/ui/checkbox"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { trpc } from "@/trpc"
 
 const RegisterForm = () => {
   const router = useRouter();
   const setInitialState = useAppState(state => state.setInitialState)
+  const registerMutation = trpc.auth.register.useMutation()
 
   const form = useForm<RegisterValidation>({
     values: {
@@ -29,7 +30,7 @@ const RegisterForm = () => {
   })
 
   const handleSubmit = async (data: RegisterValidation) => {
-    const user = await register(data)
+    const { user }  = await registerMutation.mutateAsync(data)
 
     setInitialState({
       authUser: user,
