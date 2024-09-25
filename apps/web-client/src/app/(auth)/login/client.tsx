@@ -9,6 +9,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { useRouter } from "next/navigation"
 import { useAppState } from "@/store"
 import { trpc } from "@/trpc"
+import { setCookie } from "cookies-next"
 
 const LoginForm = () => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const LoginForm = () => {
   })
 
   const handleSubmit = async (data: LoginValidation) => {
-    const { user } = await loginMutation.mutateAsync(data)
+    const { user, token } = await loginMutation.mutateAsync(data)
 
     setCookie('authorization', token, {
       maxAge: 60 * 7 * 24
