@@ -42,6 +42,8 @@ COPY --from=build /app/out /app/out
 # Copy the root package.json, bun.lockb, and Prisma directory from the base stage
 COPY --from=base /app/package.json /app/bun.lockb ./
 COPY --from=base /app/prisma ./prisma
+# Copy node_modules to ensure all dependencies are available in production
+COPY --from=build /app/node_modules /app/node_modules
 
 # Expose ports for the server and web-client
 EXPOSE 3000

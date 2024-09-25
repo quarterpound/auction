@@ -32,7 +32,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "../../out/web-client/types/**/*.ts"
+    "../../out/web-client/types/**/*.ts",
+    "../../out/web-client/.next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

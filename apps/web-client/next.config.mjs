@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  'distDir': '../../out/web-client',
+  'distDir': '../../out/web-client/.next',
   images: {
     unoptimized: true,
   }
