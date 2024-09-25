@@ -13,7 +13,7 @@ const DashboardLayout = ({children, title}: DashboardLayoutProps & PropsWithChil
         <h1 className="text-3xl font-bold">{title}</h1>
         <Logout />
       </div>
-      <div className="grid gap-5 grid-cols-[3fr_7fr]">
+      <div className="grid gap-5 md:grid-cols-[3fr_7fr]">
         <div>
           <Menu />
         </div>
