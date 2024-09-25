@@ -46,6 +46,7 @@ const AuctionForm = () => {
       return createAndRegister.mutateAsync(data).then(({post, user}) => {
         setInitialState({
           authUser: user,
+          hasMadeBids: false,
           isAuthLoading: false,
           favorites: []
         })
