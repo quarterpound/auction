@@ -4,7 +4,7 @@ export const uploadFile = async (file: File) => {
   const formData = new FormData()
   formData.append('file', file)
 
-  const res =  await fetch('http://localhost:4200/uploads', {
+  const res =  await fetch(`${process.env.NEXT_PUBLIC_TRPC_URL}/uploads`, {
     method: 'post',
     body: formData
   })

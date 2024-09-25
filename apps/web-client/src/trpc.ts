@@ -11,12 +11,12 @@ export const links = [
     },
     true: wsLink({
       client: createWSClient({
-        url: 'ws://localhost:3001',
+        url: process.env.NEXT_PUBLIC_WS_URL ?? '',
       }),
       transformer: superjson
     }),
     false: httpBatchLink({
-      url: process.env.NEXT_PUBLIC_TRPC_URL ?? '',
+      url: `${process.env.NEXT_PUBLIC_TRPC_URL}/trpc` ?? '',
       fetch(url, options) {
         return fetch(url, {
           ...options,
