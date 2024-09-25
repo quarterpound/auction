@@ -1,7 +1,7 @@
 # Use Bun runtime as the base image
 FROM oven/bun:latest AS base
 
-# Set the working directory to /app
+# Set the working directory
 WORKDIR /app
 
 # Copy the root package.json and bun.lockb into the container
@@ -12,13 +12,16 @@ COPY apps/server/package.json apps/server/
 COPY apps/web-client/package.json apps/web-client/
 COPY apps/utils/package.json apps/utils/
 
+# Copy the Prisma directory into the container
+COPY prisma ./prisma
+
 # Install dependencies using Bun, including workspace dependencies
 RUN bun install
 
 # Build stage for the entire monorepo
 FROM base AS build
 
-# Set the working directory to /app
+# Set the working directory
 WORKDIR /app
 
 # Copy the entire project into the container
@@ -30,14 +33,15 @@ RUN bun run build
 # Final stage: Create the final image for production
 FROM oven/bun:latest AS production
 
-# Set the working directory to /app
+# Set the working directory
 WORKDIR /app
 
 # Copy the built outputs from the build stage
 COPY --from=build /app/out /app/out
 
-# Copy the root package.json and bun.lockb from the base stage
+# Copy the root package.json, bun.lockb, and Prisma directory from the base stage
 COPY --from=base /app/package.json /app/bun.lockb ./
+COPY --from=base /app/prisma ./prisma
 
 # Expose ports for the server and web-client
 EXPOSE 3000
