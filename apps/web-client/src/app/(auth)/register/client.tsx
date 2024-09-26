@@ -18,7 +18,6 @@ import { redirectToHome } from "../actions"
 export type RegisterValidation = z.infer<typeof registerValidation>
 
 const RegisterForm = () => {
-  const router = useRouter();
   const setInitialState = useAppState(state => state.setInitialState)
   const registerMutation = trpc.auth.register.useMutation()
 
