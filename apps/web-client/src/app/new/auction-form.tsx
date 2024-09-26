@@ -10,11 +10,13 @@ import { Textarea } from "@/components/ui/textarea"
 import { useAppState } from "@/store"
 import { trpc } from "@/trpc"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { setCookie } from "cookies-next"
 import dayjs from "dayjs"
 import { useRouter } from "next/navigation"
 import { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { createAuctionAndRegisterValidation, createAuctionValidation, CreateAuctionAndRegisterValidation } from 'server/router/auctions/validation'
+import { redirectToNewAuction } from './actions'
 
 const AuctionForm = () => {
   const { authUser } = useAppState()
@@ -31,7 +33,7 @@ const AuctionForm = () => {
       description: '',
       reservePrice: 1,
       bidIncrement: 1,
-      phone: '',
+      email: '',
       password: '',
       name: '',
       assets: [],
@@ -43,15 +45,18 @@ const AuctionForm = () => {
 
   const onSubmit = (data: CreateAuctionAndRegisterValidation) => {
     if(!authUser) {
-      return createAndRegister.mutateAsync(data).then(({post, user}) => {
+      return createAndRegister.mutateAsync(data).then(({post, usr, jwt}) => {
         setInitialState({
-          authUser: user,
+          authUser: usr,
           hasMadeBids: false,
           isAuthLoading: false,
+          hasPendingAuctions: true,
           favorites: []
         })
 
-        return router.push(`/auctions/${post.slug}`)
+        setCookie('authorization', jwt)
+
+        return redirectToNewAuction(post.slug)
       })
     }
 
@@ -168,12 +173,12 @@ const AuctionForm = () => {
                   </FormMessage>
                 </FormItem>
                 <FormItem>
-                  <FormLabel htmlFor="phone">Phone Number</FormLabel>
+                  <FormLabel htmlFor="email">Email</FormLabel>
                   <FormControl>
-                    <Input {...form.register('phone')} type="tel" placeholder="Enter your phone number" />
+                    <Input {...form.register('email')} type="email" placeholder="Enter your email" />
                   </FormControl>
                   <FormMessage>
-                    {form.formState.errors.phone?.message}
+                    {form.formState.errors.email?.message}
                   </FormMessage>
                 </FormItem>
                 <FormItem className="space-y-2">

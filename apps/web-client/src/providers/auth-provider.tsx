@@ -9,6 +9,7 @@ const AuthProvider = async ({children}: PropsWithChildren) => {
   return (
     <StateProvider initialState={{
       favorites: user?.favorites ?? [],
+      hasPendingAuctions: !!user?.hasPendingAuctions,
       authUser: user,
       hasMadeBids: !!user?.hasMadeBids,
       isAuthLoading: false,

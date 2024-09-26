@@ -122,20 +122,28 @@ export const fastAuthProcedure = t.procedure.use(async (opts) => {
     throw new TRPCError({code: 'UNAUTHORIZED', message: 'Token expired'})
   }
 
+  let payload = null;
 
   try {
-    const payload = await verifyInternal(token)
-
-    return opts.next({
-      ctx: {
-        ...payload,
-        c: opts.ctx.c,
-      }
-    })
+    payload = await verifyInternal(token)
   } catch(e) {
     if(opts.ctx.c) {
       deleteCookie(opts.ctx.c, 'authorization')
     }
     throw new TRPCError({code: 'UNAUTHORIZED', message: 'Token expired'})
   }
+
+  if(!payload.emailVerified) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: 'Email verification is required'
+    })
+  }
+
+  return opts.next({
+    ctx: {
+      ...payload,
+      c: opts.ctx.c,
+    }
+  })
 })

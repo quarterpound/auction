@@ -5,6 +5,7 @@ export type InitialState = {
   favorites: UserFavorite[]
   hasMadeBids: boolean
   isAuthLoading: boolean
+  hasPendingAuctions: boolean
 }
 
 export type StateVariables = InitialState

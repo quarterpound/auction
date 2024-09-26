@@ -74,6 +74,7 @@ export const feedRouter = router({
         ) a ON p.id = a.post_id
         WHERE
             p.end_time > NOW()
+            AND p.pending = false
             ${input.categoryId ? `AND p.category_id = ${input.categoryId}` : ''}
         ORDER BY
             ${orderBy} NULLS LAST

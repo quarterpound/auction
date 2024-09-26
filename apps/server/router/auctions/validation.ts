@@ -14,7 +14,7 @@ export const createAuctionValidation = z.object({
 
 export const createAuctionAndRegisterValidation = createAuctionValidation.extend({
   name: z.string().min(1),
-  phone: z.string().min(1),
+  email: z.string().email(),
   password: z.string().min(1)
 })
 

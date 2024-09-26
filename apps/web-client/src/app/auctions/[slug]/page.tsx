@@ -5,6 +5,7 @@ import BidManager from "./bid-manager"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import AuctionHeart from "@/components/molecules/auction-heart"
 import Gallery from "@/components/ui/gallery"
+import { cookies } from "next/headers"
 
 interface SingleAuctionProps {
   params: {
@@ -23,8 +24,11 @@ export const generateMetadata = async ({params: {slug}}: SingleAuctionProps) => 
 }
 
 const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
-
-    const auction = await trpcVanillaClient.auctions.findBySlug.query({slug})
+    const auction = await trpcVanillaClient.auctions.findBySlug.query({slug}, {
+      context: {
+        authorization: cookies().get('authorization')?.value
+      }
+    })
 
     return (
       <div className="max-w-5xl mx-auto">

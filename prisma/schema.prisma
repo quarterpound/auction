@@ -36,6 +36,7 @@ model User {
   email         String?        @unique
   phone         String?        @unique
   emailVerified DateTime?      @map(name: "email_verified")
+  phoneVerified DateTime?      @map("phone_verified")
   image         String?
   accounts      Account[]
   createdAt     DateTime       @default(now())
@@ -66,6 +67,7 @@ model VerificationRequest {
   expires    DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  used       Boolean  @default(false)
 
   @@unique([identifier, token])
   @@map("verificiation_requests")
@@ -88,6 +90,7 @@ model Post {
   author          User           @relation(fields: [authorId], references: [id])
   Bids            Bid[]
   authorId        String         @map("author_id")
+  pending         Boolean        @default(false)
   AssetOnPost     AssetOnPost[]
   UserFavorites   UserFavorite[]
 

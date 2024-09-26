@@ -15,13 +15,13 @@
     "@types/bcrypt": "^5.0.2",
     "bun-types": "latest",
     "concurrently": "^9.0.1",
-    "prisma": "5.19.1"
+    "prisma": "^5.20.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@prisma/client": "5.19.1",
+    "@prisma/client": "^5.20.0",
     "@trpc/client": "next",
     "@trpc/server": "next",
     "bcrypt": "^5.1.1",

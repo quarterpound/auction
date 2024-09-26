@@ -11,6 +11,7 @@ import _ from 'lodash';
 import { User } from "@prisma/client";
 import { setCookie } from "hono/cookie";
 import { signInternal } from "../../jwt";
+import { z } from "zod";
 
 export const authRoute = router({
   login: publicProcedure.input(loginValidation).mutation(async ({input, ctx: {c}}) => {
@@ -27,6 +28,11 @@ export const authRoute = router({
         _count: {
           select: {
             Bids: true,
+            Post: {
+              where: {
+                pending: true,
+              }
+            }
           }
         },
         UserFavorites: true,
@@ -51,7 +57,8 @@ export const authRoute = router({
 
     const jwt = await signInternal({
       sub: user.id,
-      name: user.name ?? ''
+      name: user.name ?? '',
+      emailVerified: false,
     })
 
     if(c) {
@@ -62,7 +69,6 @@ export const authRoute = router({
       token: jwt,
       user: _.omit(user, ['passwords']),
     };
-
   }),
   register: publicProcedure.input(registerValidation).mutation(async ({ input, ctx: {c} }) => {
     const { name, email, password, addToAudiences } = input
@@ -106,7 +112,7 @@ export const authRoute = router({
 
       if (email) {
         try {
-          await sendWelcomeEmail(email, `${env.CLIENT_URL}/auth/verify-email?token=${verificationToken}`, addToAudiences);
+          await sendWelcomeEmail(email, email, verificationToken, addToAudiences);
         } catch (e) {
           throw new TRPCError({ message: 'Failed to send email', code: 'INTERNAL_SERVER_ERROR' })
         }
@@ -114,7 +120,8 @@ export const authRoute = router({
 
       const jwt = await signInternal({
         sub: newUser.id,
-        name: newUser.name ?? ''
+        name: newUser.name ?? '',
+        emailVerified: false,
       })
 
       return {
@@ -142,6 +149,70 @@ export const authRoute = router({
     })
 
     const bids = await prisma.bid.count({where: {userId: ctx.user.id}})
-    return {...ctx.user, favorites, hasMadeBids: bids !== 0};
+    const pendingAuctions = await prisma.post.count({where: {authorId: ctx.user.id}})
+    return {...ctx.user, favorites, hasMadeBids: bids !== 0, hasPendingAuctions: pendingAuctions !== 0};
+  }),
+  verify: publicProcedure.input(z.object({token: z.string(), identifier: z.string()})).mutation(async ({ctx, input}) => {
+    const verificationToken = await prisma.verificationRequest.findUnique({
+      where: {
+        identifier_token: {
+          identifier: input.identifier,
+          token: input.token
+        }
+      }
+    });
+
+
+    if(!verificationToken) {
+      throw new TRPCError({
+        code: 'NOT_FOUND'
+      })
+    }
+
+    if(verificationToken.used) {
+      console.log('here')
+
+      throw new TRPCError({
+        code: "NOT_FOUND"
+      })
+    }
+
+    if(!dayjs(verificationToken.expires).isAfter()) {
+      throw new TRPCError({code: "NOT_FOUND"})
+    }
+
+    const user = await prisma.$transaction(async tx => {
+
+      await tx.verificationRequest.update({
+        where: {
+          id: verificationToken.id
+        },
+        data: {
+          used: true,
+        }
+      })
+
+      const user = await tx.user.update({
+        where: {
+          email: verificationToken.identifier,
+        },
+        data: {
+          emailVerified: new Date(),
+        }
+      })
+
+      await tx.post.updateMany({
+        where: {
+          authorId: user.id
+        },
+        data: {
+          pending: false,
+        }
+      })
+
+      return user
+    })
+
+    return user
   })
 })

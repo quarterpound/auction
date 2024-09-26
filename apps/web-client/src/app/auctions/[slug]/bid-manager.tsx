@@ -9,7 +9,7 @@ import { trpc } from "@/trpc"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Post, Prisma } from "@prisma/client"
 import dayjs from "dayjs"
-import { Clock, User } from "lucide-react"
+import { Clock, Gavel, Search, User } from "lucide-react"
 import { useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { CreateBidValidation } from "server/router/bids/validation"
@@ -22,6 +22,7 @@ import Link from "next/link"
 import TimeLeft from "./time-left"
 import { useNotifications } from "@/hooks/use-notifications.hook"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export type BidWithUser = Prisma.BidGetPayload<{
   include: {
@@ -147,7 +148,14 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
           </div>
         </div>
         {
-          authUser ? (
+          !authUser && (
+            <Link href={'/login'} className="block">
+              <Button>Login to Bid</Button>
+            </Link>
+          )
+        }
+        {
+          authUser && authUser.id !== auction.authorId && (
             <Form {...form}>
               <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
                 <div className="flex space-x-2 items-s">
@@ -156,6 +164,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
                     <FormControl>
                       <Input
                         id="amount"
+                        disabled={!authUser.emailVerified}
                         type="number"
                         placeholder="Enter bid amount"
                         step="1"
@@ -166,39 +175,65 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
                       {form.formState.errors.amount?.message}
                     </FormMessage>
                   </FormItem>
-                  <Button disabled={bidMutation.isPending} type="submit" size="lg" className="self-end">Place Bid</Button>
+                  <Button disabled={bidMutation.isPending || !authUser.emailVerified} type="submit" size="lg" className="self-end">
+                    {authUser.emailVerified ? 'Place Bid' : 'Verify email'}
+                  </Button>
                 </div>
               </form>
             </Form>
-          ) : (
-            <Link href={'/login'} className="block">
-              <Button>Login to Bid</Button>
-            </Link>
           )
         }
         <Separator />
         <div>
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold mb-2">Recent Bids</h2>
-            <span className="text-sm text-gray-500">
-              {`Online ${watching}`}
-            </span>
-          </div>
+          {
+            !auction.pending && (
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold mb-2">Recent Bids</h2>
+                <span className="text-sm text-gray-500">
+                  {`Online ${watching}`}
+                </span>
+              </div>
+            )
+          }
           <div className="grid gap-2">
-            <ul className="space-y-2">
-              {_.reverse(_.sortBy(bidsQuery.data, 'amount')).slice(0, 5).map((bid) => (
-                <li key={`${bid.id}-${bid.amount}`} className="flex justify-between items-center">
-                  <div className="flex items-center space-x-2 md:min-w-[200px]">
-                    <User className="h-4 w-4" />
-                    <span>{bid.author.name}</span>
-                  </div>
-                  <span className="font-semibold">{formatNumber(bid.amount, currency)}</span>
-                  <span className="hidden md:block text-sm text-gray-500">
-                    {dayjs(bid.createdAt).format('MMM DD, YYYY HH:mm')}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {
+              bidsQuery.data.length !== 0 ? (
+                <ul className="space-y-2">
+                  {_.reverse(_.sortBy(bidsQuery.data, 'amount')).slice(0, 5).map((bid) => (
+                    <li key={`${bid.id}-${bid.amount}`} className="flex justify-between items-center">
+                      <div className="flex items-center space-x-2 md:min-w-[200px]">
+                        <User className="h-4 w-4" />
+                        <span>{bid.author.name}</span>
+                      </div>
+                      <span className="font-semibold">{formatNumber(bid.amount, currency)}</span>
+                      <span className="hidden md:block text-sm text-gray-500">
+                        {dayjs(bid.createdAt).format('MMM DD, YYYY HH:mm')}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="grid gap-3">
+                  <Card className="w-full mx-auto">
+                    <CardHeader className="text-center">
+                      <div className="w-20 h-20 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                        <Gavel className="h-10 w-10 text-gray-400" />
+                      </div>
+                      <CardTitle className="text-2xl font-bold">No Bids Yet</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-center">
+                      <p className="text-gray-600 mb-4">
+                        {"This auction has not recieved any bids yet. But we are promoting this post so that more people can see it!"}
+                      </p>
+                      <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
+                        <Search className="h-4 w-4" />
+                        <span>Browse through our wide selection of auctions</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )
+            }
           </div>
         </div>
       </div>

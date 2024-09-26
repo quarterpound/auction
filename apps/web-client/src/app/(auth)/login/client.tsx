@@ -40,6 +40,7 @@ const LoginForm = () => {
 
     setInitialState({
       authUser: user,
+      hasPendingAuctions: user._count.Post !== 0,
       isAuthLoading: false,
       hasMadeBids: user._count.Bids !== 0,
       favorites: user.UserFavorites

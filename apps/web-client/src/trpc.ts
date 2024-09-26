@@ -21,7 +21,6 @@ export const links = [
         return fetch(url, {
           ...options,
           credentials: 'include',
-          cache: 'no-store',
         });
       },
       transformer: superjson,

@@ -3,6 +3,7 @@ import Logo from "./logo"
 import { Plus } from "lucide-react"
 import Link from "next/link"
 import AuthButtons from "./auth"
+import ErrorBar from "./error-bar"
 
 const Header = () => {
   return (
@@ -25,8 +26,8 @@ const Header = () => {
             <div className="flex items-center">
               <Link href={'/new'}>
                 <Button className="hidden sm:flex">
-                  <Plus className="mr-2 h-4 w-4" />
                   Create
+                  <Plus className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
               <Button className="sm:hidden" variant="ghost" size="icon">
@@ -37,6 +38,7 @@ const Header = () => {
           </div>
         </div>
       </div>
+      <ErrorBar />
     </header>
   )
 }

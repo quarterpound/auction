@@ -5,6 +5,7 @@ const useAppState = create<State>((set) => ({
   authUser: null,
   favorites: [],
   hasMadeBids: false,
+  hasPendingAuctions: false,
   isAuthLoading: false,
   setAuthUser: (authUser) => set({ authUser }),
   setInitialState: (initialState) => set(initialState),
