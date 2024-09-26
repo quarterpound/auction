@@ -13,16 +13,16 @@ const AuthButtons = () => {
 
   if(authUser) {
     return <nav className="flex items-center space-x-4">
-      <Link className="text-sm text-muted-foreground hover:text-foreground transition-colors" href={'/profile'}>{`${authUser.name}`}</Link>
+      <Link className="text-sm text-foreground hover:text-foreground transition-colors" href={'/profile'}>{`${authUser.name}`}</Link>
     </nav>
   }
 
   return (
     <nav className="flex items-center space-x-4 text-sm">
-      <Link href="/login" className="text-muted-foreground hover:text-foreground transition-colors">
+      <Link href="/login" className="text-foreground hover:text-foreground transition-colors">
         Sign In
       </Link>
-      <Link href="/register" className="text-muted-foreground hover:text-foreground transition-colors">
+      <Link href="/register" className="text-foreground hover:text-foreground transition-colors">
         Sign Up
       </Link>
     </nav>

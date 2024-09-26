@@ -1,5 +1,5 @@
 import { Asset } from '@prisma/client'
-import { Upload, X } from 'lucide-react'
+import { LoaderCircle, Upload, X } from 'lucide-react'
 import {useDropzone} from 'react-dropzone'
 import { Button } from './button'
 import { MAX_UPLOAD_SIZE } from 'server/router/uploads/validator';
@@ -13,7 +13,7 @@ interface DragAndDropProps {
 
 const DragAndDrop = ({ files, onChange }: DragAndDropProps) => {
 
-  const [, setIsUploading] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
   const { getRootProps, isDragActive, getInputProps } = useDropzone({
     accept: {
       'image/jpeg': ['.jpg', '.jpeg'],
@@ -48,7 +48,13 @@ const DragAndDrop = ({ files, onChange }: DragAndDropProps) => {
       >
         <input {...getInputProps()} />
         <div className='grid gap-2'>
-          <Upload className="mx-auto h-12 w-12 text-gray-400" />
+          {
+            isUploading ? (
+              <LoaderCircle className='mx-auto h-12 w-12 text-gray-400 animate-spin' />
+            ) : (
+              <Upload className="mx-auto h-12 w-12 text-gray-400" />
+            )
+          }
           <p className="mt-2 text-sm text-gray-600">
             {`Drag 'n' drop some files here, or click to select files`}
           </p>

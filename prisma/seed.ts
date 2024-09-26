@@ -13,7 +13,7 @@ async function createCategories(
     return 0;
   }
 
-  for (const category of categories) {
+  for await (const category of categories) {
     const createdCategory = await prisma.category.create({
       data: {
         name: category.name,

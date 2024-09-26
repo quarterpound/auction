@@ -2,17 +2,21 @@
 
 import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form"
 import { useForm } from "react-hook-form"
-import { LoginValidation } from "./validation"
 import { Input } from "@/components/ui/input"
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useRouter } from "next/navigation"
 import { useAppState } from "@/store"
 import { trpc } from "@/trpc"
 import { setCookie } from "cookies-next"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { loginValidation } from "server/router/auth/validation"
+import { toast } from "sonner"
+import { z } from "zod"
+import { redirectToHome } from "../actions"
+
+export type LoginValidation = z.infer<typeof loginValidation>
 
 const LoginForm = () => {
-  const router = useRouter();
   const setInitialState = useAppState(state => state.setInitialState)
 
   const loginMutation = trpc.auth.login.useMutation()
@@ -21,7 +25,8 @@ const LoginForm = () => {
     values: {
       username: '',
       password: ''
-    }
+    },
+    resolver: zodResolver(loginValidation)
   })
 
   const handleSubmit = async (data: LoginValidation) => {
@@ -31,6 +36,8 @@ const LoginForm = () => {
       maxAge: 60 * 7 * 24
     });
 
+    toast.success("Welcome back!")
+
     setInitialState({
       authUser: user,
       isAuthLoading: false,
@@ -38,13 +45,13 @@ const LoginForm = () => {
       favorites: user.UserFavorites
     })
 
-    router.refresh()
+    redirectToHome()
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)}>
-        <Card className="min-w-[400px]">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="w-[350px]">
+        <Card className="w-full">
           <CardHeader>
             <CardTitle>
               <h1>Login</h1>
@@ -65,7 +72,7 @@ const LoginForm = () => {
             </FormItem>
           </CardContent>
           <CardFooter>
-            <Button className="w-full">Login</Button>
+            <Button disabled={loginMutation.isPending} className="w-full">Login</Button>
           </CardFooter>
         </Card>
       </form>

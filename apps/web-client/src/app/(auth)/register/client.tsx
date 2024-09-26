@@ -2,7 +2,6 @@
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { useForm } from "react-hook-form"
-import { registerValidation, RegisterValidation } from "./validation"
 import { Input } from "@/components/ui/input"
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,7 +11,11 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { trpc } from "@/trpc"
 import { setCookie } from 'cookies-next';
+import { registerValidation } from "server/router/auth/validation"
+import { z } from "zod"
+import { redirectToHome } from "../actions"
 
+export type RegisterValidation = z.infer<typeof registerValidation>
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -23,7 +26,6 @@ const RegisterForm = () => {
     values: {
       name: '',
       email: '',
-      phone: '',
       password: '',
       acceptTerms: false,
       addToAudiences: false
@@ -45,13 +47,13 @@ const RegisterForm = () => {
       favorites: [],
     })
 
-    router.refresh()
+    redirectToHome()
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)}>
-        <Card className="min-w-[400px]">
+      <form className="w-[350px] block" onSubmit={form.handleSubmit(handleSubmit)}>
+        <Card className="w-full">
           <CardHeader>
             <CardTitle>
               <h1>Register</h1>
@@ -74,15 +76,6 @@ const RegisterForm = () => {
               </FormControl>
               <FormMessage>
                 {form.formState.errors.email?.message}
-              </FormMessage>
-            </FormItem>
-            <FormItem>
-              <FormLabel>Phone</FormLabel>
-              <FormControl>
-                <Input {...form.register('phone')} placeholder="+994 516492912"  />
-              </FormControl>
-              <FormMessage>
-                {form.formState.errors.phone?.message}
               </FormMessage>
             </FormItem>
             <FormItem>
@@ -134,7 +127,7 @@ const RegisterForm = () => {
             />
           </CardContent>
           <CardFooter>
-            <Button className="w-full">Register</Button>
+            <Button className="w-full" disabled={registerMutation.isPending}>Register</Button>
           </CardFooter>
         </Card>
       </form>

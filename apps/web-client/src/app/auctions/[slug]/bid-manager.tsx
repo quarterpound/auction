@@ -179,14 +179,14 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
         <Separator />
         <div>
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold mb-2">Recent Bids</h3>
+            <h2 className="text-xl font-semibold mb-2">Recent Bids</h2>
             <span className="text-sm text-gray-500">
               {`Online ${watching}`}
             </span>
           </div>
           <div className="grid gap-2">
             <ul className="space-y-2">
-              {_.reverse(_.sortBy(bidsQuery.data, 'amount')).slice(0, 10).map((bid) => (
+              {_.reverse(_.sortBy(bidsQuery.data, 'amount')).slice(0, 5).map((bid) => (
                 <li key={`${bid.id}-${bid.amount}`} className="flex justify-between items-center">
                   <div className="flex items-center space-x-2 md:min-w-[200px]">
                     <User className="h-4 w-4" />

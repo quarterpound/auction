@@ -7,7 +7,7 @@ import AuthButtons from "./auth"
 const Header = () => {
   return (
     <header className="bg-background">
-      <div className="bg-muted px-8">
+      <div className="bg-gray-50 px-8">
         <div className="container mx-auto">
           <div className="flex items-center justify-end h-10">
             <AuthButtons />
@@ -18,23 +18,9 @@ const Header = () => {
         <div className="container mx-auto">
           <div className="flex items-center justify-between h-14">
             <div className="flex items-center space-x-8">
-              <Link href="/" className="flex-shrink-0 flex items-center">
+              <Link href="/" aria-label="Home" className="flex-shrink-0 flex items-center">
                 <Logo />
               </Link>
-              <nav className="hidden md:flex items-center space-x-8">
-                <Link href="/products" className="text-foreground hover:text-primary transition-colors">
-                  Products
-                </Link>
-                <Link href="/services" className="text-foreground hover:text-primary transition-colors">
-                  Services
-                </Link>
-                <Link href="/about" className="text-foreground hover:text-primary transition-colors">
-                  About
-                </Link>
-                <Link href="/contact" className="text-foreground hover:text-primary transition-colors">
-                  Contact
-                </Link>
-              </nav>
             </div>
             <div className="flex items-center">
               <Link href={'/new'}>

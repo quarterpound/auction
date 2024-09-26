@@ -20,10 +20,10 @@ const Gallery = ({images}: GalleryProps) => {
   return (
     <div className="h-[400px] block relative bg-cover rounded-sm shadow-lg" style={{backgroundImage: `url(${images[index].smallUrl})`}}>
       <div className="w-full absolute justify-between px-2 h-full flex items-center top-0">
-        <Button size={'icon'} variant={'outline'} onClick={onNavigate(-1)}>
+        <Button size={'icon'} aria-label="Previous image" name="previous-image" variant={'outline'} onClick={onNavigate(-1)}>
           <ArrowLeft />
         </Button>
-        <Button size={'icon'} variant={'outline'} onClick={onNavigate(1)}>
+        <Button size={'icon'} aria-label="Next image" name="next-image" variant={'outline'} onClick={onNavigate(1)}>
           <ArrowRight />
         </Button>
       </div>

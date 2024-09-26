@@ -65,7 +65,7 @@ export const authRoute = router({
 
   }),
   register: publicProcedure.input(registerValidation).mutation(async ({ input, ctx: {c} }) => {
-    const { name, email, password, phone, addToAudiences } = input
+    const { name, email, password, addToAudiences } = input
 
     const { jwt, user } = await prisma.$transaction(async (tx) => {
       const existingUser = await tx.user.findFirst({
@@ -73,9 +73,6 @@ export const authRoute = router({
           OR: [
             {
               email,
-            },
-            {
-              phone,
             }
           ]
         }
@@ -89,7 +86,6 @@ export const authRoute = router({
         data: {
           email,
           name,
-          phone,
           passwords: {
             create: {
               hash: await bcrypt.hash(password, 12)
@@ -102,7 +98,7 @@ export const authRoute = router({
 
       await prisma.verificationRequest.create({
         data: {
-          identifier: email ?? phone,
+          identifier: email,
           token: verificationToken,
           expires: dayjs().add(1, 'day').toDate()
         }

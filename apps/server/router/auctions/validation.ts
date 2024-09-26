@@ -18,5 +18,5 @@ export const createAuctionAndRegisterValidation = createAuctionValidation.extend
   password: z.string().min(1)
 })
 
-  export type CreateAuctionAndRegisterValidation =  z.infer<typeof createAuctionAndRegisterValidation>
+export type CreateAuctionAndRegisterValidation =  z.infer<typeof createAuctionAndRegisterValidation>
 export type CreateAuctionValidation = z.infer<typeof createAuctionValidation>
