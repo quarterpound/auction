@@ -3,6 +3,8 @@ import { prisma } from "../../database";
 import { protectedProcedure, router } from "../../trpc";
 import { profileUpdateValidation } from "./validation";
 import bcrypt from 'bcrypt'
+import { TRPCError } from "@trpc/server";
+import { InternalRedisConnection } from "../../database/redis";
 
 export const profileRouter = router({
   update: protectedProcedure.input(profileUpdateValidation).mutation(async ({input, ctx: {user}}) => {
@@ -153,6 +155,44 @@ export const profileRouter = router({
           }
         }
       }
+    })
+  }),
+  deleteAuction: protectedProcedure.input(z.object({id: z.number()})).mutation(async({ctx: {user}, input}) => {
+    return prisma.$transaction(async (tx) => {
+      const data = await tx.post.findUnique({
+        where: {
+          id: input.id
+        }
+      })
+
+      if(!data) {
+        throw new TRPCError({code: 'NOT_FOUND'})
+      }
+
+      if(data?.authorId !== user.id) {
+        throw new TRPCError({code: 'FORBIDDEN'})
+      }
+
+      await tx.bid.deleteMany({
+        where: {
+          postId: data.id
+        }
+      })
+
+      await tx.assetOnPost.deleteMany({
+        where: {
+          postId: data.id
+        }
+      })
+
+      const conn = await InternalRedisConnection.getRedisConnection()
+      await conn.del(`post:${data.id}`)
+
+      return await tx.post.delete({
+        where: {
+          id: data.id
+        }
+      })
     })
   })
 })
