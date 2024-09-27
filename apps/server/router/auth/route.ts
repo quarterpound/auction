@@ -4,7 +4,6 @@ import { protectedProcedure, publicProcedure, router } from "../../trpc";
 import { loginValidation, registerValidation } from "./validation";
 import bcrypt from 'bcrypt'
 import dayjs from "dayjs";
-import { env } from "../../env";
 import crypto from 'crypto'
 import { sendWelcomeEmail } from "../../mail";
 import _ from 'lodash';

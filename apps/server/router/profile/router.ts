@@ -5,6 +5,9 @@ import { profileUpdateValidation } from "./validation";
 import bcrypt from 'bcrypt'
 import { TRPCError } from "@trpc/server";
 import { InternalRedisConnection } from "../../database/redis";
+import { sendWelcomeEmail } from "../../mail";
+import crypto from 'crypto'
+import dayjs, { Dayjs } from "dayjs";
 
 export const profileRouter = router({
   update: protectedProcedure.input(profileUpdateValidation).mutation(async ({input, ctx: {user}}) => {
@@ -193,6 +196,71 @@ export const profileRouter = router({
           id: data.id
         }
       })
+    })
+  }),
+  resendVerificationEmail: protectedProcedure.mutation(async ({ctx: {user}}) => {
+
+    const email = user.email;
+
+    if(!email) {
+      throw new TRPCError({
+        code: 'CONFLICT',
+        message: 'User does not have an email present'
+      })
+    }
+
+    if(user.emailVerified) {
+      throw new TRPCError({
+        code: 'CONFLICT',
+        message: 'Email already verified'
+      })
+    }
+
+    return prisma.$transaction(async (tx) => {
+      const lastVerificationRequest = await tx.verificationRequest.findFirst({
+        where: {
+          identifier: email,
+          used: false,
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      });
+
+      if(!lastVerificationRequest) {
+        const verificationToken = crypto.randomBytes(32).toString('hex')
+        const createdToken = await tx.verificationRequest.create({
+          data: {
+            identifier: email,
+            token: verificationToken,
+            expires: dayjs().add(1, 'day').toDate()
+          }
+        })
+
+        await sendWelcomeEmail(email, email, verificationToken, true)
+
+        return createdToken;
+      }
+
+      if(dayjs(lastVerificationRequest.createdAt).diff(dayjs(), 'minute') > -5) {
+        throw new TRPCError({
+          code: 'TOO_MANY_REQUESTS',
+          message: 'Please wait 5 minutes before trying again'
+        })
+      }
+
+      const verificationToken = crypto.randomBytes(32).toString('hex')
+      const createdToken = await tx.verificationRequest.create({
+        data: {
+          identifier: email,
+          token: verificationToken,
+          expires: dayjs().add(1, 'day').toDate()
+        }
+      })
+
+      await sendWelcomeEmail(email, email, verificationToken, true)
+
+      return createdToken;
     })
   })
 })

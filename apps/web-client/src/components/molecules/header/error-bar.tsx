@@ -2,10 +2,23 @@
 
 import { Button } from "@/components/ui/button"
 import { useAppState } from "@/store"
-import Link from "next/link"
+import { trpc } from "@/trpc"
+import { useState } from "react"
+import { toast } from "sonner"
 
 const ErrorBar = () => {
   const {authUser, hasPendingAuctions} = useAppState()
+  const [submitted, setSubmitted] = useState(true)
+
+  const resendMutation = trpc.profile.resendVerificationEmail.useMutation({
+    onSuccess: () => {
+      setSubmitted(true)
+      toast.success("Check your email!")
+    },
+    onError: (e) => {
+      toast.error(`Something went wrong: ${e.message}`)
+    }
+  })
 
   if(!authUser) {
     return <></>
@@ -15,22 +28,28 @@ const ErrorBar = () => {
     return <></>
   }
 
-
   if(hasPendingAuctions) {
-    return <div className="bg-orange-500">
+    return <div className="bg-orange-400">
       <div className="container text-sm mx-auto py-2 flex items-center justify-between">
         <p className="text-white font-bold">You have pending auctions, please verify your email to post</p>
-        <Link href={'/verify'}>
-          <Button variant={'link'} className="text-white font-bold">Verify</Button>
-        </Link>
+        {
+          !submitted && (
+            <Button onClick={() => resendMutation.mutate()} disabled={resendMutation.isPending} variant={'link'} className="text-white font-bold">{`Didn't recieve an email? Resend`}</Button>
+          )
+        }
       </div>
     </div>
   }
 
   return (
-    <div className="bg-orange-500">
+    <div className="bg-orange-400">
       <div className="container text-sm mx-auto py-2 flex items-center justify-between">
         <p className="text-white font-bold">Please verify your email</p>
+        {
+          !submitted && (
+            <Button onClick={() => resendMutation.mutate()} disabled={resendMutation.isPending} variant={'link'} className="text-white font-bold">{`Didn't recieve an email? Resend`}</Button>
+          )
+        }
       </div>
     </div>
   )
