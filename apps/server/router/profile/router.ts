@@ -242,11 +242,11 @@ export const profileRouter = router({
         return createdToken;
       }
 
-      if(dayjs(lastVerificationRequest.createdAt).diff(dayjs(), 'minute') > -5) {
+      if (dayjs().diff(dayjs(lastVerificationRequest.createdAt), 'minute') < 5) {
         throw new TRPCError({
           code: 'TOO_MANY_REQUESTS',
           message: 'Please wait 5 minutes before trying again'
-        })
+        });
       }
 
       const verificationToken = crypto.randomBytes(32).toString('hex')

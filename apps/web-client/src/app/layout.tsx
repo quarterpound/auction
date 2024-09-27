@@ -29,6 +29,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script defer data-domain="auksiyon.az" src="https://plausible.auksiyon.az/js/script.js"></script>
+      </head>
       <body
         className={cn(
           "bg-background font-sans antialiased",
