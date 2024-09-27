@@ -11,7 +11,7 @@ export const links = [
     },
     true: wsLink({
       client: createWSClient({
-        url: process.env.NEXT_PUBLIC_WS_URL ?? 'wss://ws.auksiyon.az',
+        url: process.env.NEXT_PUBLIC_WS_URL ?? 'https://ws.auksiyon.az',
       }),
       transformer: superjson
     }),
