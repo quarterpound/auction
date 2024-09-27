@@ -4,7 +4,6 @@ import { trpc } from "@/trpc"
 import { FeedResultValidation } from "server/router/feed/validation"
 import AuctionCard from "../auction-card"
 import { Prisma } from "@prisma/client"
-import { useAppState } from "@/store"
 
 export type Category = Prisma.CategoryGetPayload<{
   include: {
