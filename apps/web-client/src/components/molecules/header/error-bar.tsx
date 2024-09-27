@@ -8,7 +8,7 @@ import { toast } from "sonner"
 
 const ErrorBar = () => {
   const {authUser, hasPendingAuctions} = useAppState()
-  const [submitted, setSubmitted] = useState(true)
+  const [submitted, setSubmitted] = useState(false)
 
   const resendMutation = trpc.profile.resendVerificationEmail.useMutation({
     onSuccess: () => {
