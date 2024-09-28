@@ -1,22 +1,12 @@
-'use client'
-
-import { useAppState } from "@/store"
-import { useRouter } from "next/navigation";
+import { auth } from "@/lib/auth"
+import { redirect } from "next/navigation"
 import { PropsWithChildren } from "react"
 
-const GuestGuard = (props: PropsWithChildren) => {
-  const { children } = props
-  const router = useRouter();
+const GuestGuard = async ({children}: PropsWithChildren) => {
+  const user = await auth()
 
-  const { authUser, isAuthLoading } = useAppState()
-
-  if (isAuthLoading) {
-    return <div>Loading...</div>
-  }
-
-  if (authUser && !isAuthLoading) {
-    router.push('/')
-    return <div className="container mx-auto">Redirecting...</div>
+  if(user) {
+    redirect('/')
   }
 
   return <>{children}</>

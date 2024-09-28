@@ -12,7 +12,7 @@ import { trpc } from "@/trpc"
 import { setCookie } from 'cookies-next';
 import { registerValidation } from "server/router/auth/validation"
 import { z } from "zod"
-import { redirectToHome } from "../actions"
+import { redirectToEmailVerify } from "../actions"
 
 export type RegisterValidation = z.infer<typeof registerValidation>
 
@@ -46,7 +46,7 @@ const RegisterForm = () => {
       favorites: [],
     })
 
-    redirectToHome()
+    redirectToEmailVerify()
   }
 
   return (

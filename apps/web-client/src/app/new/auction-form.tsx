@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation"
 import { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { createAuctionAndRegisterValidation, createAuctionValidation, CreateAuctionAndRegisterValidation } from 'server/router/auctions/validation'
-import { redirectToNewAuction } from './actions'
+import { redirectToEmailVerify } from "../(auth)/actions"
 
 const AuctionForm = () => {
   const { authUser } = useAppState()
@@ -45,7 +45,7 @@ const AuctionForm = () => {
 
   const onSubmit = (data: CreateAuctionAndRegisterValidation) => {
     if(!authUser) {
-      return createAndRegister.mutateAsync(data).then(({post, usr, jwt}) => {
+      return createAndRegister.mutateAsync(data).then(({usr, jwt}) => {
         setInitialState({
           authUser: usr,
           hasMadeBids: false,
@@ -56,7 +56,7 @@ const AuctionForm = () => {
 
         setCookie('authorization', jwt)
 
-        return redirectToNewAuction(post.slug)
+        return redirectToEmailVerify()
       })
     }
 

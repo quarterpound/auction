@@ -237,7 +237,7 @@ export const profileRouter = router({
           }
         })
 
-        await sendWelcomeEmail(email, email, verificationToken, true)
+        await sendWelcomeEmail(email, email, verificationToken, undefined, true)
 
         return createdToken;
       }
@@ -258,7 +258,7 @@ export const profileRouter = router({
         }
       })
 
-      await sendWelcomeEmail(email, email, verificationToken, true)
+      await sendWelcomeEmail(email, email, verificationToken, undefined, true)
 
       return createdToken;
     })

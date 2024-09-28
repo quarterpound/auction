@@ -14,6 +14,7 @@ import { InternalRedisConnection } from "../../database/redis";
 import { signInternal } from "../../jwt";
 import { sendWelcomeEmail } from "../../mail";
 import crypto from 'crypto'
+import { env } from "../../env";
 
 export const auctionRoute = router({
   createAndRegister: publicProcedure.input(createAuctionAndRegisterValidation).mutation(async ({input, ctx: {c}}) => {
@@ -73,7 +74,7 @@ export const auctionRoute = router({
       const conn = await InternalRedisConnection.getRedisConnection();
       await conn.set(`post:${post.id}`, post.priceMin)
 
-      await sendWelcomeEmail(input.email, input.email, verificationToken, true)
+      await sendWelcomeEmail(input.email, input.email, verificationToken, `/auctions/${post.slug}`, true)
 
       return {
         jwt,

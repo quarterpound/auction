@@ -1,3 +1,4 @@
+import DashboardLayout from "@/components/layout/dashboard-layout"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { PropsWithChildren } from "react"
@@ -10,7 +11,7 @@ const Layout = async ({children}: PropsWithChildren) => {
   }
 
   return (
-    children
+    <DashboardLayout title="Your profile">{children}</DashboardLayout>
   )
 }
 

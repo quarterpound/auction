@@ -111,7 +111,7 @@ export const authRoute = router({
 
       if (email) {
         try {
-          await sendWelcomeEmail(email, email, verificationToken, addToAudiences);
+          await sendWelcomeEmail(email, email, verificationToken, undefined, addToAudiences);
         } catch (e) {
           throw new TRPCError({ message: 'Failed to send email', code: 'INTERNAL_SERVER_ERROR' })
         }
@@ -212,6 +212,13 @@ export const authRoute = router({
       return user
     })
 
-    return user
+    return {
+      user,
+      jwt: await signInternal({
+        sub: user.id,
+        emailVerified: !!user.emailVerified,
+        name: user.name ?? ''
+      })
+    }
   })
 })
