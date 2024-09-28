@@ -5,6 +5,7 @@ import { Button } from './button'
 import { MAX_UPLOAD_SIZE } from 'server/router/uploads/validator';
 import { uploadFile } from '@/lib/files';
 import { useState } from 'react';
+import Image from 'next/image'
 
 interface DragAndDropProps {
   files: Asset[]
@@ -69,7 +70,7 @@ const DragAndDrop = ({ files, onChange }: DragAndDropProps) => {
           {files.map(file => (
             <li key={file.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
               <div className="flex items-center space-x-2">
-                <img
+                <Image
                   src={file.url}
                   width={file.width}
                   height={file.height}

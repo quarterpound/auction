@@ -9,6 +9,7 @@ import { trpc } from "@/trpc"
 import { useState } from "react"
 import { useTimer } from "@/hooks/use-timer.hook"
 import AuctionHeart from "../auction-heart"
+import Image from 'next/image'
 
 
 type AuctionCardProps = {item: AuctionFeedItem}
@@ -35,7 +36,7 @@ const AuctionCard = ({item}: AuctionCardProps) => {
   return (
     <Card className="flex flex-col">
       <CardHeader className="p-0">
-        <img
+        <Image
           src={imageUrl.url}
           alt={item.name}
           width={imageUrl.width}

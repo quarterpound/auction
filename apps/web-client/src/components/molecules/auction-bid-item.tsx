@@ -8,6 +8,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { formatNumber } from "utils"
 import { Badge } from "../ui/badge"
+import Image from 'next/image'
 
 interface AuctionBidItem {
   item: Prisma.PostGetPayload<{
@@ -50,7 +51,7 @@ const AuctionBidItem = ({item}: AuctionBidItem) => {
     <Card>
       <CardContent className="p-4">
         <div className="grid gap-2 items-center grid-cols-[50px_auto]">
-          <img
+          <Image
             src={item.AssetOnPost[0].asset.url}
             width={item.AssetOnPost[0].asset.width}
             height={item.AssetOnPost[0].asset.height}

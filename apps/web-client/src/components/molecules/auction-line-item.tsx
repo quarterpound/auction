@@ -9,6 +9,7 @@ import { Button } from "../ui/button"
 import { TrashIcon } from "lucide-react"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog"
 import { toast } from "sonner"
+import Image from 'next/image'
 
 interface AuctionLineItemProps {
   item: Prisma.PostGetPayload<{
@@ -72,7 +73,7 @@ const AuctionLineItem = ({item}: AuctionLineItemProps) => {
     <Card>
       <CardContent className="p-4">
         <div className="grid gap-2 items-center grid-cols-[50px_auto]">
-          <img
+          <Image
             width={item.AssetOnPost[0].asset.width}
             height={item.AssetOnPost[0].asset.height}
             alt={item.name}
