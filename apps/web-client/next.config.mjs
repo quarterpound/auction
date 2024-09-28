@@ -2,12 +2,7 @@
 const nextConfig = {
   'distDir': '../../out/web-client/.next',
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-      },
-    ],
+    unoptimized: true,
   }
 };
 
