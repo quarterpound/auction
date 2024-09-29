@@ -55,7 +55,7 @@ const LoginForm = () => {
         <Card className="w-full">
           <CardHeader>
             <CardTitle>
-              <h1>Login</h1>
+              Login
             </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-2">

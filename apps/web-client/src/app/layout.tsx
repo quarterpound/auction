@@ -30,7 +30,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script defer data-domain="auksiyon.az" src="https://plausible.auksiyon.az/js/script.js"></script>
+        <script defer data-domain="auksiyon.az" src="https://plausible.auksiyon.az/js/script.hash.outbound-links.js"></script>
+        <script
+
+          dangerouslySetInnerHTML={{__html: `
+          window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }
+          `}}
+        />
       </head>
       <body
         className={cn(

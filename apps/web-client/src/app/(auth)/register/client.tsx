@@ -55,7 +55,7 @@ const RegisterForm = () => {
         <Card className="w-full">
           <CardHeader>
             <CardTitle>
-              <h1>Register</h1>
+              Register
             </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-2">
