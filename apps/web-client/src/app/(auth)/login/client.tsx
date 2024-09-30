@@ -16,7 +16,11 @@ import { redirectToHome } from "../actions"
 
 export type LoginValidation = z.infer<typeof loginValidation>
 
-const LoginForm = () => {
+interface LoginFormProps {
+  next?: string
+}
+
+const LoginForm = ({next}: LoginFormProps) => {
   const setInitialState = useAppState(state => state.setInitialState)
 
   const loginMutation = trpc.auth.login.useMutation()
@@ -46,7 +50,7 @@ const LoginForm = () => {
       favorites: user.UserFavorites
     })
 
-    redirectToHome()
+    redirectToHome(next)
   }
 
   return (

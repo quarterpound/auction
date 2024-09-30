@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { auth } from "@/lib/auth"
 import StateProvider from "@/providers/state-provider"
 import { trpcVanillaClient } from "@/trpc"
 import { AlertCircle, CheckCircle, Gavel, MailIcon, RefreshCw } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import {setJwtCookie} from './actions'
 
 interface VerifyPageProps {
   searchParams: {
@@ -17,21 +17,21 @@ interface VerifyPageProps {
 
 
 const VerifyPage = async ({searchParams: {token, identifier, next}}: VerifyPageProps) => {
-  let jwtActual = null;
   let userActual = null;
 
+  const currentUser = await auth()
+
   try {
-    const { jwt, user } = await trpcVanillaClient.auth.verify.mutate({
+    const { user } = await trpcVanillaClient.auth.verify.mutate({
       token,
       identifier: identifier.replace(' ', '+')
     })
 
-    jwtActual = jwt;
-    userActual = user;
+    userActual = user
   }
   catch {
     return (
-      <div className="flex items-center justify-center min-h-screen min-h-[calc(100vh-200px)]">
+      <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
         <Card className="w-full max-w-md mx-auto">
           <CardHeader className="text-center">
             <div className="w-20 h-20 mx-auto bg-red-100 rounded-full flex items-center justify-center mb-4">
@@ -71,10 +71,8 @@ const VerifyPage = async ({searchParams: {token, identifier, next}}: VerifyPageP
     )
   }
 
-  await setJwtCookie(jwtActual)
-
   if(next) {
-    redirect(next)
+    redirect(currentUser ? next : `/login?next=${next}`)
   }
 
   return (

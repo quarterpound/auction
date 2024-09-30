@@ -4,11 +4,17 @@ export const metadata = {
   title: 'Login'
 }
 
+interface LoginFormProps {
+  searchParams: {
+    next?: string
+  }
+}
 
-const Login = () => {
+
+const Login = ({ searchParams: { next } }: LoginFormProps) => {
   return (
     <div className="min-h-[calc(100vh-230px)] flex items-center justify-center">
-      <LoginForm />
+      <LoginForm next={next} />
     </div>
   )
 }
