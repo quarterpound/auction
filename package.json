@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/pg": "^8.11.10",
     "bun-types": "latest",
     "concurrently": "^9.0.1",
     "prisma": "^5.20.0"
@@ -31,6 +32,7 @@
     "fastest-validator": "^1.19.0",
     "format-money-js": "^1.6.3",
     "hono": "^4.5.11",
+    "pg": "^8.13.0",
     "react-markdown": "^9.0.1",
     "react-number-format": "^5.4.2",
     "redis": "^4.7.0",
