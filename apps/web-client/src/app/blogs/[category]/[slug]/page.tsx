@@ -81,7 +81,7 @@ const BlogPost = async ({params: {slug}}: BlogPostProps) => {
             <hr />
             <div className="grid gap-8">
               <h2 className="text-2xl font-semibold">Read more</h2>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid lg:grid-cols-2 gap-4">
                 {
                   readMore.data.map(item => (
                     <BlogCard key={item.id} item={item} />
