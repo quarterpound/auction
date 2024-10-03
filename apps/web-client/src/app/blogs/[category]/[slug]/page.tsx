@@ -5,6 +5,7 @@ import { notFound } from "next/navigation"
 import dayjs from "dayjs"
 import Link from "next/link"
 import BlogCard from "../../blog-card"
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 
 interface BlogPostProps {
   params: {
@@ -44,6 +45,25 @@ const BlogPost = async ({params: {slug}}: BlogPostProps) => {
 
   return (
     <div className="container grid gap-8 mx-auto py-8 max-w-3xl">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild={true}>
+              <Link href={'/blogs'}>Bütün xəbərlər</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild={true}>
+              <Link href={`/blogs/${post.category_slug}`}>{post.category_title}</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{post.title}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <article>
         <img
           src={`https://directus.auksiyon.az/assets/${post.featured_image}`}

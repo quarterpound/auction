@@ -54,6 +54,18 @@ export const getCategory = async (slug: string) => {
   return singleCategory.parse(data.rows[0])
 }
 
+export const getCategories = async() => {
+  const client = getClient();
+
+  await client.connect();
+
+  const data = await client.query(`select * from category c`)
+
+  client.end();
+
+  return data.rows.map(f => singleCategory.parse(f))
+}
+
 export const getBlogs = async (category: string | null = null, exclude: string | null = null, page = 0, limit = 10) => {
   const client = getClient()
 

@@ -3,6 +3,7 @@ import BlogCard from "../blog-card"
 import { getBlogs, getCategory } from "../db"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 
 interface SingleBlogProps {
   params: {
@@ -34,12 +35,20 @@ const SingleBlog = async ({params: {category}}: SingleBlogProps) => {
 
   return (
     <div className='container mx-auto grid gap-8'>
-      <div className="flex gap-3 items-center">
-        <Link href={'/blogs'}>
-          <ArrowLeft />
-        </Link>
-        <h1 className="text-3xl font-bold">{cat.title}</h1>
-      </div>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild={true}>
+              <Link href={'/blogs'}>Bütün xəbərlər</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{cat.title}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <h1 className="text-3xl font-bold">{cat.title}</h1>
       <div className='grid lg:grid-cols-3 gap-4'>
         {
           data.map(item => (
