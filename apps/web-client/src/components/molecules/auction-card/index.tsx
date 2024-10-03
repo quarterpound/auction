@@ -61,7 +61,7 @@ const AuctionCard = ({item}: AuctionCardProps) => {
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0 flex items-center justify-between">
-        <Link href={`/auctions/${item.slug}`}>
+        <Link href={`/auctions/${item.parent_category_slug}/${item.category_slug}/${item.slug}`}>
           <Button className="w-full">Place Bid</Button>
         </Link>
         <AuctionHeart id={item.id} />

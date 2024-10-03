@@ -57,7 +57,7 @@ export const authRoute = router({
     const jwt = await signInternal({
       sub: user.id,
       name: user.name ?? '',
-      emailVerified: false,
+      emailVerified: !!user.emailVerified,
     })
 
     if(c) {

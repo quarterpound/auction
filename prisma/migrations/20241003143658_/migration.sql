@@ -21,6 +21,7 @@ CREATE TABLE "users" (
     "email" TEXT,
     "phone" TEXT,
     "email_verified" TIMESTAMP(3),
+    "phone_verified" TIMESTAMP(3),
     "image" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -46,6 +47,7 @@ CREATE TABLE "verificiation_requests" (
     "expires" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "used" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "verificiation_requests_pkey" PRIMARY KEY ("id")
 );
@@ -65,6 +67,7 @@ CREATE TABLE "posts" (
     "currency" TEXT NOT NULL,
     "bid_increment" DOUBLE PRECISION NOT NULL,
     "author_id" TEXT NOT NULL,
+    "pending" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "posts_pkey" PRIMARY KEY ("id")
 );
@@ -123,9 +126,12 @@ CREATE TABLE "case_messages" (
 CREATE TABLE "assets" (
     "id" SERIAL NOT NULL,
     "url" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "small_url" TEXT NOT NULL,
     "width" INTEGER NOT NULL,
     "height" INTEGER NOT NULL,
+    "small_width" INTEGER NOT NULL,
+    "small_height" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "assets_pkey" PRIMARY KEY ("id")

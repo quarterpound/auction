@@ -28,6 +28,10 @@ export const feedRouter = router({
       const data = await prisma.$queryRawUnsafe<AuctionFeedItem[]>(`
         SELECT
             p.*,
+            c.slug as category_slug,
+            c.name as category_name,
+            cp.name as parent_category_name,
+            cp.slug as parent_category_slug,
             CAST(COALESCE(lb.amount, p.price_min) AS INTEGER) AS amount,
             CAST(COALESCE(bc.bid_count, 0) AS INTEGER) AS bid_count,
             COALESCE(a.assets, '[]') AS assets  -- Aggregated assets as JSON array
@@ -72,6 +76,8 @@ export const feedRouter = router({
             GROUP BY
                 aop.post_id
         ) a ON p.id = a.post_id
+        left join categories c on c.id = p.category_id
+        left join categories cp on cp.id = c.category_id
         WHERE
             p.end_time > NOW()
             AND p.pending = false

@@ -27,7 +27,11 @@ export const auctionFeedItem = z.object({
   price_min: z.number(),
   slug: z.string(),
   bid_count: z.coerce.number(),
-  updatedAt: z.date()
+  updatedAt: z.date(),
+  category_slug: z.string(),
+  category_name: z.string(),
+  parent_category_name: z.string(),
+  parent_category_slug: z.string()
 })
 
 export const feedResultValidation = z.object({
