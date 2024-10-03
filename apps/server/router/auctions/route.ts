@@ -51,6 +51,13 @@ export const auctionRoute = router({
               }))
             }
           }
+        },
+        include: {
+          category: {
+            include: {
+              parent: true,
+            }
+          }
         }
       })
 
@@ -74,7 +81,7 @@ export const auctionRoute = router({
       const conn = await InternalRedisConnection.getRedisConnection();
       await conn.set(`post:${post.id}`, post.priceMin)
 
-      await sendWelcomeEmail(input.email, input.email, verificationToken, `/auctions/${post.slug}`, true)
+      await sendWelcomeEmail(input.email, input.email, verificationToken, `/auctions/${post.category?.parent?.slug}/${post.category?.slug}/${post.slug}`, true)
 
       return {
         jwt,
@@ -115,6 +122,13 @@ export const auctionRoute = router({
             data: input.assets.map(item => ({
               assetId: item.id
             }))
+          }
+        }
+      },
+      include: {
+        category: {
+          include: {
+            parent: true,
           }
         }
       }

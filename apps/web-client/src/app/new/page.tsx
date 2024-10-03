@@ -13,9 +13,7 @@ const New = async () => {
 
   return (
     <div className="grid gap-8 max-w-xl mx-auto">
-      <div className="bg-zinc-100 mx-auto w-full">
-        <h1 className="text-foreground text-lg px-8 font-bold py-4">ELAN YERLƏŞDİRMƏK</h1>
-      </div>
+      <h1 className="text-foreground text-2xl font-bold py-4">ELAN YERLƏŞDİRMƏK</h1>
       <div className="container mx-auto grid gap-8  md:px-0 px-8">
         <AuctionForm categories={data} />
       </div>

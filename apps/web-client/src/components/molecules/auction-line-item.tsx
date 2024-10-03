@@ -24,6 +24,11 @@ interface AuctionLineItemProps {
           asset: true,
         }
       },
+      category: {
+        include: {
+          parent: true
+        }
+      },
       Bids: {
         orderBy: {
           createdAt: 'desc',
@@ -82,7 +87,7 @@ const AuctionLineItem = ({item}: AuctionLineItemProps) => {
           />
           <div className="h-[50px] flex items-center justify-between">
             <div>
-              <Link href={`/auctions/${item.slug}`} className="font-semibold text-foreground">{item.name}</Link>
+              <Link href={`/auctions/${item.category?.parent?.slug}/${item.category?.slug}/${item.slug}`} className="font-semibold text-foreground">{item.name}</Link>
               <p className="text-sm text-muted-foreground">{`Ends on: ${dayjs(item.endTime).format('DD MMM YYYY HH:mm')}`}</p>
             </div>
             <div className="flex items-center justify-between gap-3">

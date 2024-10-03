@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import DragAndDrop from "@/components/ui/drag-and-drop"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Select, SelectItem, SelectTrigger, SelectContent, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
@@ -19,6 +19,10 @@ import { createAuctionAndRegisterValidation, createAuctionValidation, CreateAuct
 import { redirectToEmailVerify } from "../(auth)/actions"
 import type { inferRouterOutputs } from '@trpc/server';
 import { AppRouter } from "server/router"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+import { cn } from "@/lib/utils"
+import { CalendarIcon } from "lucide-react"
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
 
@@ -29,7 +33,7 @@ interface AuctionFormProps {
 const AuctionForm = ({categories}: AuctionFormProps) => {
   const { authUser } = useAppState()
 
-  const initialDate = useMemo(() => dayjs().add(7, 'day').toDate(), [])
+  const initialDate = useMemo(() => dayjs().add(8, 'day').toDate(), [])
   const createAndRegister = trpc.auctions.createAndRegister.useMutation()
   const create = trpc.auctions.create.useMutation()
   const setInitialState = useAppState(state => state.setInitialState)
@@ -70,7 +74,7 @@ const AuctionForm = ({categories}: AuctionFormProps) => {
     }
 
     return create.mutateAsync(data).then((post) => {
-      return router.push(`/auctions/${post.slug}`)
+      return router.push(`/auctions/${post.category?.slug}/${post.category?.parent?.slug}/${post.slug}`)
     })
   }
 
@@ -103,27 +107,35 @@ const AuctionForm = ({categories}: AuctionFormProps) => {
           name="categoryId"
           control={form.control}
           render={({field}) => (
-            <Select onValueChange={f => field.onChange(f)} value={field.value}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent>
-                {
-                  categories.map(item => (
-                    <SelectGroup key={item.id}>
-                      <SelectLabel>{item.name}</SelectLabel>
-                      {
-                        item.children.map(child => (
-                          <SelectItem value={`${child.id}`} key={child.id}>
-                            {child.name}
-                          </SelectItem>
-                        ))
-                      }
-                    </SelectGroup>
-                  ))
-                }
-              </SelectContent>
-            </Select>
+            <FormItem>
+              <FormLabel>Category</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {
+                      categories.map(item => (
+                        <SelectGroup key={item.id}>
+                          <SelectLabel>{item.name}</SelectLabel>
+                          {
+                            item.children.map(child => (
+                              <SelectItem value={child.id} key={child.id}>
+                                {child.name}
+                              </SelectItem>
+                            ))
+                          }
+                        </SelectGroup>
+                      ))
+                    }
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage>
+                {form.formState.errors.categoryId?.message}
+              </FormMessage>
+            </FormItem>
           )}
         />
         <FormField
@@ -141,15 +153,46 @@ const AuctionForm = ({categories}: AuctionFormProps) => {
             </FormItem>
           )}
         />
-        <FormItem>
-          <FormLabel>End Date & Time</FormLabel>
-          <FormControl>
-            <Input min={dayjs().add(7, 'day').toDate().toLocaleString()} max={dayjs().add(14, 'day').toDate().toLocaleString()} {...form.register('endTime')} type="datetime-local" />
-          </FormControl>
-          <FormMessage>
-            {form.formState.errors.endTime?.message}
-          </FormMessage>
-        </FormItem>
+        <FormField
+          control={form.control}
+          name="endTime"
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>End Date & Time</FormLabel>
+              <FormControl>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? dayjs(field.value).format("DD MMM YYYY HH:mm") : <span>Pick a date</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(f) => dayjs(f).isBefore(dayjs().add(7, 'days')) || dayjs(f).isAfter(dayjs().add(14, 'days')) }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </FormControl>
+              <FormMessage>
+                {form.formState.errors.endTime?.message}
+              </FormMessage>
+              <FormDescription>
+                Your auction cannot end before 7 days or end after 14 days
+              </FormDescription>
+            </FormItem>
+          )}
+        />
         <div className="grid grid-cols-2 gap-4">
           <FormItem className="space-y-2">
             <FormLabel>Reserve Price</FormLabel>

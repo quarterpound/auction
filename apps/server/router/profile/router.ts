@@ -47,6 +47,11 @@ export const profileRouter = router({
             asset: true,
           }
         },
+        category: {
+          include: {
+            parent: true
+          }
+        },
         Bids: {
           orderBy: {
             createdAt: 'desc',
@@ -80,6 +85,11 @@ export const profileRouter = router({
             id: true,
             userId: true,
             amount: true,
+          }
+        },
+        category: {
+          include: {
+            parent: true
           }
         },
         AssetOnPost: {
@@ -142,6 +152,11 @@ export const profileRouter = router({
             AssetOnPost: {
               include: {
                 asset: true,
+              }
+            },
+            category: {
+              include: {
+                parent: true
               }
             },
             Bids: {

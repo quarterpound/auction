@@ -25,6 +25,16 @@ export const generalRouter = router({
         select: {
           slug: true,
           createdAt: true,
+          category: {
+            select: {
+              slug: true,
+              parent: {
+                select: {
+                  slug: true,
+                }
+              }
+            }
+          }
         }
       }),
       prisma.category.findMany({
@@ -49,7 +59,7 @@ export const generalRouter = router({
     ])
 
     const postsParsed: SitemapItem[] = posts.map(item => ({
-      url: `/${item.slug}`,
+      url: `/auctions/${item.category?.parent?.slug}/${item.category?.slug}/${item.slug}`,
       lastModified: item.createdAt.toISOString()
     }))
 
