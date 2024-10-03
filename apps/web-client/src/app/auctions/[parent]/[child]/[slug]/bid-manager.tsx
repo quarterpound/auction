@@ -116,7 +116,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
 
   const lastAmount = bidsQuery.data?.[0]?.amount ?? auction.priceMin
 
-  const validator = useMemo(() => z.object({id: z.number(), amount: z.coerce.number().min(lastAmount + bidIncrement)}), [lastAmount, bidIncrement])
+  const validator = useMemo(() => z.object({id: z.string(), amount: z.coerce.number().min(lastAmount + bidIncrement)}), [lastAmount, bidIncrement])
 
   const form = useForm<CreateBidValidation>({
     values: {
@@ -158,7 +158,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
           authUser && authUser.id !== auction.authorId && (
             <Form {...form}>
               <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-                <div className="flex space-x-2 items-s">
+                <div className="flex space-x-2 items-start">
                   <FormItem className="w-full">
                     <FormLabel htmlFor="amount">Bid Amount</FormLabel>
                     <FormControl>
