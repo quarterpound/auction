@@ -7,9 +7,9 @@ export const createAuctionValidation = z.object({
   reservePrice: z.coerce.number().min(1),
   endTime: z.coerce.date().min(dayjs().add(7, 'day').toDate()).max(dayjs().add(14, 'day').toDate()),
   bidIncrement: z.coerce.number().min(1),
-  assets: z.object({id: z.number(), url: z.string(), smallUrl: z.string(), name: z.string(), smallWidth: z.number(), smallHeight: z.number(), width: z.number(), height: z.number(), createdAt: z.coerce.date()}).array().min(1).max(12),
+  assets: z.object({id: z.string(), url: z.string(), smallUrl: z.string(), name: z.string(), smallWidth: z.number(), smallHeight: z.number(), width: z.number(), height: z.number(), createdAt: z.coerce.date()}).array().min(1).max(12),
   currency: z.enum(['usd', 'azn']),
-  categoryId: z.number().nullish()
+  categoryId: z.string().uuid()
 })
 
 export const createAuctionAndRegisterValidation = createAuctionValidation.extend({

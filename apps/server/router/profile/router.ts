@@ -92,7 +92,7 @@ export const profileRouter = router({
       skip: input.cursor * 10
     })
   }),
-  addAuctionToFavorites: protectedProcedure.input(z.object({id: z.number()})).mutation(async ({input, ctx: {user}}) => {
+  addAuctionToFavorites: protectedProcedure.input(z.object({id: z.string()})).mutation(async ({input, ctx: {user}}) => {
     return prisma.$transaction(async (tx) => {
       const existing = await tx.userFavorite.findUnique({
         where: {
@@ -160,7 +160,7 @@ export const profileRouter = router({
       }
     })
   }),
-  deleteAuction: protectedProcedure.input(z.object({id: z.number()})).mutation(async({ctx: {user}, input}) => {
+  deleteAuction: protectedProcedure.input(z.object({id: z.string()})).mutation(async({ctx: {user}, input}) => {
     return prisma.$transaction(async (tx) => {
       const data = await tx.post.findUnique({
         where: {

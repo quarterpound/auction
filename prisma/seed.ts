@@ -6,13 +6,6 @@ async function createCategories(
   categories: any,
   parentId: number | null = null,
 ) {
-  const data = await prisma.category.count();
-
-  if (data !== 0) {
-    await prisma.$disconnect();
-    return 0;
-  }
-
   for await (const category of categories) {
     const createdCategory = await prisma.category.create({
       data: {
@@ -29,6 +22,12 @@ async function createCategories(
 }
 
 async function main() {
+  const data = await prisma.category.count();
+
+  if (data !== 0) {
+    await prisma.$disconnect();
+    return 0;
+  }
   await createCategories(categories);
 }
 

@@ -3,13 +3,13 @@ import { z } from "zod";
 
 export const feedValidation = z.object({
   cursor: z.number().min(0).default(0),
-  categoryId: z.number().nullish(),
+  categoryId: z.string().nullish(),
   orderBy: z.enum(['lowest-price', 'highest-price', 'ending-soonest', 'ending-earliest']).nullish()
 })
 
 export const auctionFeedItem = z.object({
   assets: z.array(z.object({
-    id: z.number(),
+    id: z.string(),
     created_at: z.coerce.date(),
     width: z.number(),
     height: z.number(),
@@ -22,7 +22,7 @@ export const auctionFeedItem = z.object({
   description: z.string(),
   description_html: z.string(),
   end_time: z.date(),
-  id: z.number(),
+  id: z.string(),
   name: z.string(),
   price_min: z.number(),
   slug: z.string(),

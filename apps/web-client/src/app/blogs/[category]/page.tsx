@@ -2,7 +2,6 @@ import { notFound } from "next/navigation"
 import BlogCard from "../blog-card"
 import { getBlogs, getCategory } from "../db"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 
 interface SingleBlogProps {

@@ -27,7 +27,7 @@ export type Category = Prisma.CategoryGetPayload<{
 
 type FeedProps = {
   initialData: FeedResultValidation
-  categoryId?: number | null
+  categoryId?: string | null
 }
 
 const Feed = ({initialData, categoryId}: FeedProps) => {

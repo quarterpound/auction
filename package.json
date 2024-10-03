@@ -8,7 +8,7 @@
     "dev:web-client": "cd apps/web-client && bun dev",
     "build": "bun run build:web-client && bun run build:server",
     "build:web-client": "cd apps/web-client && bun run build",
-    "build:server": "bun build apps/server/index.ts --compile --outfile ./out/server/server",
+    "build:server": "tsc -p apps/server/tsconfig.json --noEmit && bun build apps/server/index.ts --compile --outfile ./out/server/server",
     "start:all": "bunx prisma migrate deploy && bunx prisma db seed && bunx concurrently \"./out/server/server\" \"bunx next start ./out/web-client\""
   },
   "devDependencies": {

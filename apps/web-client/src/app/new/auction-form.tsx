@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import DragAndDrop from "@/components/ui/drag-and-drop"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Select, SelectItem, SelectTrigger, SelectContent, SelectValue } from "@/components/ui/select"
+import { Select, SelectItem, SelectTrigger, SelectContent, SelectValue, SelectGroup, SelectLabel } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { useAppState } from "@/store"
@@ -17,8 +17,16 @@ import { useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { createAuctionAndRegisterValidation, createAuctionValidation, CreateAuctionAndRegisterValidation } from 'server/router/auctions/validation'
 import { redirectToEmailVerify } from "../(auth)/actions"
+import type { inferRouterOutputs } from '@trpc/server';
+import { AppRouter } from "server/router"
 
-const AuctionForm = () => {
+type RouterOutput = inferRouterOutputs<AppRouter>;
+
+interface AuctionFormProps {
+  categories: RouterOutput['category']['all']
+}
+
+const AuctionForm = ({categories}: AuctionFormProps) => {
   const { authUser } = useAppState()
 
   const initialDate = useMemo(() => dayjs().add(7, 'day').toDate(), [])
@@ -38,7 +46,8 @@ const AuctionForm = () => {
       name: '',
       assets: [],
       endTime: initialDate,
-      currency: 'azn'
+      currency: 'azn',
+      categoryId: '',
     },
     resolver: zodResolver(authUser ? createAuctionValidation : createAuctionAndRegisterValidation)
   })
@@ -90,6 +99,33 @@ const AuctionForm = () => {
             {form.formState.errors.description?.message}
           </FormMessage>
         </FormItem>
+        <FormField
+          name="categoryId"
+          control={form.control}
+          render={({field}) => (
+            <Select onValueChange={f => field.onChange(f)} value={field.value}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                {
+                  categories.map(item => (
+                    <SelectGroup key={item.id}>
+                      <SelectLabel>{item.name}</SelectLabel>
+                      {
+                        item.children.map(child => (
+                          <SelectItem value={`${child.id}`} key={child.id}>
+                            {child.name}
+                          </SelectItem>
+                        ))
+                      }
+                    </SelectGroup>
+                  ))
+                }
+              </SelectContent>
+            </Select>
+          )}
+        />
         <FormField
           name="assets"
           control={form.control}

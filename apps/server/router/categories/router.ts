@@ -6,6 +6,9 @@ export const categoryRouter = router({
   all: publicProcedure.input(z.object({take: z.number().default(10).optional()})).query(async ({input}) => {
     return prisma.category.findMany({
       take: input.take,
+      where: {
+        categoryId: null
+      },
       include: {
         _count: {
           select: {

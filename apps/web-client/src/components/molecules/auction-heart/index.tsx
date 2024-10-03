@@ -9,7 +9,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 
 interface AuctionHeartProps {
-  id: number
+  id: string
   count?: number,
 }
 

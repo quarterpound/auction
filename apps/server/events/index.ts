@@ -33,6 +33,6 @@ type LocalEventTypes = {
   'auction-watching': [count: number]
 }
 
-export const WATCHING:Record<number, number> = {}
+export const WATCHING:Record<string, number> = {}
 
 export const localEventEmitter = new TypedEventEmitter<LocalEventTypes>()

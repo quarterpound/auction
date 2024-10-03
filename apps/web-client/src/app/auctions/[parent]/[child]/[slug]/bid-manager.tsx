@@ -80,7 +80,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
 
       if(data.author.id !== authUser?.id) {
         ctx.auctions.findBidsByAuctionId.setData({id}, (prev) => [
-          {...data, id: Math.random() * 10 + new Date().getTime()},
+          {...data, id: `${Math.random() * 10 + new Date().getTime()}`},
           ...(prev ?? []),
         ])
       }
@@ -94,7 +94,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
       await ctx.auctions.findBidsByAuctionId.cancel();
       const previous = ctx.auctions.findBidsByAuctionId.getData({id})
       ctx.auctions.findBidsByAuctionId.setData({id}, (prev) => [
-        {id: dayjs().unix(), amount, author: {...authUser, name: authUser.name ? obfuscateName(authUser.name) : null}, userId: authUser.id, createdAt: new Date(), postId: id,},
+        {id: dayjs().unix().toString(), amount, author: {...authUser, name: authUser.name ? obfuscateName(authUser.name) : null}, userId: authUser.id, createdAt: new Date(), postId: id,},
         ...(prev ?? []),
       ])
 

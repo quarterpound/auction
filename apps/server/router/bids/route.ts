@@ -5,7 +5,7 @@ import {createBidValidation} from './validation'
 import { TRPCError } from "@trpc/server";
 import { AddedBid, localEventEmitter, WATCHING } from "../../events";
 import { observable } from "@trpc/server/observable";
-import { obfuscateName } from "../../../utils/src/shared";
+import { obfuscateName } from "utils";
 import { InternalRedisConnection } from "../../database/redis";
 
 export const bidsRoute = router({
@@ -69,7 +69,7 @@ export const bidsRoute = router({
     return true
 
   }),
-  listenToBidAdded: publicProcedure.input(z.object({auctionIds: z.number(), ignoreMe: z.boolean().default(false)})).subscription(async ({ctx: {user}, input: {auctionIds, ignoreMe}}) => observable<AddedBid>((emit) => {
+  listenToBidAdded: publicProcedure.input(z.object({auctionIds: z.string(), ignoreMe: z.boolean().default(false)})).subscription(async ({ctx: {user}, input: {auctionIds, ignoreMe}}) => observable<AddedBid>((emit) => {
 
     const onBidAdded = (bid: AddedBid) => {
       const shouldInformMe = (user?.id !== bid.userId || !ignoreMe)

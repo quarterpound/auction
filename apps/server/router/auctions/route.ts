@@ -178,7 +178,7 @@ export const auctionRoute = router({
       }
     }))};
   }),
-  findBidsByAuctionId: publicProcedure.input(z.object({ id: z.number() })).query(async ({input: {id}}) => {
+  findBidsByAuctionId: publicProcedure.input(z.object({ id: z.string() })).query(async ({input: {id}}) => {
     const data = await prisma.bid.findMany({
       where: {
         postId: id,
@@ -227,7 +227,7 @@ export const auctionRoute = router({
 
     return post
   }),
-  listenForViewCount: publicProcedure.input(z.object({id: z.number()})).subscription(async ({input: {id}, ctx: {user}}) => observable<number>((emit) => {
+  listenForViewCount: publicProcedure.input(z.object({id: z.string()})).subscription(async ({input: {id}, ctx: {user}}) => observable<number>((emit) => {
     const onNewView = (count: number) => {
       emit.next(count);
     }

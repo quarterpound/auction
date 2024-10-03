@@ -1,6 +1,6 @@
 import { trpcVanillaClient } from "@/trpc";
 import { MetadataRoute } from "next";
-import { getBlogs, getCategories, getCategory } from "./blogs/db";
+import { getBlogs, getCategories } from "./blogs/db";
 
 export const dynamic = 'force-dynamic'
 
