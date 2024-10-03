@@ -21,14 +21,14 @@ export default async function Home() {
             {
               categories.map((item) => (
                 <div className="grid" key={item.id}>
-                  <Link href={`/${item.slug}`} className="font-medium text-sm">
+                  <Link href={`/auctions/${item.slug}`} className="font-medium text-sm">
                     <h2>{`${item.name} (${item.children.reduce((a, b) => a + b._count.post, 0)})`}</h2>
                   </Link>
                   <ul key={item.id} className="ml-5">
                     {
                       item.children.map(child => (
                         <li key={child.id}>
-                          <Link className="text-sm" href={`/${item.slug}/${child.slug}`}>
+                          <Link className="text-sm" href={`/auctions/${item.slug}/${child.slug}`}>
                             <h3>{`${child.name} (${child._count.post})`}</h3>
                           </Link>
                         </li>
