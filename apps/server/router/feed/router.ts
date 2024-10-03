@@ -81,7 +81,7 @@ export const feedRouter = router({
         WHERE
             p.end_time > NOW()
             AND p.pending = false
-            ${input.categoryId ? `AND p.category_id = ${input.categoryId}` : ''}
+            ${input.categoryId ? `AND p.category_id = '${input.categoryId}'` : ''}
         ORDER BY
             ${orderBy} NULLS LAST
         LIMIT 25

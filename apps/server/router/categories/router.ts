@@ -37,6 +37,7 @@ export const categoryRouter = router({
         id: true,
         slug: true,
         name: true,
+        parent: true
       }
     })
   }),

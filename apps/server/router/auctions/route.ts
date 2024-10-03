@@ -154,6 +154,11 @@ export const auctionRoute = router({
             UserFavorites: true,
           }
         },
+        category: {
+          include: {
+            parent: true
+          }
+        },
         AssetOnPost: {
           include: {
             asset: true
