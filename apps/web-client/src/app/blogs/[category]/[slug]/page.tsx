@@ -6,14 +6,17 @@ import dayjs from "dayjs"
 import Link from "next/link"
 import BlogCard from "../../blog-card"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import { Metadata } from "next"
+import { Separator } from "@/components/ui/separator"
 
 interface BlogPostProps {
   params: {
     slug: string
+    category: string
   }
 }
 
-export const generateMetadata = async ({params: {slug}}: BlogPostProps) => {
+export const generateMetadata = async ({params: {slug, category}}: BlogPostProps): Promise<Metadata> => {
   const post = await getSingleBlogPost(slug)
 
 
@@ -23,7 +26,16 @@ export const generateMetadata = async ({params: {slug}}: BlogPostProps) => {
 
   return {
     title: post.title,
-    description: post.excerpt,
+    description: post.excerpt.slice(0, 250),
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_CLIENT_URL}/blogs/${category}/${slug}`
+    },
+    authors: [
+      {
+        name: post.author_name,
+      }
+    ],
+    publisher: "Auksiyon.az"
   }
 }
 
@@ -90,10 +102,16 @@ const BlogPost = async ({params: {slug}}: BlogPostProps) => {
         <Link href={`/blogs/${post.category_slug}`}>
           <Badge className="mb-8">{post.category_title}</Badge>
         </Link>
-        <div
-          className="prose prose-lg max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        />
+        <div className="grid gap-6">
+          <p className="prose prose-lg prose-p:text-muted-foreground">
+            {post.excerpt}
+          </p>
+          <Separator />
+          <div
+            className="prose prose-lg max-w-none"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
+        </div>
       </article>
       {
         readMore.data.length !== 0 && (

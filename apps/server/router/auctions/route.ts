@@ -230,6 +230,7 @@ export const auctionRoute = router({
         slug
       },
       select: {
+        slug: true,
         name: true,
         description: true,
         descriptionHtml: true,
@@ -237,6 +238,21 @@ export const auctionRoute = router({
         priceMin: true,
         bidIncrement: true,
         currency: true,
+        AssetOnPost: {
+          select: {
+            asset: true
+          }
+        },
+        category: {
+          select: {
+            slug: true,
+            parent: {
+              select: {
+                slug: true,
+              }
+            }
+          }
+        }
       }
     })
 

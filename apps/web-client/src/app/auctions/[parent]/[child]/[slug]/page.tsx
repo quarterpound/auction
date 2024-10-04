@@ -8,6 +8,8 @@ import Gallery from "@/components/ui/gallery"
 import { cookies } from "next/headers"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import Link from "next/link"
+import { Metadata } from "next/types"
+import { notFound } from "next/navigation"
 
 interface SingleAuctionProps {
   params: {
@@ -17,11 +19,30 @@ interface SingleAuctionProps {
 
 export const dynamic = 'force-dynamic'
 
-export const generateMetadata = async ({params: {slug}}: SingleAuctionProps) => {
-  const auction = await trpcVanillaClient.auctions.findMetadataBySlug.query({slug})
-  return {
-    title: auction.name,
-    description: auction.description,
+export const generateMetadata = async ({params: {slug}}: SingleAuctionProps):Promise<Metadata> => {
+  try {
+    const auction = await trpcVanillaClient.auctions.findMetadataBySlug.query({slug})
+    return {
+      title: auction.name,
+      description: auction.description,
+      alternates: {
+        canonical: `${process.env.NEXT_PUBLIC_CLIENT_URL}/auctions/${auction.category?.parent?.slug}/${auction.category?.slug}/${auction.slug}`
+      },
+      twitter: {
+        title: auction.name,
+        description: auction.description,
+        images: auction.AssetOnPost.map(item => item.asset)
+      },
+      openGraph: {
+        title: auction.name,
+        type: 'website',
+        description: auction.description,
+        url: `${process.env.NEXT_PUBLIC_CLIENT_URL}/auctions/${auction.category?.parent?.slug}/${auction.category?.slug}/${auction.slug}`,
+        images: auction.AssetOnPost.map(item => item.asset)
+      }
+    }
+  } catch(e) {
+    notFound()
   }
 }
 
@@ -68,7 +89,7 @@ const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-2">
-              <Gallery images={auction.AssetOnPost.map(item => item.asset)} />
+              <Gallery title={auction.name} images={auction.AssetOnPost.map(item => item.asset)} />
             </div>
             <div className="space-y-6">
               <BidManager

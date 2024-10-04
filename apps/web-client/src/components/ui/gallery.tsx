@@ -8,9 +8,10 @@ import Image from 'next/image'
 
 interface GalleryProps {
   images: Asset[]
+  title: string
 }
 
-const Gallery = ({images}: GalleryProps) => {
+const Gallery = ({images, title}: GalleryProps) => {
   const [index, setIndex] = useState(0);
 
   const onNavigate = (dir: 1 | -1) => () => {
@@ -35,7 +36,7 @@ const Gallery = ({images}: GalleryProps) => {
           )
         }
       </div>
-      <Image alt="" blurDataURL={images[index].smallUrl} width={images[index].width} height={images[index].height} src={images[index].url} className="w-full block h-full object-contain" />
+      <Image alt={title} blurDataURL={images[index].smallUrl} width={images[index].width} height={images[index].height} src={images[index].url} className="w-full block h-full object-contain" />
     </div>
   )
 }
