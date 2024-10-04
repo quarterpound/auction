@@ -46,7 +46,7 @@ const AuctionCard = ({item}: AuctionCardProps) => {
       </CardHeader>
       <CardContent className="flex-grow p-4">
         <CardTitle className="text-lg mb-2">
-          <Link href={`/auctions/${item.slug}`}>{item.name}</Link>
+          <Link href={`/auctions/${item.parent_category_slug}/${item.category_slug}/${item.slug}`}>{item.name}</Link>
         </CardTitle>
         <div className="flex justify-between items-center mb-2">
           <div className="flex items-center">
