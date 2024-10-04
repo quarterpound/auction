@@ -1,6 +1,4 @@
 import { initTRPC, TRPCError } from '@trpc/server';
-import { verify } from 'hono/jwt';
-import { env } from './env';
 import { prisma } from './database';
 import superjson from 'superjson'
 import { Context } from 'hono';
@@ -42,7 +40,7 @@ export const publicProcedure = t.procedure.use(async (opts) => {
   let user: User | null = null;
 
   if(token) {
-    const payload = await verify(token, env.JWT_SECRET)
+    const payload = await verifyInternal(token)
 
     if(!payload) {
       if(opts.ctx.c) {
@@ -53,7 +51,7 @@ export const publicProcedure = t.procedure.use(async (opts) => {
 
     user = await prisma.user.findUnique({
       where: {
-        id: payload.sub as string,
+        id: payload.sub,
       }
     })
 
@@ -81,7 +79,7 @@ export const protectedProcedure = t.procedure.use(async (opts) => {
     throw new TRPCError({message: 'Not authorized', code: 'UNAUTHORIZED'})
   }
 
-  const payload = await verify(token, env.JWT_SECRET)
+  const payload = await verifyInternal(token)
 
   if(!payload) {
     if(opts.ctx.c) {
@@ -92,7 +90,7 @@ export const protectedProcedure = t.procedure.use(async (opts) => {
 
   const user = await prisma.user.findUnique({
     where: {
-      id: payload.sub as string,
+      id: payload.sub,
     }
   })
 
