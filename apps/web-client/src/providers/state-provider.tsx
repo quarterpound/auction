@@ -9,6 +9,7 @@ const StateProvider = (props: PropsWithChildren &  {initialState: InitialState})
 
   useEffect(() => {
     setInitialState(initialState)
+
   }, [initialState, setInitialState])
 
   return (

@@ -68,12 +68,14 @@ export const auctionRoute = router({
       })
 
 
-      const verificationToken = crypto.randomBytes(32).toString('hex')
+      let num = Math.floor(Math.random() * 1000000);
+
+      let sixDigitNumber = num.toString().padStart(6, '0')
 
       await tx.verificationRequest.create({
         data: {
           identifier: input.email,
-          token: verificationToken,
+          token: sixDigitNumber,
           expires: dayjs().add(1, 'day').toDate()
         }
       })
@@ -81,7 +83,7 @@ export const auctionRoute = router({
       const conn = await InternalRedisConnection.getRedisConnection();
       await conn.set(`post:${post.id}`, post.priceMin)
 
-      await sendWelcomeEmail(input.email, input.email, verificationToken, `/auctions/${post.category?.parent?.slug}/${post.category?.slug}/${post.slug}`, true)
+      await sendWelcomeEmail(input.email, created.name ?? '', sixDigitNumber, true)
 
       return {
         jwt,
@@ -153,6 +155,7 @@ export const auctionRoute = router({
           select: {
             UserFavorites: true,
             postView: true,
+            Bids: true,
           }
         },
         category: {

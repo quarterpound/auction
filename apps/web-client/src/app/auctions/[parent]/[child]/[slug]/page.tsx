@@ -48,13 +48,56 @@ export const generateMetadata = async ({params: {slug}}: SingleAuctionProps):Pro
 }
 
 const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
-    const auction = await trpcVanillaClient.auctions.findBySlug.query({slug}, {
-      context: {
-        authorization: cookies().get('authorization')?.value
-      }
-    })
+  const auction = await trpcVanillaClient.auctions.findBySlug.query({slug}, {
+    context: {
+      authorization: cookies().get('authorization')?.value
+    }
+  })
 
-    return (
+  const schema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": auction.name,
+      "image": auction.AssetOnPost.map(item => item.asset.url),
+      "description": auction.description,
+      "sku": auction.slug,
+      // "brand": {
+      //   "@type": "Brand",
+      //   "name": "Rolex"
+      // },
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": auction.currency,
+        "lowPrice": auction.priceMin,
+        "highPrice": auction.Bids[0]?.amount ?? auction.priceMin,
+        "offerCount": auction._count.Bids,
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "SaleEvent",
+      "name": `Auction for ${auction.name}`,
+      "startDate": auction.createdAt,
+      "endDate": auction.endTime,
+      "eventStatus": "https://schema.org/EventScheduled",
+      "location": {
+        "@type": "VirtualLocation",
+        "url": `${process.env.NEXT_PUBLIC_CLIENT_URL}/auctions/${auction.category?.parent?.slug}/${auction.category?.slug}/${auction.slug}`
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": `${process.env.NEXT_PUBLIC_CLIENT_URL}/auctions/${auction.category?.parent?.slug}/${auction.category?.slug}/${auction.slug}`,
+        "price": auction.Bids[0]?.amount ?? auction.priceMin,
+        "priceCurrency": auction.currency,
+        "availability": "https://schema.org/InStock"
+      }
+    }
+  ]
+
+
+  return (
+    <>
       <div className="max-w-5xl mx-auto grid gap-4">
         <Breadcrumb>
           <BreadcrumbList>
@@ -118,8 +161,11 @@ const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
           </Card>
         </div>
       </div>
-    )
-
+      <script type="application/ld+json" dangerouslySetInnerHTML={{
+        __html: JSON.stringify(schema)
+      }} />
+    </>
+  )
 }
 
 export default SingleAuction

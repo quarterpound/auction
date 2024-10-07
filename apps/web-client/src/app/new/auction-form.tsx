@@ -58,7 +58,7 @@ const AuctionForm = ({categories}: AuctionFormProps) => {
 
   const onSubmit = (data: CreateAuctionAndRegisterValidation) => {
     if(!authUser) {
-      return createAndRegister.mutateAsync(data).then(({usr, jwt}) => {
+      return createAndRegister.mutateAsync(data).then(({usr, jwt, post}) => {
         setInitialState({
           authUser: usr,
           hasMadeBids: false,
@@ -69,7 +69,7 @@ const AuctionForm = ({categories}: AuctionFormProps) => {
 
         setCookie('authorization', jwt)
 
-        return redirectToEmailVerify()
+        return redirectToEmailVerify(`/auctions/${post.category?.parent?.slug}/${post.category?.slug}/${post.slug}`)
       })
     }
 

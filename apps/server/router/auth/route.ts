@@ -99,19 +99,22 @@ export const authRoute = router({
         }
       })
 
-      const verificationToken = crypto.randomBytes(32).toString('hex')
+
+      let num = Math.floor(Math.random() * 1000000);
+
+      let sixDigitNumber = num.toString().padStart(6, '0')
 
       await prisma.verificationRequest.create({
         data: {
           identifier: email,
-          token: verificationToken,
+          token: sixDigitNumber,
           expires: dayjs().add(1, 'day').toDate()
         }
       })
 
       if (email) {
         try {
-          await sendWelcomeEmail(email, email, verificationToken, undefined, addToAudiences);
+          await sendWelcomeEmail(email, newUser.name ?? '', sixDigitNumber, addToAudiences);
         } catch (e) {
           throw new TRPCError({ message: 'Failed to send email', code: 'INTERNAL_SERVER_ERROR' })
         }
@@ -151,7 +154,7 @@ export const authRoute = router({
     const pendingAuctions = await prisma.post.count({where: {authorId: ctx.user.id}})
     return {...ctx.user, favorites, hasMadeBids: bids !== 0, hasPendingAuctions: pendingAuctions !== 0};
   }),
-  verify: publicProcedure.input(z.object({token: z.string(), identifier: z.string()})).mutation(async ({input}) => {
+  verify: publicProcedure.input(z.object({token: z.string(), identifier: z.string()})).mutation(async ({input, ctx}) => {
     const verificationToken = await prisma.verificationRequest.findUnique({
       where: {
         identifier_token: {
@@ -197,6 +200,19 @@ export const authRoute = router({
         },
         data: {
           emailVerified: new Date(),
+        },
+        include: {
+          _count: {
+            select: {
+              Bids: true,
+              Post: {
+                where: {
+                  pending: true,
+                }
+              }
+            }
+          },
+          UserFavorites: true,
         }
       })
 
@@ -212,13 +228,20 @@ export const authRoute = router({
       return user
     })
 
+    const jwt = await signInternal({
+      sub: user.id,
+      emailVerified: !!user.emailVerified,
+      name: user.name ?? ''
+    })
+
+
+    if(ctx.c) {
+      setCookie(ctx.c, 'authorization', jwt)
+    }
+
     return {
       user,
-      jwt: await signInternal({
-        sub: user.id,
-        emailVerified: !!user.emailVerified,
-        name: user.name ?? ''
-      })
+      jwt
     }
   })
 })

@@ -243,16 +243,19 @@ export const profileRouter = router({
       });
 
       if(!lastVerificationRequest) {
-        const verificationToken = crypto.randomBytes(32).toString('hex')
+        let num = Math.floor(Math.random() * 1000000);
+
+        let sixDigitNumber = num.toString().padStart(6, '0')
+
         const createdToken = await tx.verificationRequest.create({
           data: {
             identifier: email,
-            token: verificationToken,
+            token: sixDigitNumber,
             expires: dayjs().add(1, 'day').toDate()
           }
         })
 
-        await sendWelcomeEmail(email, email, verificationToken, undefined, true)
+        await sendWelcomeEmail(email, user.name ?? '', sixDigitNumber, true)
 
         return createdToken;
       }
@@ -264,16 +267,19 @@ export const profileRouter = router({
         });
       }
 
-      const verificationToken = crypto.randomBytes(32).toString('hex')
+      let num = Math.floor(Math.random() * 1000000);
+
+      let sixDigitNumber = num.toString().padStart(6, '0')
+
       const createdToken = await tx.verificationRequest.create({
         data: {
           identifier: email,
-          token: verificationToken,
+          token: sixDigitNumber,
           expires: dayjs().add(1, 'day').toDate()
         }
       })
 
-      await sendWelcomeEmail(email, email, verificationToken, undefined, true)
+      await sendWelcomeEmail(email, user.name ?? '', sixDigitNumber, true)
 
       return createdToken;
     })

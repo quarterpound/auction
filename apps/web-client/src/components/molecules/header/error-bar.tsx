@@ -28,7 +28,7 @@ const ErrorBar = () => {
     return <></>
   }
 
-  if(pathname !== '/verify-email') {
+  if(pathname !== '/verify-email' && pathname !== '/verify') {
     if(hasPendingAuctions) {
       return <div className="bg-orange-100 border-b border-orange-200">
         <div className="container mx-auto py-3">

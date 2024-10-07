@@ -83,6 +83,7 @@ const DragAndDrop = ({ files, onChange }: DragAndDropProps) => {
                 <Button
                   size="icon"
                   variant="ghost"
+                  type='button'
                   onClick={() => onChange(files.filter(f => f.id !== file.id))}
                 >
                   <X className="h-4 w-4" />

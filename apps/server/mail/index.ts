@@ -9,7 +9,12 @@ export const getClient = () => {
 type SendTransactionalEmailReturnType = Awaited<ReturnType<LoopsClient['sendTransactionalEmail']>>
 type AddEmailToAudienceReturnType = Awaited<ReturnType<LoopsClient['createContact']>>
 
-export const sendWelcomeEmail = async (email: string, identifier: string, token: string, nextUrl?: string, addToAudience = false): Promise<SendTransactionalEmailReturnType> => {
+export const sendWelcomeEmail = async (email: string, name: string, token: string, addToAudience = false): Promise<SendTransactionalEmailReturnType> => {
+  if(process.env.NODE_ENV === 'development') {
+    console.log(token);
+    return {} as Promise<SendTransactionalEmailReturnType>
+  }
+
   const client = getClient();
 
   const data = await client.sendTransactionalEmail({
@@ -17,7 +22,8 @@ export const sendWelcomeEmail = async (email: string, identifier: string, token:
     email,
     addToAudience,
     dataVariables: {
-      link: `${env.CLIENT_URL}/verify?token=${token}&identifier=${identifier}${nextUrl ? `&next=${nextUrl}` : ''}`
+      verification_code: token,
+      name,
     }
   })
 
