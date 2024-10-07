@@ -78,7 +78,7 @@ const BlogPost = async ({params: {slug}}: BlogPostProps) => {
       </Breadcrumb>
       <article>
         <img
-          src={`https://directus.auksiyon.az/assets/${post.featured_image}`}
+          src={`https://directus.auksiyon.az/assets/${post.featured_image}?width=550&height=350&fit=cover&format=webp&quality=75`}
           alt={post.title}
           className="w-full h-64 object-cover rounded-lg mb-8"
         />

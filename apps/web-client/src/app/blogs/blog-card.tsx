@@ -13,7 +13,7 @@ const BlogCard = ({item}: BlogCardProps) => {
   return (
     <Card key={item.id} className="flex flex-col">
       <img
-        src={`https://directus.auksiyon.az/assets/${item.featured_image}`}
+        src={`https://directus.auksiyon.az/assets/${item.featured_image}?width=500&height=200&fit=cover&format=webp&quality=50`}
         alt={item.title}
         className="w-full h-48 object-cover rounded-t-lg"
       />
