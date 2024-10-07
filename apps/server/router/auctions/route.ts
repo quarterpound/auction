@@ -143,7 +143,7 @@ export const auctionRoute = router({
 
     return post
   }),
-  findBySlug: publicProcedure.input(z.object({ slug: z.string() })).query(async({ input: { slug }, ctx: {user} }) => {
+  findBySlug: publicProcedure.input(z.object({ slug: z.string() })).query(async({ input: { slug }, ctx: { user } }) => {
     const post = await prisma.post.findUnique({
       where: {
         slug
@@ -152,6 +152,7 @@ export const auctionRoute = router({
         _count: {
           select: {
             UserFavorites: true,
+            postView: true,
           }
         },
         category: {
@@ -188,6 +189,30 @@ export const auctionRoute = router({
     if(post.pending && post.authorId !== user?.id) {
       throw new TRPCError({ code: 'NOT_FOUND'})
     }
+
+    const updateViewCount = async () => {
+      let flag = true;
+
+      if(user?.id) {
+        flag = !(await prisma.postView.findFirst({
+          where: {
+            postId: post.id,
+            userId: user.id
+          }
+        }))
+      }
+
+      if(flag) {
+        await prisma.postView.create({
+          data: {
+            postId: post.id,
+            userId: user?.id
+          }
+        })
+      }
+    }
+
+    updateViewCount()
 
     return {...post, bids: post.Bids.map(item => ({
       ...item,

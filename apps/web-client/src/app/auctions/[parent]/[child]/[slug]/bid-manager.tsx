@@ -9,7 +9,7 @@ import { trpc } from "@/trpc"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Post, Prisma } from "@prisma/client"
 import dayjs from "dayjs"
-import { Clock, Gavel, Search, User } from "lucide-react"
+import { Clock, Gavel, Radio, Search, User } from "lucide-react"
 import { useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { CreateBidValidation } from "server/router/bids/validation"
@@ -189,9 +189,12 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
             !auction.pending && (
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold mb-2">Recent Bids</h2>
-                <span className="text-sm text-gray-500">
-                  {`Online ${watching}`}
-                </span>
+                <div className="flex items-center gap-1">
+                  <Radio className="text-green-500 w-6 h-6" />
+                  <span className="text-sm text-gray-500">
+                    {`Online ${watching}`}
+                  </span>
+                </div>
               </div>
             )
           }

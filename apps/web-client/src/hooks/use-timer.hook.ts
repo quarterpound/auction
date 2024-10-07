@@ -41,5 +41,28 @@ export const useTimer = (date: Date) => {
     return () => clearInterval(timer);
   }, [calculateTimeLeft, date]);
 
-  return `${timeLeft.days}d ${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s`
+  const formatTimeLeft = useCallback((timeLeft: ReturnType<typeof calculateTimeLeft>): string => {
+    const parts = [];
+
+    if (timeLeft.days > 0) {
+      parts.push(`${timeLeft.days}d`);
+    }
+
+    if (timeLeft.hours > 0) {
+      parts.push(`${timeLeft.hours}h`);
+    }
+
+    if (timeLeft.minutes > 0) {
+      parts.push(`${timeLeft.minutes}m`);
+    }
+
+    if (timeLeft.seconds > 0) {
+      parts.push(`${timeLeft.seconds}s`);
+    }
+
+    // Join all non-zero parts with a space
+    return parts.join(' ');
+  }, []);
+
+  return formatTimeLeft(timeLeft)
 }

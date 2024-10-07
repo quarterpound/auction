@@ -10,6 +10,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import Link from "next/link"
 import { Metadata } from "next/types"
 import { notFound } from "next/navigation"
+import { EyeIcon } from "lucide-react"
 
 interface SingleAuctionProps {
   params: {
@@ -101,7 +102,13 @@ const SingleAuction = async ({params: {slug}}: SingleAuctionProps) => {
           <Separator className="my-8" />
           <Card>
             <CardHeader>
-              <CardTitle>Product description</CardTitle>
+              <CardTitle className="flex items-center justify-between">
+                <span>Product description</span>
+                <div className="flex items-center gap-1">
+                  <EyeIcon className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-muted-foreground text-sm">{`${auction._count.postView} Views`}</span>
+                </div>
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="prose max-w-none">

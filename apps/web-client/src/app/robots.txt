@@ -2,3 +2,5 @@ User-agent: *
 Disallow: /profile
 Disallow: /my-auctions
 Disallow: /bids
+Disallow: /verify-email
+Disallow: /verify

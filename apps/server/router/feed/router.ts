@@ -10,18 +10,18 @@ export const feedRouter = router({
       let orderBy = 'p."createdAt" DESC'
 
       if(input.orderBy === 'lowest-price') {
-        orderBy = 'lb.amount ASC'
+        orderBy = 'amount ASC'
       }
 
       if(input.orderBy === 'highest-price') {
-        orderBy = 'lb.amount DESC'
+        orderBy = 'amount DESC'
       }
 
       if(input.orderBy === 'ending-soonest') {
         orderBy = 'p.end_time ASC'
       }
 
-      if(input.orderBy === 'ending-earliest') {
+      if(input.orderBy === 'ending-latest') {
         orderBy = 'p.end_time DESC'
       }
 

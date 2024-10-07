@@ -46,6 +46,7 @@ model User {
   Post          Post[]
   Bids          Bid[]
   UserFavorites UserFavorite[]
+  PostView      PostView[]
 
   @@map(name: "users")
 }
@@ -93,8 +94,20 @@ model Post {
   pending         Boolean        @default(false)
   AssetOnPost     AssetOnPost[]
   UserFavorites   UserFavorite[]
+  postView        PostView[]
 
   @@map("posts")
+}
+
+model PostView {
+  id        String   @id @default(uuid())
+  post      Post     @relation(fields: [postId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  postId    String   @map("post_id")
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+
+  @@map("post_view")
 }
 
 model AssetOnPost {

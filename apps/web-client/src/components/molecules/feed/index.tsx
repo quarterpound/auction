@@ -4,6 +4,7 @@ import { trpc } from "@/trpc"
 import { FeedResultValidation } from "server/router/feed/validation"
 import AuctionCard from "../auction-card"
 import { Prisma } from "@prisma/client"
+import { useAppState } from "@/store"
 
 export type Category = Prisma.CategoryGetPayload<{
   include: {
@@ -31,7 +32,9 @@ type FeedProps = {
 }
 
 const Feed = ({initialData, categoryId}: FeedProps) => {
-  const feedQuery = trpc.feed.all.useInfiniteQuery({orderBy: null, categoryId},     {
+  const feedSortOrder = useAppState(state => state.feedSortOrder)
+
+  const feedQuery = trpc.feed.all.useInfiniteQuery({orderBy: feedSortOrder, categoryId},     {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     initialData: {
       pageParams: [0],

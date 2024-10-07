@@ -2,15 +2,19 @@ import Feed from "@/components/molecules/feed";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import { trpcVanillaClient } from "@/trpc";
+import FeedSorter from "@/components/molecules/feed-sorter";
 
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  const initialData = await trpcVanillaClient.feed.all.query({cursor: 0})
+  const initialData = await trpcVanillaClient.feed.all.query({cursor: 0, orderBy: 'ending-soonest'})
   const categories = await trpcVanillaClient.category.all.query({take: 10})
 
   return <div className="grid gap-8 container mx-auto">
-    <h1 className="text-3xl font-bold">Live auctions</h1>
+    <div className="flex items-center justify-between">
+      <h1 className="text-3xl font-bold">Live auctions</h1>
+      <FeedSorter />
+    </div>
     <div className="items-start grid md:grid-cols-[2fr_6fr] container mx-auto gap-8">
       <Card>
         <CardHeader>
