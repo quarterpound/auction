@@ -66,6 +66,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
   trpc.bids.listenToBidAdded.useSubscription({auctionIds: id}, {
     onData: (data) => {
       ctx.profile.bids.refetch();
+      ctx.feed.all.invalidate()
 
       const previous = ctx.auctions.findBidsByAuctionId.getData({id})
 
@@ -110,6 +111,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
       getPermission();
     },
     onSettled: () => {
+      ctx.feed.all.invalidate()
       ctx.profile.auctions.refetch();
     },
   })

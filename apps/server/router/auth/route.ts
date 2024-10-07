@@ -151,7 +151,7 @@ export const authRoute = router({
     const pendingAuctions = await prisma.post.count({where: {authorId: ctx.user.id}})
     return {...ctx.user, favorites, hasMadeBids: bids !== 0, hasPendingAuctions: pendingAuctions !== 0};
   }),
-  verify: publicProcedure.input(z.object({token: z.string(), identifier: z.string()})).mutation(async ({ctx, input}) => {
+  verify: publicProcedure.input(z.object({token: z.string(), identifier: z.string()})).mutation(async ({input}) => {
     const verificationToken = await prisma.verificationRequest.findUnique({
       where: {
         identifier_token: {
