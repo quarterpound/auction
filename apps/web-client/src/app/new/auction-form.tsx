@@ -21,7 +21,7 @@ import type { inferRouterOutputs } from '@trpc/server';
 import { AppRouter } from "server/router"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
-import { cn } from "@/lib/utils"
+import { cn, setFieldErrors } from "@/lib/utils"
 import { CalendarIcon } from "lucide-react"
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
@@ -34,8 +34,22 @@ const AuctionForm = ({categories}: AuctionFormProps) => {
   const { authUser } = useAppState()
 
   const initialDate = useMemo(() => dayjs().add(8, 'day').toDate(), [])
-  const createAndRegister = trpc.auctions.createAndRegister.useMutation()
-  const create = trpc.auctions.create.useMutation()
+  const createAndRegister = trpc.auctions.createAndRegister.useMutation({
+    onError: (error) => {
+      console.log(error)
+      if(error.data?.zodError) {
+        setFieldErrors(form, error.data?.zodError)
+      }
+    }
+  })
+  const create = trpc.auctions.create.useMutation({
+    onError: (error) => {
+      console.log(error)
+      if(error.data?.zodError) {
+        setFieldErrors(form, error.data?.zodError)
+      }
+    }
+  })
   const setInitialState = useAppState(state => state.setInitialState)
   const router = useRouter()
 
@@ -53,6 +67,7 @@ const AuctionForm = ({categories}: AuctionFormProps) => {
       currency: 'azn',
       categoryId: '',
     },
+    shouldFocusError: true,
     resolver: zodResolver(authUser ? createAuctionValidation : createAuctionAndRegisterValidation)
   })
 

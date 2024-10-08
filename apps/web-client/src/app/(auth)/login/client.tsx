@@ -1,6 +1,6 @@
 'use client'
 
-import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form"
+import { Form, FormControl, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,7 @@ import { loginValidation } from "server/router/auth/validation"
 import { toast } from "sonner"
 import { z } from "zod"
 import { redirectToHome } from "../actions"
+import { setFieldErrors } from "@/lib/utils"
 
 export type LoginValidation = z.infer<typeof loginValidation>
 
@@ -23,14 +24,21 @@ interface LoginFormProps {
 const LoginForm = ({next}: LoginFormProps) => {
   const setInitialState = useAppState(state => state.setInitialState)
 
-  const loginMutation = trpc.auth.login.useMutation()
+  const loginMutation = trpc.auth.login.useMutation({
+    onError: (error) => {
+      if(error.data?.zodError) {
+        setFieldErrors(form, error.data?.zodError)
+      }
+    }
+  })
 
   const form = useForm<LoginValidation>({
     values: {
       username: '',
       password: ''
     },
-    resolver: zodResolver(loginValidation)
+    resolver: zodResolver(loginValidation),
+    shouldFocusError: true,
   })
 
   const handleSubmit = async (data: LoginValidation) => {
@@ -68,13 +76,32 @@ const LoginForm = ({next}: LoginFormProps) => {
               <FormControl>
                 <Input {...form.register('username')} placeholder="example@example.com"  />
               </FormControl>
+              {
+                form.formState.errors.username && (
+                  <FormMessage>
+                    {form.formState.errors.username.message}
+                  </FormMessage>
+                )
+              }
             </FormItem>
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
                 <Input type='password' {...form.register('password')}  />
               </FormControl>
+              {
+                form.formState.errors.password && (
+                  <FormMessage>
+                    {form.formState.errors.password?.message}
+                  </FormMessage>
+                )
+              }
             </FormItem>
+            {
+              form.formState.errors.root && (
+                <FormMessage>{form.formState.errors.root.message}</FormMessage>
+              )
+            }
           </CardContent>
           <CardFooter>
             <Button disabled={loginMutation.isPending} className="w-full">Login</Button>

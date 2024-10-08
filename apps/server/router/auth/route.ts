@@ -10,7 +10,7 @@ import _ from 'lodash';
 import { User } from "@prisma/client";
 import { setCookie } from "hono/cookie";
 import { signInternal } from "../../jwt";
-import { z } from "zod";
+import { z, ZodError } from "zod";
 
 export const authRoute = router({
   login: publicProcedure.input(loginValidation).mutation(async ({input, ctx: {c}}) => {
@@ -45,13 +45,24 @@ export const authRoute = router({
     })
 
     if (!user) {
-      throw new TRPCError({ message: 'User not found', code: 'NOT_FOUND' })
+      throw new TRPCError({
+        cause: new ZodError<typeof loginValidation>([
+          {path: ['root'], code: 'custom', message: 'Email or password incorrect'}
+        ]),
+        code: 'BAD_REQUEST'
+      })
     }
 
     const passwordMatch = await bcrypt.compare(password, user.passwords[0].hash)
 
     if (!passwordMatch) {
-      throw new TRPCError({ message: 'Invalid password', code: 'UNAUTHORIZED' })
+      throw new TRPCError({
+        cause: new ZodError<typeof loginValidation>([
+          {path: ['root'], code: 'custom', message: 'Email or password incorrect'}
+        ]),
+        code: 'BAD_REQUEST'
+      })
+
     }
 
     const jwt = await signInternal({
@@ -84,7 +95,9 @@ export const authRoute = router({
       })
 
       if (existingUser) {
-        throw new TRPCError({ message: 'User already exists', code: 'CONFLICT' })
+        throw new ZodError<typeof loginValidation>([
+          {path: ['email'], code: 'custom', message: 'Email is taken'}
+        ])
       }
 
       const newUser = await tx.user.create({
@@ -116,7 +129,9 @@ export const authRoute = router({
         try {
           await sendWelcomeEmail(email, newUser.name ?? '', sixDigitNumber, addToAudiences);
         } catch (e) {
-          throw new TRPCError({ message: 'Failed to send email', code: 'INTERNAL_SERVER_ERROR' })
+          throw new ZodError<typeof loginValidation>([
+            {path: ['email'], code: 'custom', message: 'Email is invalid'}
+          ])
         }
       }
 
@@ -130,9 +145,7 @@ export const authRoute = router({
         jwt,
         user: _.omit(newUser, ['passwords']) as User,
       };
-    })
-
-
+    }, {timeout: 10000})
 
     if(c) {
       setCookie(c, 'authorization', jwt)
