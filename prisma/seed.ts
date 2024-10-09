@@ -7,19 +7,19 @@ const prisma = new PrismaClient();
 
 async function createCategories(
   categories: any,
-  parentId: number | null = null,
+  parentId: string | null = null,
 ) {
   for await (const category of categories) {
     const createdCategory = await prisma.category.create({
       data: {
         name: category.name,
         slug: category.slug,
-        categoryId: parentId,
+        categoryId: parentId?.toString(),
       },
     });
 
     if (category.children && category.children.length > 0) {
-      await createCategories(category.children, createdCategory.id);
+      await createCategories(category.children, createdCategory?.id ?? null);
     }
   }
 }
@@ -27,7 +27,7 @@ async function createCategories(
 async function createMockUserAndAuctions(): Promise<number> {
   const existing = await prisma.user.findFirst({
     where: {
-      email: "test@example.com",
+      email: "test2@example.com",
     },
   });
 
@@ -38,21 +38,25 @@ async function createMockUserAndAuctions(): Promise<number> {
   const user = await prisma.user.create({
     data: {
       name: "test user",
-      email: "test@example.com",
+      email: "test2@example.com",
       passwords: {
         create: {
-          hash: await bcrypt.hash("123", 123),
+          hash: await bcrypt.hash("123", 10),
         },
       },
       emailVerified: new Date(),
     },
   });
 
-  const cat = await prisma.category.findFirst({
+  console.log(user);
+
+  const foundCats = await prisma.category.findMany({
     where: {
       parent: null,
     },
   });
+
+  console.log(foundCats);
 
   const images = await prisma.$transaction(
     Array.from({ length: 120 }).map((item) =>
@@ -70,6 +74,8 @@ async function createMockUserAndAuctions(): Promise<number> {
     ),
   );
 
+  console.log(images);
+
   const f = await prisma.$transaction(
     Array.from({ length: 120 }).map((_, i) =>
       prisma.post.create({
@@ -83,7 +89,7 @@ async function createMockUserAndAuctions(): Promise<number> {
           descriptionHtml: faker.lorem.paragraphs({ min: 2, max: 10 }),
           endTime: dayjs().add(12).toDate(),
           authorId: user.id,
-          categoryId: cat?.id,
+          categoryId: foundCats[i % foundCats.length]?.id,
           pending: false,
           AssetOnPost: {
             create: {
