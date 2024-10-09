@@ -1,4 +1,4 @@
-import { getBlogs } from './db'
+import { getBlogs } from '@/lib/content-db'
 import BlogCard from './blog-card'
 
 export const metadata = {

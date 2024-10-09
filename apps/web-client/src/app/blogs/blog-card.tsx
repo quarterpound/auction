@@ -1,5 +1,5 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { SingleBlogCardResult } from "./db"
+import { SingleBlogCardResult } from "@/lib/content-db"
 import { Badge } from "@/components/ui/badge"
 import { CalendarIcon, UserIcon } from "lucide-react"
 import dayjs from "dayjs"
