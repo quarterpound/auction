@@ -10,7 +10,7 @@ const FeedSorter = () => {
 
   return (
     <Select value={feedSortOrder ?? ''} onValueChange={(e) => setFeedSortOrder(e as FeedValidation['orderBy'])}>
-      <SelectTrigger className="w-[250px]">
+      <SelectTrigger className="max-w-[250px] w-full block">
         <SelectValue placeholder={"Sort"} />
       </SelectTrigger>
       <SelectContent>
