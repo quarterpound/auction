@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 import { CalendarIcon, ClockIcon } from "lucide-react"
-import { getBlogs, getSingleBlogPost } from "../../db"
+import { getBlogs, getSingleBlogPost } from '@/lib/content-db'
 import { notFound } from "next/navigation"
 import dayjs from "dayjs"
 import Link from "next/link"

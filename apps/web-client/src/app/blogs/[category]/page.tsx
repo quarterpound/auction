@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import BlogCard from "../blog-card"
-import { getBlogs, getCategory } from "../db"
+import { getBlogs, getCategory } from'@/lib/content-db'
 import Link from "next/link"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 

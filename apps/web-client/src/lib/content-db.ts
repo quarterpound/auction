@@ -13,6 +13,13 @@ export const singleBlogCardResult = z.object({
   date_created: z.coerce.date(),
 })
 
+export const faqItem = z.object({
+  id: z.coerce.number(),
+  slug: z.string(),
+  question: z.string(),
+  answer: z.string(),
+})
+
 export const singleCategory = z.object({
   id: z.coerce.number(),
   slug: z.string(),
@@ -54,6 +61,34 @@ export const getCategory = async (slug: string) => {
   return singleCategory.parse(data.rows[0])
 }
 
+export const getFaqItems = async () => {
+  const client = getClient();
+
+  await client.connect();
+
+  const data = await client.query(`select * from faq order by sort asc`)
+
+  await client.end()
+
+  return data.rows.map(f => faqItem.parse(f))
+}
+
+export const getFaqItemBySlug = async (slug: string) => {
+  const client = getClient();
+
+  await client.connect();
+
+  const data = await client.query(`select * from faq where slug = $1`, [slug])
+
+  if(!data.rows[0]) {
+    return null;
+  }
+
+  await client.end()
+
+  return faqItem.parse(data.rows[0])
+}
+
 export const getCategories = async() => {
   const client = getClient();
 
@@ -61,7 +96,7 @@ export const getCategories = async() => {
 
   const data = await client.query(`select * from category c`)
 
-  client.end();
+  await client.end();
 
   return data.rows.map(f => singleCategory.parse(f))
 }
