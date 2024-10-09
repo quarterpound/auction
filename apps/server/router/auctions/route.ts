@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt'
 import {slugify} from 'transliteration'
 import dayjs from "dayjs";
 import { setCookie } from "hono/cookie";
-import { z } from "zod";
+import { z, ZodError } from "zod";
 import { TRPCError } from "@trpc/server";
 import { obfuscateName } from "utils";
 import { localEventEmitter, WATCHING } from "../../events";
@@ -19,6 +19,22 @@ import { env } from "../../env";
 export const auctionRoute = router({
   createAndRegister: publicProcedure.input(createAuctionAndRegisterValidation).mutation(async ({input, ctx: {c}}) => {
     const {post, usr, jwt} = await prisma.$transaction(async (tx) => {
+
+      const checkUser = await tx.user.findUnique({
+        where: {
+          email: input.email
+        }
+      })
+
+      if(checkUser) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          cause: new ZodError([
+            {path: ['email'], message: "Email is in use", code: 'custom'}
+          ])
+        })
+      }
+
       const created = await tx.user.create({
         data: {
           name: input.name,
@@ -30,6 +46,21 @@ export const auctionRoute = router({
           },
         }
       })
+
+      const checkPost = await tx.post.findUnique({
+        where: {
+          slug: slugify(input.title)
+        }
+      })
+
+      if(!checkPost) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          cause: new ZodError([
+            {path: ['title'], message: "Post with the same title already exists", code: 'custom'}
+          ])
+        })
+      }
 
       const post = await tx.post.create({
         data: {
@@ -83,7 +114,16 @@ export const auctionRoute = router({
       const conn = await InternalRedisConnection.getRedisConnection();
       await conn.set(`post:${post.id}`, post.priceMin)
 
-      await sendWelcomeEmail(input.email, created.name ?? '', sixDigitNumber, true)
+      try {
+        await sendWelcomeEmail(input.email, created.name ?? '', sixDigitNumber, true)
+      } catch(e) {
+        throw new TRPCError({
+          cause: new ZodError([
+            {path: ['email'], message: "Could not send email", code: 'custom'}
+          ]),
+          code: 'BAD_REQUEST'
+        })
+      }
 
       return {
         jwt,
@@ -104,6 +144,21 @@ export const auctionRoute = router({
       throw new TRPCError({
         code: 'CONFLICT',
         message: 'Please verify your email'
+      })
+    }
+
+    const checkPost = await prisma.post.findUnique({
+      where: {
+        slug: slugify(input.title)
+      }
+    })
+
+    if(!checkPost) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        cause: new ZodError([
+          {path: ['title'], message: "Post with the same title already exists", code: 'custom'}
+        ])
       })
     }
 

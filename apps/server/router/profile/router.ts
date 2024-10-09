@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z, ZodError } from "zod";
 import { prisma } from "../../database";
 import { protectedProcedure, router } from "../../trpc";
 import { profileUpdateValidation } from "./validation";
@@ -6,27 +6,45 @@ import bcrypt from 'bcrypt'
 import { TRPCError } from "@trpc/server";
 import { InternalRedisConnection } from "../../database/redis";
 import { sendWelcomeEmail } from "../../mail";
-import crypto from 'crypto'
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 
 export const profileRouter = router({
   update: protectedProcedure.input(profileUpdateValidation).mutation(async ({input, ctx: {user}}) => {
-    return prisma.user.update({
-      where: {
-        id: user.id
-      },
-      data: {
-        name: input.name,
-        email: input.email,
-        phone: input.phone,
-        passwords: input.password ? (
-          {
-            create: {
-              hash: await bcrypt.hash(input.password, 12)
-            }
+    return prisma.$transaction(async tx => {
+      if(user.email !== input.email && input.email) {
+        const userCheck = await tx.user.findUnique({
+          where: {
+            email: input.email
           }
-        ) : undefined
+        })
+
+        if(userCheck) {
+          throw new TRPCError({
+            cause: new ZodError([
+              {path: ['email'], code: 'custom', message: 'Email is already taken'}
+            ]),
+            code: 'BAD_REQUEST'
+          })
+        }
       }
+
+      return tx.user.update({
+        where: {
+          id: user.id
+        },
+        data: {
+          name: input.name,
+          email: input.email,
+          phone: input.phone,
+          passwords: input.password ? (
+            {
+              create: {
+                hash: await bcrypt.hash(input.password, 12)
+              }
+            }
+          ) : undefined
+        }
+      })
     })
   }),
   auctions: protectedProcedure.input(z.object({cursor: z.number().default(0)})).query(({input, ctx: {user}}) => {

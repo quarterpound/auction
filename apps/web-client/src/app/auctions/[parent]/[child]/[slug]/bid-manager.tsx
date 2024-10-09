@@ -23,6 +23,7 @@ import TimeLeft from "./time-left"
 import { useNotifications } from "@/hooks/use-notifications.hook"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { setFieldErrors } from "@/lib/utils"
 
 export type BidWithUser = Prisma.BidGetPayload<{
   include: {
@@ -103,6 +104,9 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
     },
     onError: (err, n, t) => {
       toast.error(`Failed to place bid ${err.message}`)
+      if(err.data?.zodError) {
+        setFieldErrors(form, err.data?.zodError)
+      }
 
       ctx.auctions.findBidsByAuctionId.setData({id}, t?.previous)
     },
@@ -125,6 +129,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
       amount: lastAmount + auction.bidIncrement,
       id: auction.id
     },
+    shouldFocusError: true,
     resolver: zodResolver(validator)
   })
 
@@ -159,7 +164,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
         {
           authUser && authUser.id !== auction.authorId && (
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-2">
                 <div className="flex space-x-2 items-start">
                   <FormItem className="w-full">
                     <FormLabel htmlFor="amount">Bid Amount</FormLabel>
@@ -173,14 +178,14 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
                         {...form.register('amount')}
                       />
                     </FormControl>
-                    <FormMessage>
-                      {form.formState.errors.amount?.message}
-                    </FormMessage>
                   </FormItem>
                   <Button disabled={bidMutation.isPending || !authUser.emailVerified} type="submit" size="lg" className="self-end">
                     {authUser.emailVerified ? 'Place Bid' : 'Verify email'}
                   </Button>
                 </div>
+                <FormMessage>
+                  {form.formState.errors.amount?.message}
+                </FormMessage>
               </form>
             </Form>
           )

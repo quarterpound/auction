@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z, ZodError } from "zod";
 import { fastAuthProcedure, protectedProcedure, publicProcedure, router } from "../../trpc";
 import { prisma } from "../../database";
 import {createBidValidation} from './validation'
@@ -33,7 +33,11 @@ export const bidsRoute = router({
 
     if((state.currentBid + state.bidIncrement) > input.amount) {
       throw new TRPCError({
-        code: 'CONFLICT'
+        code: 'CONFLICT',
+        message: "Bid amount is incorrect",
+        cause: new ZodError([
+          {path: ['amount'], message: "Bid amount is incorrect", code: 'custom'}
+        ])
       })
     }
 

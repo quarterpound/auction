@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { trpc } from "@/trpc"
 import { toast } from "sonner"
+import { setFieldErrors } from "@/lib/utils"
 
 const Profile = () => {
   const { authUser, setInitialState, favorites, hasMadeBids, hasPendingAuctions } = useAppState()
@@ -22,6 +23,11 @@ const Profile = () => {
         hasMadeBids,
       })
       toast.success('Profile saved successfully')
+    },
+    onError: (error) => {
+      if(error.data?.zodError) {
+        setFieldErrors(form, error.data?.zodError)
+      }
     }
   })
 
@@ -36,7 +42,8 @@ const Profile = () => {
       email: '',
       phone: '',
       password: null
-    }
+    },
+    shouldFocusError: true,
   })
 
   const handleSubmit = (data: ProfileUpdateValidation) => {

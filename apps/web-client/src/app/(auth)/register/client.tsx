@@ -13,12 +13,19 @@ import { setCookie } from 'cookies-next';
 import { registerValidation } from "server/router/auth/validation"
 import { z } from "zod"
 import { redirectToEmailVerify } from "../actions"
+import { setFieldErrors } from "@/lib/utils"
 
 export type RegisterValidation = z.infer<typeof registerValidation>
 
 const RegisterForm = () => {
   const setInitialState = useAppState(state => state.setInitialState)
-  const registerMutation = trpc.auth.register.useMutation()
+  const registerMutation = trpc.auth.register.useMutation({
+    onError: (error) => {
+      if(error.data?.zodError) {
+        setFieldErrors(form, error.data?.zodError)
+      }
+    }
+  })
 
   const form = useForm<RegisterValidation>({
     values: {
@@ -26,9 +33,10 @@ const RegisterForm = () => {
       email: '',
       password: '',
       acceptTerms: false,
-      addToAudiences: false
+      addToAudiences: true
     },
-    resolver: zodResolver(registerValidation)
+    resolver: zodResolver(registerValidation),
+    shouldFocusError: true,
   })
 
   const handleSubmit = async (data: RegisterValidation) => {
@@ -124,6 +132,13 @@ const RegisterForm = () => {
                 </FormItem>
               )}
             />
+            {
+              form.formState.errors.root?.message && (
+                <FormMessage>
+                  {form.formState.errors.root?.message}
+                </FormMessage>
+              )
+            }
           </CardContent>
           <CardFooter>
             <Button className="w-full" disabled={registerMutation.isPending}>Register</Button>

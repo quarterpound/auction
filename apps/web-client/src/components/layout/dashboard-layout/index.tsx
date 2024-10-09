@@ -11,11 +11,13 @@ const DashboardLayout = ({children, title}: DashboardLayoutProps & PropsWithChil
     <div className="grid gap-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">{title}</h1>
-        <Logout />
       </div>
-      <div className="grid gap-5 md:grid-cols-[3fr_7fr]">
-        <div>
-          <Menu />
+      <div className="grid gap-5 items-start md:grid-cols-[3fr_7fr]">
+        <div className="grid gap-3">
+          <div>
+            <Menu />
+          </div>
+          <Logout />
         </div>
         <div>
           {children}
