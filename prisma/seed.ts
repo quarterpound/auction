@@ -27,7 +27,7 @@ async function createCategories(
 async function createMockUserAndAuctions(): Promise<number> {
   const existing = await prisma.user.findFirst({
     where: {
-      email: "test2@example.com",
+      email: "test3@example.com",
     },
   });
 
@@ -38,7 +38,7 @@ async function createMockUserAndAuctions(): Promise<number> {
   const user = await prisma.user.create({
     data: {
       name: "test user",
-      email: "test2@example.com",
+      email: "test3@example.com",
       passwords: {
         create: {
           hash: await bcrypt.hash("123", 10),
@@ -52,7 +52,9 @@ async function createMockUserAndAuctions(): Promise<number> {
 
   const foundCats = await prisma.category.findMany({
     where: {
-      parent: null,
+      parent: {
+        isNot: null,
+      },
     },
   });
 
@@ -87,7 +89,9 @@ async function createMockUserAndAuctions(): Promise<number> {
           currency: "azn",
           description: faker.lorem.paragraphs({ min: 2, max: 10 }),
           descriptionHtml: faker.lorem.paragraphs({ min: 2, max: 10 }),
-          endTime: dayjs().add(12).toDate(),
+          endTime: dayjs()
+            .add(Math.random() * 10 + 10, "days")
+            .toDate(),
           authorId: user.id,
           categoryId: foundCats[i % foundCats.length]?.id,
           pending: false,
