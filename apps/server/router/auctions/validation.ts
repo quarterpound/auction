@@ -1,9 +1,10 @@
 import dayjs from "dayjs";
 import { z } from "zod";
+import sanitizeHtml from 'sanitize-html';
 
 export const createAuctionValidation = z.object({
-  title: z.string().min(1),
-  description: z.string().min(1).max(1200),
+  title: z.string().transform(f => f.trim().toLowerCase()).pipe(z.string().min(1)),
+  description: z.string().min(1).max(1200).transform(f => sanitizeHtml(f)),
   reservePrice: z.coerce.number().min(1),
   endTime: z.coerce.date().min(dayjs().add(7, 'day').toDate()).max(dayjs().add(14, 'day').toDate()),
   bidIncrement: z.coerce.number().min(1),
@@ -13,8 +14,8 @@ export const createAuctionValidation = z.object({
 })
 
 export const createAuctionAndRegisterValidation = createAuctionValidation.extend({
-  name: z.string().min(1),
-  email: z.string().email(),
+  name: z.string().transform(f => f.trim().toLowerCase()).pipe(z.string().min(5)),
+  email: z.string().email().transform(f => f.trim().toLowerCase()),
   password: z.string().min(1)
 })
 
