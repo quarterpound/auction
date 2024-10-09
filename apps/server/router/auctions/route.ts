@@ -53,7 +53,7 @@ export const auctionRoute = router({
         }
       })
 
-      if(!checkPost) {
+      if(checkPost) {
         throw new TRPCError({
           code: 'BAD_REQUEST',
           cause: new ZodError([
@@ -153,7 +153,7 @@ export const auctionRoute = router({
       }
     })
 
-    if(!checkPost) {
+    if(checkPost) {
       throw new TRPCError({
         code: 'BAD_REQUEST',
         cause: new ZodError([
