@@ -174,7 +174,7 @@ const BidManager = ({ auction, bids }: BidManagerProps) => {
                         disabled={!authUser.emailVerified}
                         type="number"
                         placeholder="Enter bid amount"
-                        step="1"
+                        step="0.01"
                         {...form.register('amount')}
                       />
                     </FormControl>
