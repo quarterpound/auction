@@ -3,8 +3,14 @@ import { getFaqItems } from "@/lib/content-db"
 
 export const dynamic = 'force-dynamic'
 
-const FaqPage = async () => {
+export const metadata = {
+  title: 'FAQ',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_CLIENT_URL}/faq`
+  }
+}
 
+const FaqPage = async () => {
   const faqData = await getFaqItems()
 
   return (

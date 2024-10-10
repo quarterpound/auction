@@ -6,6 +6,13 @@ import FeedSorter from "@/components/molecules/feed-sorter";
 
 export const dynamic = 'force-dynamic'
 
+export const metadata = {
+  title: 'Feed',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_CLIENT_URL}`
+  }
+}
+
 export default async function Home() {
   const initialData = await trpcVanillaClient.feed.all.query({cursor: 0, orderBy: 'ending-soonest'})
   const categories = await trpcVanillaClient.category.all.query({take: 10})

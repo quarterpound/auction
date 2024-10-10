@@ -2,7 +2,10 @@ import { trpcVanillaClient } from "@/trpc"
 import AuctionForm from "./auction-form"
 
 export const metadata = {
-  title: 'New ad'
+  title: 'New ad',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_CLIENT_URL}/new`
+  }
 }
 
 export const dynamic = 'force-dynamic'

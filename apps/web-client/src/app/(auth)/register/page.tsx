@@ -1,7 +1,10 @@
 import RegisterForm from "./client"
 
 export const metadata = {
-  title: 'Register'
+  title: 'Register',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_CLIENT_URL}/login`
+  }
 }
 
 const RegisterPage = () => {

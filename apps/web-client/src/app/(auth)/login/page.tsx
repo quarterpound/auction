@@ -1,7 +1,10 @@
 import LoginForm from "./client"
 
 export const metadata = {
-  title: 'Login'
+  title: 'Login',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_CLIENT_URL}/login`
+  }
 }
 
 interface LoginFormProps {
@@ -9,7 +12,6 @@ interface LoginFormProps {
     next?: string
   }
 }
-
 
 const Login = ({ searchParams: { next } }: LoginFormProps) => {
   return (

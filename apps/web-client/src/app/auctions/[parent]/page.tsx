@@ -14,7 +14,10 @@ export const generateMetadata = async ({params: {parent}}: PageProps): Promise<M
   }
 
   return {
-    title: data.name
+    title: data.name,
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_CLIENT_URL}/auctions/${data?.parent?.slug}`
+    }
   }
 }
 

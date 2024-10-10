@@ -2,9 +2,11 @@ import { getBlogs } from '@/lib/content-db'
 import BlogCard from './blog-card'
 
 export const metadata = {
-  title: 'Blogs'
+  title: 'Blogs',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_CLIENT_URL}/blogs`
+  }
 }
-
 export const dynamic = 'force-dynamic'
 
 const BlogsPage = async () => {

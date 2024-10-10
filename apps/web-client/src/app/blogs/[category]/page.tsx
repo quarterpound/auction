@@ -3,6 +3,7 @@ import BlogCard from "../blog-card"
 import { getBlogs, getCategory } from'@/lib/content-db'
 import Link from "next/link"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import { Metadata } from "next/types"
 
 interface SingleBlogProps {
   params: {
@@ -10,7 +11,7 @@ interface SingleBlogProps {
   }
 }
 
-export const generateMetadata = async ({params: {category}}: SingleBlogProps) => {
+export const generateMetadata = async ({params: {category}}: SingleBlogProps): Promise<Metadata> => {
   const cat = await getCategory(category)
 
   if(!cat) {
@@ -19,7 +20,10 @@ export const generateMetadata = async ({params: {category}}: SingleBlogProps) =>
 
   return {
     title: cat.title,
-    description: cat.description
+    description: cat.description,
+    alternates: {
+      canonical: `${process.env.NEXT_PUBLIC_CLIENT_URL}/blogs/${cat.slug}`
+    }
   }
 }
 
