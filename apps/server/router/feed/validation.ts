@@ -3,6 +3,7 @@ import { z } from "zod";
 
 export const feedValidation = z.object({
   cursor: z.number().min(0).default(0),
+  max: z.number().max(20).default(9),
   categoryId: z.string().nullish(),
   orderBy: z.enum(['lowest-price', 'highest-price', 'ending-soonest', 'ending-latest']).nullish()
 })
@@ -36,7 +37,7 @@ export const auctionFeedItem = z.object({
 
 export const feedResultValidation = z.object({
   data: auctionFeedItem.array(),
-  nextCursor: z.number(),
+  nextCursor: z.number().nullable(),
 })
 
 export type FeedValidation = z.infer<typeof feedValidation>

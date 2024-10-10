@@ -21,6 +21,7 @@ export const links = [
         return fetch(url, {
           ...options,
           credentials: 'include',
+          cache: 'no-store'
         });
       },
       transformer: superjson,
@@ -40,7 +41,6 @@ export const trpcVanillaClient = createTRPCClient<AppRouter>({
         return fetch(url, {
           ...options,
           credentials: 'include',
-          cache: 'no-store',
         });
       },
 

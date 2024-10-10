@@ -14,7 +14,7 @@ export const metadata = {
 }
 
 export default async function Home() {
-  const initialData = await trpcVanillaClient.feed.all.query({cursor: 0, orderBy: 'ending-soonest'})
+  const initialData = await trpcVanillaClient.feed.all.query({cursor: 0, max: 9, orderBy: 'ending-soonest'})
   const categories = await trpcVanillaClient.category.all.query({take: 10})
 
   return <div className="grid gap-8 container mx-auto">

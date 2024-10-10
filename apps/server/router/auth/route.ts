@@ -185,8 +185,6 @@ export const authRoute = router({
     }
 
     if(verificationToken.used) {
-      console.log('here')
-
       throw new TRPCError({
         code: "NOT_FOUND"
       })
