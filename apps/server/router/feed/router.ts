@@ -32,7 +32,7 @@ export const feedRouter = router({
             c.name as category_name,
             cp.name as parent_category_name,
             cp.slug as parent_category_slug,
-            CAST(COALESCE(lb.amount, p.price_min) AS INTEGER) AS amount,
+            CAST(COALESCE(lb.amount, p.price_min) AS FLOAT) AS amount,
             CAST(COALESCE(bc.bid_count, 0) AS INTEGER) AS bid_count,
             COALESCE(a.assets, '[]') AS assets  -- Aggregated assets as JSON array
         FROM
