@@ -66,13 +66,13 @@ export const generalRouter = router({
     const categoryParsed: SitemapItem[] = category.map(item => {
       if(item.parent) {
         return ({
-          url: `/${item.parent.slug}/${item.slug}`,
+          url: `/auctions/${item.parent.slug}/${item.slug}`,
           lastModified: item.post[0]?.createdAt.toISOString()
         })
       }
 
       return ({
-        url: `/${item.slug}`,
+        url: `/auctions/${item.slug}`,
         lastModified: item.post[0]?.createdAt.toISOString()
       })
     })

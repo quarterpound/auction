@@ -11,7 +11,7 @@ export default async function Home() {
   const categories = await trpcVanillaClient.category.all.query({take: 10})
 
   return <div className="grid gap-8 container mx-auto">
-    <div className="grid gap-4 md:flex items-center justify-between">
+    <div className="grid w-full gap-4 md:flex items-center justify-between">
       <h1 className="text-3xl font-bold">Live auctions</h1>
       <FeedSorter />
     </div>

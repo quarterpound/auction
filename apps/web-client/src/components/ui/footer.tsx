@@ -1,5 +1,6 @@
 import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react'
 import NewsletterSignup from '../molecules/newsletter-signup'
+import Link from 'next/link'
 
 export default function Footer() {
 
@@ -19,7 +20,7 @@ export default function Footer() {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Support</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">FAQ</a></li>
+                <li><Link href="/faq" className="text-sm text-gray-600 hover:text-gray-900">FAQ</Link></li>
                 <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Contact Us</a></li>
                 <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Terms of Service</a></li>
                 <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Privacy Policy</a></li>
